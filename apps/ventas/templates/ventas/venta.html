@@ -1,0 +1,31 @@
+ {% extends 'base.html' %} {% load staticfiles %} {% block content %}
+ <br>
+<h2>Articulos Vendidos</h2>
+<a href="{% url 'realizar_venta' %}">Vender un artículo</a>
+<table class="table">
+    <thead class="thead-inverse">
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>cantidad</th>
+            <th>Precio de Venta</th>
+            <th>Total</th>
+            <th>Vendedor</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for venta in venta.all %}
+        <tr>
+            <th scope="row">{{ venta.articulo.id}}</th>
+            <td>{{ venta.articulo.nombre }}</td>
+            <td>{{ venta.cantidad }}</td>
+            <td>{{ venta.articulo.precio_venta }}</td>
+            <td>{{ venta.total }}</td>
+            <td>{{ venta.usuario.username }}</td>
+            <td><a href="#">Mandar alv</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

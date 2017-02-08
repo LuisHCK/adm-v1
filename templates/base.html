@@ -1,0 +1,51 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administración</title>
+  <meta name="description" content="Administración">
+  <meta name="author" content="Living Company">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+  <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+    <button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+      aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="{% url 'inicio' %}">Dashboard</a>
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ver_inventario' %}">Inventario</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ventas' %}">Ventas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Help</a>
+          </li>
+        </ul>
+        <form class="form-inline mt-2 mt-md-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+  </nav>
+  <div class="container-fluid" style="margin-top: 50px">
+    {% block content %}{% endblock %}
+  </div>
+  <script src="{% static 'js/jquery.js' %}"></script>
+  <script src="{% static 'js/bootstrap.js' %}"></script>
+</body>
+
+</html>

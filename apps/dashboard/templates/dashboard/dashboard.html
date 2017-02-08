@@ -1,0 +1,83 @@
+ {% extends 'base.html' %} {% load staticfiles %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<div class="row">
+  <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+    <ul class="nav nav-pills flex-column">
+      <li class="nav-item">
+        <span class="nav-link">Venta Rápida</span>
+        <form method="POST" class="post-form">{% csrf_token %} {{ form_venta.as_p }}
+          <button type="submit" class="save btn btn-default">Save</button>
+        </form>
+      </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Nav item</a>
+      </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Nav item again</a>
+      </li>
+    </ul>
+  </nav>
+  <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+    <h1>Estadísticas</h1>
+    <section class="row text-center placeholders">
+      <div class="col-6 col-sm-3 placeholder">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle"
+          alt="Generic placeholder thumbnail">
+          <h4>Label</h4>
+          <div class="text-muted">Something else</div>
+      </div>
+      <div class="col-6 col-sm-3 placeholder">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle"
+          alt="Generic placeholder thumbnail">
+          <h4>Label</h4>
+          <span class="text-muted">Something else</span>
+      </div>
+      <div class="col-6 col-sm-3 placeholder">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle"
+          alt="Generic placeholder thumbnail">
+          <h4>Label</h4>
+          <span class="text-muted">Something else</span>
+      </div>
+      <div class="col-6 col-sm-3 placeholder">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle"
+          alt="Generic placeholder thumbnail">
+          <h4>Label</h4>
+          <span class="text-muted">Something else</span>
+      </div>
+    </section>
+    <h2>Ultimas 5 Ventas</h2>
+    <div class="table-responsive">
+      <table class="table">
+        <thead class="thead-inverse">
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>cantidad</th>
+            <th>Precio de Venta</th>
+            <th>Total</th>
+            <th>Vendedor</th>
+            <th>Fecha de Venta</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for venta in venta.all %}
+          <tr>
+            <th scope="row">{{ venta.articulo.id}}</th>
+            <td>{{ venta.articulo.nombre }}</td>
+            <td>{{ venta.cantidad }}</td>
+            <td>{{ venta.articulo.precio_venta }}</td>
+            <td>{{ venta.total }}</td>
+            <td>{{ venta.usuario.username }}</td>
+            <td>{{ venta.fecha_venta }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+{% endblock content %}

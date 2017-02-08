@@ -1,0 +1,34 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>articulos en el inventario</h1>
+<a href="{% url 'crear_articulo' %}">Añadir un articulo nuevo</a>
+<table class="table">
+  <thead class="thead-inverse">
+    <tr>
+      <th>#</th>
+      <th>Nombre</th>
+      <th>Existencias</th>
+      <th>Precio de Venta</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for inventario in inventario.all %}
+    <tr>
+        <th scope="row">{{ inventario.articulo.id}}</th>
+        <td>{{ inventario.articulo.nombre }}</td>   
+        <td>{{ inventario.existencias }}</td>        
+        <td>{{ inventario.articulo.precio_venta }}</td>  
+        <td>
+          <a href = {% url 'act_existencias' inventario.id %}> Administrar </a> | 
+          <a href="{% url 'ver_articulo' inventario.articulo.pk %}">Ver detalles</a>
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock content %}
