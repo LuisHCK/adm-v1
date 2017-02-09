@@ -1,12 +1,16 @@
- {% extends 'base.html' %} {% load staticfiles %} {% block content %}
+ {% extends 'base.html' %}
+  {% load staticfiles %} {% block content %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 <div class="row">
   <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
-        <span class="nav-link">Venta Rápida</span>
-        <form method="POST" class="post-form">{% csrf_token %} {{ form_venta.as_p }}
-          <button type="submit" class="save btn btn-default">Save</button>
+        <a href="#" id="vender" class="nav-link">Venta Rápida</a>
+        <form id="form_vender" style="display: none;" method="POST" class="post-form">{% csrf_token %}
+          <div class="form-group" style="padding: 5%">
+            {{ form_venta.as_p }}
+            <button type="submit" class="save btn btn-success">Vender</button>
+          </div>
         </form>
       </li>
     </ul>

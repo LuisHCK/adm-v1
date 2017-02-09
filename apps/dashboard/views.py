@@ -11,7 +11,7 @@ def inicio(request):
     """Retorna la pagina de inicio"""
     venta = Venta.objects.all().order_by('-fecha_venta')[:5]
 
-    """Realiza la venta de un artículo"""
+    # Realiza la venta de un artículo
     if request.method == "POST":
         form = VentaForm(request.POST)
         if form.is_valid():
