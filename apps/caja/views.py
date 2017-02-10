@@ -2,7 +2,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .forms import CajaForm
-from .models import Caja
+from .models import Caja, Capital
 
 
 # Create your views here.
@@ -38,8 +38,19 @@ def cierre_caja(request):
         if form.is_valid():
             caja = form.save(commit=False)
             caja.usuario = request.user
+
+            # Guardar el monto extrído en el Capital
+            capital = Capital.objects.last()
+            if capital:
+                capital.monto = (capital.monto + caja.saldo)
+                capital.save()
+            else:
+                Capital.objects.create(monto=caja.saldo)
+
+            # Especifical el saldo que quedará en caja luego del retiro
             caja.saldo = (ultima_caja.saldo - caja.saldo)
             caja.save()
+
             # Actualizar el saldo en caja
             ultima_caja.fecha_cierre = str(timezone.now())
             ultima_caja.save()

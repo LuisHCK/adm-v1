@@ -16,3 +16,9 @@ class Caja(models.Model):
     usuario = models.ForeignKey('auth.User')
     fecha_apertura = models.DateTimeField(default=timezone.now)
     fecha_cierre = models.DateTimeField(null=True, blank=True)
+
+class Capital(models.Model):
+    """Registra el capital total"""
+    monto = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    fecha_creacion = models.DateTimeField(default=timezone.now)
+    fecha_actualizacion = models.DateTimeField(null=True, blank=True)
