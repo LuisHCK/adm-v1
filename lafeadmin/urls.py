@@ -18,6 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'', include('apps.dashboard.urls')),
+    url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', admin.site.urls),
     url(r'^inventario/', include('apps.inventario.urls')),
     url(r'^ventas/', include('apps.ventas.urls')),
