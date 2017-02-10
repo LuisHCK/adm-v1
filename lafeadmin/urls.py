@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^inventario/', include('apps.inventario.urls')),
     url(r'^ventas/', include('apps.ventas.urls')),
     url(r'^caja/', include('apps.caja.urls')),
+    url(r'^servicios/', include('apps.servicios.urls')),
 ]

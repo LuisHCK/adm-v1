@@ -1,6 +1,9 @@
 {% extends 'base.html' %} {% block content %}
-<h1>New post</h1>
+<h1>Cerrar caja</h1>
+<h3>Saldo actual: <b>{{ ultima_caja.saldo }}</b> </h3>
+<hr>
+    
 <form method="POST" class="post-form">{% csrf_token %} {{ form.as_p }}
-    <button type="submit" class="save btn btn-default">Save</button>
+    <button type="submit" class="save btn btn-success">Guardar</button>
 </form>
 {% endblock %}

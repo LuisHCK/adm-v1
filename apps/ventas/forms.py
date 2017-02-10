@@ -1,5 +1,6 @@
 
 from django import forms
+from django.forms import Select, NumberInput
 from apps.ventas.models import Venta
 
 
@@ -8,3 +9,8 @@ class VentaForm(forms.ModelForm):
     class Meta:
         model = Venta
         fields = ('articulo', 'cantidad', 'descuento')
+        widgets = {
+            'articulo': Select(attrs={'class': 'form-control'}),
+            'cantidad': NumberInput(attrs={'class': 'form-control'}),
+            'descuento': NumberInput(attrs={'class': 'form-control'}),
+        }

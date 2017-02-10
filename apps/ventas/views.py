@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from apps.ventas.models import Venta
 from apps.inventario.models import Inventario
+from apps.caja.models import Caja
 from .forms import VentaForm
 
 # Create your views here.
@@ -9,7 +10,7 @@ from .forms import VentaForm
 
 def ventas(request):
     """Retorna la pagina de inicio"""
-    venta = Venta.objects.all()
+    venta = Venta.objects.all().order_by('-fecha_venta')
     return render(request, 'ventas/venta.html', {'venta': venta})
 
 
@@ -24,10 +25,17 @@ def realizar_venta(request):
             # Calcula el total de la venta
             venta.total = venta.articulo.precio_venta * venta.cantidad
             venta.save()
+
         # Restar producto del inventario
         inventario = Inventario.objects.get(articulo=venta.articulo)
         inventario.existencias = (inventario.existencias-venta.cantidad)
         inventario.save()
+
+        # Guardar en Caja
+        caja = Caja.objects.last()
+        caja.saldo = (caja.saldo + venta.total)
+        caja.save()
+
         return redirect('ventas')
     else:
         form = VentaForm()

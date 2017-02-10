@@ -46,4 +46,4 @@ def cierre_caja(request):
         return redirect('caja_inicio')
     else:
         form = CajaForm()
-    return render(request, 'caja/saldo_form.html', {'form': form})
+    return render(request, 'caja/saldo_form.html', {'form': form, 'ultima_caja': ultima_caja})
