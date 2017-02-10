@@ -1,7 +1,6 @@
 
-from django.shortcuts import render
-from apps.inventario.models import Inventario, Articulos
 from django.shortcuts import render, get_object_or_404, redirect
+from apps.inventario.models import Inventario, Articulos
 from .forms import ArticuloForm, InventarioForm
 from apps.ventas.models import Venta
 

@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% block content %}
+<br>
+<h2>Estado de Caja</h2>
+<table class="table">
+    <thead class="thead-inverse">
+        <tr>
+            <th>#</th>
+            <th>Saldo</th>
+            <th>Fecha de Apertura</th>
+            <th>Fecha de Cierre</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for caja in caja.all %}
+        <tr>
+            <th scope="row">{{ caja.id }}</th>
+            <td>{{ caja.saldo }}</td>
+            <td>{{ caja.fecha_apertura }}</td>
+            <td>{{ caja.fecha_cierre }}</td>
+            <td><a href="{% url 'cierre_caja' %}">Cerrar caja</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
