@@ -6,6 +6,7 @@ from .forms import ServicioForm
 # Create your views here.
 
 def inicio(request):
+    """Devuelve los servicios realizados"""
     servicios = Servicio.objects.all()
     return render(request, 'servicios/servicios.html', {'servicios': servicios})
 
