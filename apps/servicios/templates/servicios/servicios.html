@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% block content %}
+<br>
+<h2>Servicios Realizados</h2>
+<a href="{% url 'realizar_servicio' %}">Realizar un servicio</a>
+<table class="table">
+    <thead class="thead-inverse">
+        <tr>
+            <th>#</th>
+            <th>Descripcion</th>
+            <th>Precio</th>
+            <th>Usuario</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for servicio in servicios.all %}
+        <tr>
+            <th scope="row">{{ servicio.id }}</th>
+            <td>{{ servicio.descripcion }}</td>
+            <td>{{ servicio.precio }}</td>
+            <td>{{ servicio.usuario.username }}</td>            
+            <td>{{ servicio.fecha_servicio }}</td>
+            <td><a href="">acciones servicio</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

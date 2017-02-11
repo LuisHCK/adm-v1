@@ -16,6 +16,7 @@ def ventas(request):
 
 def realizar_venta(request):
     """Realiza la venta de un artículo"""
+    #Obtener las existencias actuales del producto
     if request.method == "POST":
         form = VentaForm(request.POST)
         if form.is_valid():
@@ -28,13 +29,16 @@ def realizar_venta(request):
 
         # Restar producto del inventario
         inventario = Inventario.objects.get(articulo=venta.articulo)
-        inventario.existencias = (inventario.existencias-venta.cantidad)
+        inventario.existencias = (inventario.existencias - venta.cantidad)
         inventario.save()
 
         # Guardar en Caja
         caja = Caja.objects.last()
-        caja.saldo = (caja.saldo + venta.total)
-        caja.save()
+        if caja:
+            caja.saldo = (caja.saldo + venta.total)
+            caja.save()
+        else:
+            Caja.objects.create(saldo=venta.total, usuario=request.user)
 
         return redirect('ventas')
     else:
