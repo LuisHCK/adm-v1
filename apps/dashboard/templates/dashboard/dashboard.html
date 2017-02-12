@@ -1,11 +1,11 @@
  {% extends 'base.html' %} {% load staticfiles %} {% block content %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 <div class="row">
-  <nav class="toggled col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+  <nav class="toggled col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar darker-nav">
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
         <a href="#" id="vender" class="nav-link">Venta Rápida</a>
-        <form id="form_vender" style="display: none;" method="POST" class="post-form">{% csrf_token %}
+        <form id="form_vender" style="display: none;" method="POST" class="post-form white-text">{% csrf_token %}
           <div class="form-group" style="padding: 5%">
             {{ form_venta.as_p }}
             <button type="submit" class="save btn btn-success">Vender</button>
@@ -106,6 +106,12 @@
 <style>
   .white-ammount {
     font-size: 3rem;
+    color: white;
+  }
+  .darker-nav{
+    background-color: #263238;
+  }
+  .white-text{
     color: white;
   }
 </style>
