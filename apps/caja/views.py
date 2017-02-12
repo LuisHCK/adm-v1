@@ -1,8 +1,8 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from .forms import CajaForm
-from .models import Caja, Capital
+from .forms import CajaForm, EgresoForm
+from .models import Caja, Capital, Egresos
 
 
 # Create your views here.
@@ -58,3 +58,41 @@ def cierre_caja(request):
     else:
         form = CajaForm()
     return render(request, 'caja/saldo_form.html', {'form': form, 'ultima_caja': ultima_caja})
+
+
+def egreso_caja(request):
+    """Realiza un retiro de dinero de la caja abierta"""
+    if request.method == "POST":
+        form = EgresoForm(request.POST)
+        if form.is_valid():
+            egreso = form.save(commit=False)
+            egreso.usuario = request.user
+            egreso.save()
+
+        # Restar del saldo de caja la cantidad del egreso
+        caja = Caja.objects.last()
+        caja.saldo = (caja.saldo - egreso.cantidad)
+        caja.save()
+
+        return redirect('detalles_egreso', egreso.id)
+    else:
+        form = EgresoForm()
+    return render(request, 'egresos/egreso_form.html', {'form': form})
+
+
+def ver_egresos(request):
+    """Muestra todos los egresos realizados"""
+    egresos = Egresos.objects.all()
+    return render(request, 'egresos/egresos.html', {'egresos': egresos})
+
+
+def detalles_egreso(request, pk):
+    """Ver detalles de un egreso"""
+    egreso = get_object_or_404(Egresos, pk=pk)
+    return render(request, 'egresos/detalles_egreso.html', {'egreso': egreso})
+
+
+def estado_capital(request):
+    """Mostar el capital con el que se cuenta"""
+    capital = Capital.objects.first()
+    return render(request, 'capital/capital.html', {'capital': capital})

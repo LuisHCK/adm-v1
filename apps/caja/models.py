@@ -8,7 +8,7 @@ class Egresos(models.Model):
     cantidad = models.DecimalField(max_digits=5, decimal_places=2)
     concepto = models.CharField(max_length=200)
     usuario = models.ForeignKey('auth.User')
-    fecha_egreso = models.DateTimeField(timezone.now)
+    fecha_egreso = models.DateTimeField(default=timezone.now)
 
 class Caja(models.Model):
     """LLeva un resgistro del dinero en caja"""

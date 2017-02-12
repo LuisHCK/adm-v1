@@ -1,7 +1,7 @@
 
 from django import forms
-from django.forms import NumberInput
-from .models import Caja
+from django.forms import NumberInput, TextInput
+from .models import Caja, Egresos
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -15,4 +15,14 @@ class CajaForm(forms.ModelForm):
         }
         labels = {
             'saldo': _('Cantidad a a Retirar de caja'),
+        }
+
+class EgresoForm(forms.ModelForm):
+    """Formulario para el retiro de dinero de la caja abierta"""
+    class Meta:
+        model = Egresos
+        fields = ('cantidad', 'concepto',)
+        widgets = {
+            'cantidad': NumberInput(attrs={'class': 'form-control'}),
+            'concepto': TextInput(attrs={'class': 'form-control'})
         }

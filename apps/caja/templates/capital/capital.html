@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {% block content %} {% load staticfiles %}
+<br>
+        <h2>Capital del negocio</h2><br>
+
+<div class="row center-xs">
+        <div class="card col-xs-6" style="width: 20rem;">
+            <div style="background-color: #0097A7; padding: 10%" class="center-xs">
+                <h2 style="color: white; font-size: 5rem"> {{ capital.monto }} </h2>
+            </div>
+            <div class="card-block">
+                <h4 class="card-title">Nombre de la empresa</h4>
+                <p class="card-text">Se expresa la cantidad en moneda local</p>
+                <a href="#" class="btn btn-primary">Imprimir reporte detallado</a>
+            </div>
+    </div>
+</div>
+{% endblock content %}
