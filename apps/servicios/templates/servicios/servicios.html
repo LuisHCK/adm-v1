@@ -1,7 +1,9 @@
 {% extends 'base.html' %} {% block content %}
 <br>
 <h2>Servicios Realizados</h2>
-<a href="{% url 'realizar_servicio' %}">Realizar un servicio</a>
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button href="{% url 'realizar_servicio' %}" class="btn btn-secondary">Registra un servicio</button>
+</div>
 <table class="table">
     <thead class="thead-inverse">
         <tr>

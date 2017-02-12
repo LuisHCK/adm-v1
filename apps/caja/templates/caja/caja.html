@@ -1,7 +1,11 @@
 {% extends 'base.html' %} {% block content %}
 <br>
 <h2>Estado de Caja</h2>
-<a href="">Abrir caja</a>
+<div class="btn-group" role="group" aria-label="Basic example">
+    {% if not caja %}
+    <button href="{% url 'apertura_caja' %}" class="btn btn-secondary">Abrir Caja</button> 
+    {% endif %}
+</div>
 <table class="table">
     <thead class="thead-inverse">
         <tr>

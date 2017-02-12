@@ -2,8 +2,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>articulos en el inventario</h1>
-<a href="{% url 'crear_articulo' %}">Añadir un articulo nuevo</a>
+<hr>
+<h1>Articulos en el Inventario</h1>
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button href="{% url 'crear_articulo' %}" class="btn btn-secondary">Añadir un articulo nuevo</button>
+</div>
 <table class="table">
   <thead class="thead-inverse">
     <tr>

@@ -1,7 +1,9 @@
  {% extends 'base.html' %} {% load staticfiles %} {% block content %}
  <br>
 <h2>Articulos Vendidos</h2>
-<a href="{% url 'realizar_venta' %}">Vender un artículo</a>
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button href="{% url 'realizar_venta' %}" class="btn btn-secondary">Vender un Artículo</button>
+</div>
 <table class="table">
     <thead class="thead-inverse">
         <tr>
