@@ -5019,6 +5019,11 @@ a.badge:focus, a.badge:hover {
   color: #a94442;
 }
 
+.alert-error {
+  background-color: #f2dede;
+  border-color: #ebcccc;
+  color: #a94442;
+}
 .alert-danger hr {
   border-top-color: #e4b9b9;
 }

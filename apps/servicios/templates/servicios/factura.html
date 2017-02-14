@@ -1,8 +1,8 @@
 {% extends 'base.html' %} {% block content %}
 <br>
-<h2>Servicios Realizados</h2>
+<h2>facturas Realizados</h2>
 <div class="btn-group" role="group" aria-label="Basic example">
-  <a href="{% url 'realizar_servicio' %}" class="btn btn-secondary">Registra un servicio</a>
+  <a href="{% url 'realizar_factura' %}" class="btn btn-secondary">Registra un factura</a>
 </div>
 <table class="table table-striped">
     <thead class="thead-inverse">
@@ -16,14 +16,14 @@
         </tr>
     </thead>
     <tbody>
-        {% for servicio in servicios.all %}
+        {% for factura in facturas.all %}
         <tr>
-            <th scope="row">{{ servicio.id }}</th>
-            <td>{{ servicio.descripcion }}</td>
-            <td>{{ servicio.precio }}</td>
-            <td>{{ servicio.usuario.username }}</td>            
-            <td>{{ servicio.fecha_servicio }}</td>
-            <td><a href="">acciones servicio</a></td>
+            <th scope="row">{{ factura.id }}</th>
+            <td>{{ factura.servicio.descripcion }}</td>
+            <td>{{ factura.servicio.precio }}</td>
+            <td>{{ factura.usuario.username }}</td>            
+            <td>{{ factura.fecha_factura }}</td>
+            <td><a href="">acciones factura</a></td>
         </tr>
         {% endfor %}
     </tbody>

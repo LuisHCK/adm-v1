@@ -1,0 +1,50 @@
+ {% extends 'base.html' %} {% block content %}
+<hr> {% include 'messages.html' %}
+<h2>Articulos en el item</h2>
+<div class="btn-group" role="group" aria-label="Basic example">
+    <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-primary">Cobrar</a>
+</div>
+<div class="row">
+    <div class="col-xs-4">
+        <div class="box" style="padding: 5%; background-color: white">
+            <h2>Añadir a la factura</h2>
+            <form method="POST" class="post-form text-left">{% csrf_token %} {{ form_item.as_p }}
+                <button style="width: 100%" type="submit" class="save btn btn-success">Añadir</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-xs-8">
+        <table class="table table-striped">
+            <thead class="thead-inverse">
+                <tr>
+                    <th>#</th>
+                    <th>Concepto</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items.all %}
+                <tr>
+                    <th scope="row">{{ item.id}}</th>
+                    <td>{{ item.concepto}}</td>
+                    <td>{{ item.precio }}</td>
+                    <td>
+                        <a class="btn btn-danger" href="{% url 'eliminar_item' item.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+<script>
+    $(document).ready(function () {
+        $('.delete').click(function (e) {
+            e.preventDefault();
+            var a = confirm('Sure?');
+            if (a) {} else if (!a) {}
+        });
+    });
+</script>

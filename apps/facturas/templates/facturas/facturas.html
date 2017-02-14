@@ -1,0 +1,64 @@
+ {% extends 'base.html' %} {% block content %}
+<hr>
+ {% include 'messages.html' %}
+<h2>Articulos en el factura</h2>
+<div class="btn-group" role="group" aria-label="Basic example">
+    <a href="{% url 'nueva_factura' %}" class="btn btn-primary">Nueva factura</a>
+    <a href="{% url 'facturas_pagadas' %}" class="btn btn-primary">Cobradas</a>
+    <a href="{% url 'facturas_pendientes' %}" class="btn btn-primary">Pendientes</a>
+</div>
+<table class="table table-striped">
+    <thead class="thead-inverse">
+        <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for factura in facturas.all %}
+        <tr>
+            <th scope="row">{{ factura.id}}</th>
+            <td>{{ factura.cliente}}</td>
+            <td>{{ factura.items.count }}</td>
+            <td>{{ factura.total }}</td>
+            <td>
+                {% if factura.cobrada %}
+                    Cobrado
+                {% else %}
+                    Pendiente
+                {% endif %}
+            </td>
+            <td>
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <a href="{% url 'detalles_factura' factura.id %}" class="btn btn-secondary" }>Detalles</a>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">Acciones</button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <a class="dropdown-item" href="{% url 'cobrar_factura' factura.id %}">Cobrar</a>
+                            <a class="dropdown-item" href="{% url 'eliminar_factura' factura.id %}" onclick="return confirm('¿Estas seguro que de eliminar la factura?')">Eliminar</a>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock content %}
+
+<script>
+$(document).ready(function(){
+    $('.delete').click(function(e){
+        e.preventDefault();
+        var a = confirm('Sure?');
+        if(a){}
+        else if(!a){}
+    });
+});
+</script>

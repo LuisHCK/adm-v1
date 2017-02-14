@@ -1,0 +1,12 @@
+ {% extends 'base.html' %} {% block content %}
+<div class="row center-xs">
+    <div class="col-xs-6" style="margin-top: 50px; background-color: #ECEFF1; border-radius: 5px">
+        <div class="box" style="padding: 5%">
+            <h2>Añadir Items a la Factura</h2>
+            <form method="POST" class="post-form text-left">{% csrf_token %} {{ form.as_p }}
+                <button style="width: 100%" type="submit" class="save btn btn-success">Guardar Artículo</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
