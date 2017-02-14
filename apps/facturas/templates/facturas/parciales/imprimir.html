@@ -1,0 +1,82 @@
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'css/factura.css' %}">
+<link rel="stylesheet" href="{% static 'css/print.min.css' %}">
+<script src="{% static 'js/print.min.js' %}"></script>
+
+<body id="imprimible">
+    <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <h1 class="soft-h1">Impresiones "La Fe"</h1>
+                            </td>
+                            <td>
+                                Factura #: {{ factura.id }} <br> Creado: {{ factura.fecha_factura }}<br>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                Impresiones "La Fe."<br> Del juzgado 1c 1/2 al este
+                                <br> Tel: 8601-4017
+                            </td>
+                            <td>
+                                <b>Cliente:</b><br> {{factura.cliente}}
+                                <br>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="heading">
+                <td>
+                    Concepto
+                </td>
+                <td>
+                    Precio
+                </td>
+            </tr>
+            {% for item in items.all %}
+            <tr class="item">
+                <td>
+                    {{item.concepto}}
+                </td>
+                <td>
+                    {{item.precio}}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr class="total">
+                <td></td>
+                <td>
+                    {{factura.total}}
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+ <button type="button" onclick="printJS('imprimible', 'html')">
+    Print Form
+ </button>
+
+<script>
+    function printDiv(divName) {
+     var printContents = document.getElementById(divName).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+</script>

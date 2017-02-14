@@ -3,6 +3,7 @@ from django.conf.urls import include, url
 from . import views
 
 urlpatterns = [
+    url(r'^$', views.facturas, name='facturas'),
     url(r'^nuevo/$', views.nueva_factura, name='nueva_factura'),
     url(r'^(?P<pk>[0-9]+)/eliminar/$', views.eliminar_factura, name='eliminar_factura'),
     url(r'^(?P<pk>[0-9]+)/items/$', views.eliminar_item, name='eliminar_item'),

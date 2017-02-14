@@ -1,10 +1,17 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from easy_pdf.views import PDFTemplateView
 from .models import Factura, FacturaItems
 from .forms import FacturaForm, ItemsForm
 
 # Create your views here.
+def facturas(request):
+    """Ver todas las facturas"""
+    facturas = Factura.objects.all()
+    return render(request, 'facturas/facturas.html', {'facturas': facturas})
+
+
 def nueva_factura(request):
     """Crear un nuevo factura"""
     if request.method == "POST":
@@ -78,6 +85,10 @@ def detalles_factura(request, pk):
             item = form.save(commit=False)
             item.factura = factura
             item.save()
+
+            # Sumar al monto total de la factura            
+            factura.total = (factura.total + item.precio)
+            factura.save()
         return redirect('detalles_factura', factura.id)
     else:
         form = ItemsForm()
@@ -88,5 +99,11 @@ def eliminar_item(request, pk):
     """Elimina un item de la factura"""
     item = get_object_or_404(FacturaItems, pk=pk)
     item.delete()
+
+    # Resta la cantidad del total
+    factura = Factura.objects.get(id=item.factura.id)
+    factura.total = (factura.total + item.precio)
+    factura.save()
+
     messages.success(request, "Se borró el item de la factura")
     return redirect('detalles_factura', item.factura.id)

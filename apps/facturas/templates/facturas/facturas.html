@@ -1,7 +1,7 @@
  {% extends 'base.html' %} {% block content %}
 <hr>
  {% include 'messages.html' %}
-<h2>Articulos en el factura</h2>
+<h2>Facutras realizadas</h2>
 <div class="btn-group" role="group" aria-label="Basic example">
     <a href="{% url 'nueva_factura' %}" class="btn btn-primary">Nueva factura</a>
     <a href="{% url 'facturas_pagadas' %}" class="btn btn-primary">Cobradas</a>
