@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'administra.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'lafe',
+        'NAME': 'administra',
         'USER': 'lafeadmin',
         'PASSWORD': 'ljco1800',
         'HOST': 'localhost',
@@ -140,3 +140,5 @@ STATICFILES_DIRS = [
 ]
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+
+LOGIN_REDIRECT_URL = 'inicio'

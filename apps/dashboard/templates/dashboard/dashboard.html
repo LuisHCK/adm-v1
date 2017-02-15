@@ -3,6 +3,9 @@
 <div class="row">
   <nav class="toggled col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar darker-nav">
     <ul class="nav nav-pills flex-column">
+        <h1 style="color: white; border-bottom: 0; padding: 3%;">{{user.username}}</h1>
+    </ul>
+    <ul class="nav nav-pills flex-column">
       <li class="nav-item">
         <a href="#" id="vender" class="nav-link">Venta Rápida</a>
         <form id="form_vender" style="display: none;" method="POST" class="post-form white-text">{% csrf_token %}
@@ -20,7 +23,11 @@
     </ul>
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
-        <a class="nav-link" href="#">Nav item again</a>
+        {% if user.is_authenticated %}
+        <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+        {% else %}
+        <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+        {% endif %}
       </li>
     </ul>
   </nav>
@@ -38,7 +45,7 @@
             </div>
             <div class="card-block">
               <h4 class="card-title">Dinero en caja</h4>
-              <a href="#" class="btn btn-primary">Ir a Caja</a>
+              <a href="{% url 'caja_inicio' %}" class="btn btn-primary">Ir a Caja</a>
             </div>
           </div>
         </div>
@@ -52,7 +59,7 @@
             </div>
             <div class="card-block">
               <h4 class="card-title">Ventas realizadas</h4>
-              <a href="#" class="btn btn-primary">Ir a Ventas</a>
+              <a href="{% url 'ventas' %}" class="btn btn-primary">Ir a Ventas</a>
             </div>
           </div>
         </div>
@@ -66,52 +73,79 @@
             </div>
             <div class="card-block">
               <h4 class="card-title">Servicios realizadas</h4>
-              <a href="#" class="btn btn-primary">Ir a Servicios</a>
+              <a href="{% url 'servicios_realizados' %}" class="btn btn-primary">Ir a Servicios</a>
             </div>
           </div>
         </div>
       </div>
     </section>
+    <hr>
     <h2>Ultimas 5 Ventas</h2>
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead class="thead-inverse">
-          <tr>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>cantidad</th>
-            <th>Precio de Venta</th>
-            <th>Total</th>
-            <th>Vendedor</th>
-            <th>Fecha de Venta</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for venta in venta.all %}
-          <tr>
-            <th scope="row">{{ venta.articulo.id}}</th>
-            <td>{{ venta.articulo.nombre }}</td>
-            <td>{{ venta.cantidad }}</td>
-            <td>{{ venta.articulo.precio_venta }}</td>
-            <td>{{ venta.total }}</td>
-            <td>{{ venta.usuario.username }}</td>
-            <td>{{ venta.fecha_venta }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </main>
+    <table class="table table-striped">
+      <thead class="thead-inverse">
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>cantidad</th>
+          <th>Precio de Venta</th>
+          <th>Total</th>
+          <th>Vendedor</th>
+          <th>Fecha de Venta</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for venta in venta.all %}
+        <tr>
+          <th scope="row">{{ venta.articulo.id}}</th>
+          <td>{{ venta.articulo.nombre }}</td>
+          <td>{{ venta.cantidad }}</td>
+          <td>{{ venta.articulo.precio_venta }}</td>
+          <td>{{ venta.total }}</td>
+          <td>{{ venta.usuario.username }}</td>
+          <td>{{ venta.fecha_venta }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <hr>
+    <h2>Ultimos 5 Servicios</h2>
+    <table class="table table-striped">
+      <thead class="thead-inverse">
+        <tr>
+          <th>#</th>
+          <th>Descripcion</th>
+          <th>Precio</th>
+          <th>Usuario</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for servicio in servicios.all %}
+        <tr>
+          <th scope="row">{{ servicio.id }}</th>
+          <td>{{ servicio.descripcion }}</td>
+          <td>{{ servicio.precio }}</td>
+          <td>{{ servicio.usuario.username }}</td>
+          <td>{{ servicio.fecha_servicio }}</td>
+          <td><a href="">acciones servicio</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 </div>
+</main>
 <style>
   .white-ammount {
     font-size: 3rem;
     color: white;
   }
-  .darker-nav{
+  
+  .darker-nav {
     background-color: #263238;
   }
-  .white-text{
+  
+  .white-text {
     color: white;
   }
 </style>

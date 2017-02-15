@@ -1,10 +1,11 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% block content %}  
 <br>
+{% include 'messages.html' %}
 <h2>Servicios Realizados</h2>
 <div class="btn-group" role="group" aria-label="Basic example">
   <a href="{% url 'realizar_servicio' %}" class="btn btn-secondary">Registra un servicio</a>
 </div>
-<table class="table table-striped">
+<table class="table table-striped responsive">
     <thead class="thead-inverse">
         <tr>
             <th>#</th>

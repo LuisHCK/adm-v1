@@ -1,82 +1,55 @@
 {% load staticfiles %}
-<link rel="stylesheet" href="{% static 'css/factura.css' %}">
-<link rel="stylesheet" href="{% static 'css/print.min.css' %}">
-<script src="{% static 'js/print.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/factura.min.css' %}">
 
-<body id="imprimible">
-    <div class="invoice-box">
-        <table cellpadding="0" cellspacing="0">
-            <tr class="top">
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td class="title">
-                                <h1 class="soft-h1">Impresiones "La Fe"</h1>
-                            </td>
-                            <td>
-                                Factura #: {{ factura.id }} <br> Creado: {{ factura.fecha_factura }}<br>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr class="information">
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td>
-                                Impresiones "La Fe."<br> Del juzgado 1c 1/2 al este
-                                <br> Tel: 8601-4017
-                            </td>
-                            <td>
-                                <b>Cliente:</b><br> {{factura.cliente}}
-                                <br>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr class="heading">
-                <td>
-                    Concepto
-                </td>
-                <td>
-                    Precio
-                </td>
-            </tr>
-            {% for item in items.all %}
-            <tr class="item">
-                <td>
-                    {{item.concepto}}
-                </td>
-                <td>
-                    {{item.precio}}
-                </td>
-            </tr>
-            {% endfor %}
-            <tr class="total">
-                <td></td>
-                <td>
-                    {{factura.total}}
-                </td>
-            </tr>
-        </table>
-    </div>
-</body>
-
- <button type="button" onclick="printJS('imprimible', 'html')">
-    Print Form
- </button>
-
-<script>
-    function printDiv(divName) {
-     var printContents = document.getElementById(divName).innerHTML;
-     var originalContents = document.body.innerHTML;
-
-     document.body.innerHTML = printContents;
-
-     window.print();
-
-     document.body.innerHTML = originalContents;
-}
-</script>
+<body>
+		<header>
+			<h1>Factura</h1>
+			<address>
+				<p>Impresiones "La Fe"</p>
+				<p>Del juzgado local<br>1c 1/2 al este</p>
+				<p>8601-4017</p>
+			</address>
+			<span><img alt="" src="logo.png"><input type="file" accept="image/*"></span>
+		</header>
+		<article>
+			<address>
+				Cliente:
+				<p>{{factura.cliente}}</p>
+			</address>
+			<table class="meta">
+				<tr>
+					<th><span>Factura #</span></th>
+					<td><span>{{factura.id}}</span></td>
+				</tr>
+				<tr>
+					<th><span>Fecha</span></th>
+					<td><span>{{factura.fecha_factura}}</span></td>
+				</tr>
+			</table>
+			<table class="inventory">
+				<thead>
+					<tr>
+						<th><span>Concepto</span></th>
+						<th><span>Precio</span></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in items.all %}
+					<tr>
+						<td><span>{{item.concepto}}</span></td>
+						<td class="center-xs"><span data-prefix>$</span><span>{{item.precio}}</span></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<table class="balance">
+				<tr>
+					<th><span><b>Total</b></span></th>
+					<td><span data-prefix>$</span><span>{{factura.total}}</span></td>
+				</tr>
+			</table>
+		</article>
+		<hr>
+		<small>Usuario: <em>{{factura.usuario.username}}</em></small><br>
+		<small class="pull-right">Administra v0.1</small>
+	</body>

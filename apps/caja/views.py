@@ -1,8 +1,11 @@
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .forms import CajaForm, EgresoForm
 from .models import Caja, Capital, Egresos
+
+@login_required(login_url='login') #redirect when user is not logged in
 
 
 # Create your views here.

@@ -1,9 +1,11 @@
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from easy_pdf.views import PDFTemplateView
 from .models import Factura, FacturaItems
 from .forms import FacturaForm, ItemsForm
+
+@login_required(login_url='login') #redirect when user is not logged in
 
 # Create your views here.
 def facturas(request):
@@ -20,6 +22,7 @@ def nueva_factura(request):
             factura = form.save(commit=False)
             factura.usuario = request.user
             factura.save()
+        messages.success(request, "La factura se creó")
         return redirect('detalles_factura', factura.pk)
     else:
         form = FacturaForm()
@@ -86,9 +89,10 @@ def detalles_factura(request, pk):
             item.factura = factura
             item.save()
 
-            # Sumar al monto total de la factura            
+            # Sumar al monto total de la factura
             factura.total = (factura.total + item.precio)
             factura.save()
+            messages.success(request, "Se agregó el item")
         return redirect('detalles_factura', factura.id)
     else:
         form = ItemsForm()

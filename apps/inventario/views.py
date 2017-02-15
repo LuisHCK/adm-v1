@@ -1,11 +1,12 @@
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from apps.inventario.models import Inventario, Articulos
 from .forms import ArticuloForm, InventarioForm
 from apps.ventas.models import Venta
 
 # Create your views here.
-
+@login_required(login_url='login') #redirect when user is not logged in
 
 def lista_inventario(request):
     """"Retorna la lista de los articulos en el inventario"""

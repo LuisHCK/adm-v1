@@ -1,6 +1,6 @@
  {% extends 'base.html' %} {% block content %}
-<hr> {% include 'messages.html' %}
-<h2>Factura a nombre de:  <em>{{ factura.cliente }}</em> </h2>
+<br> {% include 'messages.html' %}
+<h3>Factura a nombre de:  <em>{{ factura.cliente }}</em> </h3>
 
 {% if factura.cobrada is False %}
     {% include 'facturas/parciales/agregando.html' %}

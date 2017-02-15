@@ -1,0 +1,23 @@
+ {% load staticfiles %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+<!--<div class="container">
+  <form method="post" class="form-signin">
+    <h2 class="form-signin-heading">Please sign in</h2>
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit" class="">Iniciar</button>
+  </form>
+</div> -->
+<div class="container #CFD8DC center-xs " id="login">
+  <form class="form-signin login-box" name="LoginForm" action="/login/" method="post">
+    <h2 class="form-signin-heading">Inicia Sesión</h2>
+    {% csrf_token %} {% if next %}
+    <input type="hidden" name="next" value="{{ next }}" /> {% endif %}
+    <label for="username" class="sr-only">Nombre de Usuario</label>
+    <input type="text" id="username" name="username" class="form-control" placeholder="Nombre de Usuario" required autofocus>
+    <label for="password" class="sr-only">Contraseña</label>
+    <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
+    <button type="submit" class="btn btn-lg btn-primary btn-block">Iniciar</button>
+  </form>
+</div>

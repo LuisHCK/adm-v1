@@ -1,4 +1,5 @@
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from apps.ventas.models import Venta
 from apps.inventario.models import Inventario
@@ -6,7 +7,7 @@ from apps.caja.models import Caja
 from .forms import VentaForm
 
 # Create your views here.
-
+@login_required(login_url='login') #redirect when user is not logged in
 
 def ventas(request):
     """Retorna la pagina de inicio"""
