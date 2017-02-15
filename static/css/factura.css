@@ -105,7 +105,7 @@ header:after {
 }
 
 header h1 {
-    background: #000;
+    background: darkslategrey;
     border-radius: 0.25em;
     color: #FFF;
     margin: 0 0 1em;
