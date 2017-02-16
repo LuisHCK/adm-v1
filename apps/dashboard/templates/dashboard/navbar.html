@@ -1,0 +1,35 @@
+<nav class="toggled col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar darker-nav">
+    <ul class="nav nav-pills flex-column div_hover">
+        <h1 style="color: white; border-bottom: 0; padding: 3%;">{{user.username}}</h1>
+    </ul>
+    <ul class="nav nav-pills flex-column div_hover">
+        <li class="nav-item">
+            <a href="#" id="vender" class="nav-link nav-link-styled">Venta Rápida</a>
+            <form id="form_vender" style="display: none;" method="POST" class="post-form white-text">{% csrf_token %}
+                <div class="form-group" style="padding: 5%">
+                    {{ form_venta.as_p }}
+                    <button type="submit" class="save btn btn-success">Listo</button>
+                </div>
+            </form>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column div_hover">
+        <li class="nav-item">
+            <a id="servicio" class="nav-link nav-link-styled" href="#">Servicio Rapido</a>
+            <form id="form_servicio" style="display: none;" method="POST" action="{% url 'realizar_servicio' %}"
+            class="post-form white-text">{% csrf_token %}
+                <div class="form-group" style="padding: 5%">
+                    {{ form_servicio.as_p }}
+                    <button type="submit" class="save btn btn-success">Listo</button>
+                </div>
+            </form>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column div_hover">
+        <li class="nav-item">
+            {% if user.is_authenticated %}
+            <a class="nav-link nav-link-styled" href="{% url 'logout' %}" onclick="return confirm('¿Estas seguro de cerrar la sesión?')">Cerrar Sesión</a> {% else %}
+            <a class="nav-link nav-link-styled" href="{% url 'login' %}">Iniciar Sesión</a> {% endif %}
+        </li>
+    </ul>
+</nav>

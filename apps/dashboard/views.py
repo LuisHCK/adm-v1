@@ -5,7 +5,9 @@ from apps.ventas.models import Venta
 from apps.inventario.models import Inventario
 from apps.caja.models import Caja
 from apps.servicios.models import Servicio
+from apps.servicios.views import realizar_servicio as realizar_servicio
 from .forms import VentaForm
+from apps.servicios.forms import ServicioForm
 
 @login_required(login_url='login') #redirect when user is not logged in
 
@@ -42,4 +44,7 @@ def inicio(request):
         return redirect('inicio')
     else:
         form = VentaForm()
-    return render(request, 'dashboard/dashboard.html', {'venta': venta, 'caja': caja, 'count_servicios': count_servicios, 'servicios': servicios, 'form_venta': form})
+        form2 = ServicioForm()
+    return render(request, 'dashboard/dashboard.html',
+                  {'venta': venta, 'caja': caja, 'count_servicios': count_servicios,
+                   'servicios': servicios, 'form_venta': form, 'form_servicio': form2})
