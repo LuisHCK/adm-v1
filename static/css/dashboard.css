@@ -80,31 +80,37 @@ h1 {
 }
 
 .div_hover {
-  border-width: 1px;
-  border-style: solid;
-  border-color: #455A64;
+  border-bottom: solid #37474F 2px;
 }
 
 .div_hover:hover {
   background-color: #424242 !important;
 }
 
+
 /* unvisited link */
+
 .nav-link-styled:link {
-    color: #CFD8DC !important;
+  color: #CFD8DC !important;
 }
+
 
 /* visited link */
+
 .nav-link-styled:visited {
-    color: #90A4AE !important;
+  color: #90A4AE !important;
 }
+
 
 /* mouse over link */
+
 .nav-link-styled:hover {
-    color: #1565C0 !important;
+  color: #1565C0 !important;
 }
 
+
 /* selected link */
+
 .nav-link-styled:active {
-    color: #558B2F !important;
+  color: #558B2F !important;
 }
