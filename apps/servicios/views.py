@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from apps.caja.models import Caja
-from apps.inventario.models import Articulos, Inventario
 from .models import Servicio, TipoServicio
 from .forms import ServicioForm
 
