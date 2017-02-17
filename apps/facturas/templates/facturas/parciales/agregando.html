@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-xs-4">
         <div class="box" style="padding: 5%; background-color: white">
-            <h2>Añadir a la factura</h2>
+            <h3>Añadir a la factura</h3>
             <form method="POST" class="post-form text-left">{% csrf_token %} {{ form_item.as_p }}
                 <button style="width: 100%" type="submit" class="save btn btn-success">Añadir</button>
             </form>

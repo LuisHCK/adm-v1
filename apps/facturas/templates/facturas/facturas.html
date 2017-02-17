@@ -1,11 +1,11 @@
  {% extends 'base.html' %} {% block content %}
-<hr>
+<br>
  {% include 'messages.html' %}
-<h2>Facutras realizadas</h2>
+<h3>Facutras realizadas</h3>
 <div class="btn-group" role="group" aria-label="Basic example">
-    <a href="{% url 'nueva_factura' %}" class="btn btn-primary">Nueva factura</a>
-    <a href="{% url 'facturas_pagadas' %}" class="btn btn-primary">Cobradas</a>
-    <a href="{% url 'facturas_pendientes' %}" class="btn btn-primary">Pendientes</a>
+    <a href="{% url 'nueva_factura' %}" class="btn btn-info">Nueva factura</a>
+    <a href="{% url 'facturas_pagadas' %}" class="btn btn-info">Cobradas</a>
+    <a href="{% url 'facturas_pendientes' %}" class="btn btn-info">Pendientes</a>
 </div>
 <table class="table table-striped">
     <thead class="thead-inverse">
@@ -34,9 +34,9 @@
             </td>
             <td>
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <a href="{% url 'detalles_factura' factura.id %}" class="btn btn-secondary" }>Detalles</a>
+                    <a href="{% url 'detalles_factura' factura.id %}" class="btn btn-outline-primary" }>Detalles</a>
                     <div class="btn-group" role="group">
-                        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                        <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">Acciones</button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                             <a class="dropdown-item" href="{% url 'cobrar_factura' factura.id %}">Cobrar</a>

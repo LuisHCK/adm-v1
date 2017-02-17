@@ -1,9 +1,8 @@
-{% extends 'base.html' %} {% block content %}  
-<br>
-{% include 'messages.html' %}
-<h2>Servicios Realizados</h2>
+{% extends 'base.html' %} {% block content %}
+<br> {% include 'messages.html' %}
+<h3>Servicios Realizados</h3>
 <div class="btn-group" role="group" aria-label="Basic example">
-  <a href="{% url 'realizar_servicio' %}" class="btn btn-secondary">Registra un servicio</a>
+    <a href="{% url 'realizar_servicio' %}" class="btn btn-info">Registra un servicio</a>
 </div>
 <table class="table table-striped responsive">
     <thead class="thead-inverse">
@@ -24,9 +23,13 @@
             <td>{{ servicio.descripcion }}</td>
             <td>{{ servicio.cantidad }}</td>
             <td>{{ servicio.precio }}</td>
-            <td>{{ servicio.usuario.username }}</td>            
+            <td>{{ servicio.usuario.username }}</td>
             <td>{{ servicio.fecha_servicio }}</td>
-            <td><a href="">acciones servicio</a></td>
+            <td>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a href="#" class="btn btn-outline-primary">Detalles</a>
+                </div>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

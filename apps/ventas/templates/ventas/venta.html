@@ -1,8 +1,8 @@
  {% extends 'base.html' %} {% load staticfiles %} {% block content %}
- <br>
-<h2>Articulos Vendidos</h2>
+<br>
+<h3>Articulos Vendidos</h3>
 <div class="btn-group" role="group" aria-label="Basic example">
-  <a href="{% url 'realizar_venta' %}" class="btn btn-secondary">Vender un Artículo</a>
+    <a href="{% url 'realizar_venta' %}" class="btn btn-info">Vender un Artículo</a>
 </div>
 <table class="table table-striped">
     <thead class="thead-inverse">
@@ -27,7 +27,12 @@
             <td>{{ venta.total }}</td>
             <td>{{ venta.fecha_venta }}</td>
             <td>{{ venta.usuario.username }}</td>
-            <td><a href="#">Mandar alv</a></td>
+            <td>
+                <div class="btn-group" role="group" aria-label="acciones">
+                    <a href="#" class="btn btn-outline-primary">Detalles</a>
+                    <a href="#" class="btn btn-outline-primary">Añadir a Factura</a>
+                </div>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

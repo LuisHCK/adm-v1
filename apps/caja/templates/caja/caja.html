@@ -1,11 +1,11 @@
-{% extends 'base.html' %} {% block content %}  {% include 'messages.html' %}
+{% extends 'base.html' %} {% block content %} {% include 'messages.html' %}
 <br>
-<h2>Estado de Caja</h2>
+<h3>Estado de Caja</h3>
 <div class="btn-group" role="group" aria-label="Basic example">
     {% if not caja %}
-    <a href="{% url 'apertura_caja' %}" class="btn btn-secondary">Abrir Caja</a> {% endif %}
-    <a href="{% url 'estado_capital' %}" class="btn btn-secondary">Estado de Finanzas</a>
-    <a href="{% url 'nuevo_egreso' %}" class="btn btn-secondary">Realizar un Egreso de Caja</a>
+    <a href="{% url 'apertura_caja' %}" class="btn btn-info">Abrir Caja</a> {% endif %}
+    <a href="{% url 'estado_capital' %}" class="btn btn-info">Estado de Finanzas</a>
+    <a href="{% url 'nuevo_egreso' %}" class="btn btn-info">Realizar un Egreso de Caja</a>
 </div>
 <table class="table table-striped">
     <thead class="thead-inverse">
@@ -25,8 +25,11 @@
             <td>{{ caja.fecha_apertura }}</td>
             <td>{{ caja.fecha_cierre }}</td>
             <td>
-                {% if not caja.fecha_cierre %} <b><a href="{% url 'cierre_caja' %}">Cerrar caja</a></b> {% else %}
-                <a href="#}" style="color:mediumseagreen">Ver informe</a> {% endif %}
+                <div class="btn-group" role="group" aria-label="acciones">
+                    {% if not caja.fecha_cierre %}
+                    <a href="{% url 'cierre_caja' %}" class="btn btn-outline-primary">Cerrar caja</a> {% else %}
+                    <a href="#" class="btn btn-outline-warning">Ver informe</a> {% endif %}
+                </div>
             </td>
         </tr>
         {% endfor %}
