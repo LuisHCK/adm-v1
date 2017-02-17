@@ -6,8 +6,9 @@ from .forms import ArticuloForm, InventarioForm
 from apps.ventas.models import Venta
 
 # Create your views here.
-@login_required(login_url='login') #redirect when user is not logged in
 
+
+@login_required(login_url='login')  # redirect when user is not logged in
 def lista_inventario(request):
     """"Retorna la lista de los articulos en el inventario"""
     inventario = Inventario.objects.select_related().all()
@@ -17,7 +18,9 @@ def lista_inventario(request):
 def detalles_articulo(request, pk):
     """Ver detalles de un articulo"""
     articulo = get_object_or_404(Articulos, pk=pk)
-    return render(request, 'inventario/detalles_articulo.html', {'articulo': articulo})
+    existencias = Inventario.objects.only('existencias').get(articulo=articulo)
+    return render(request, 'inventario/detalles_articulo.html',
+                  {'articulo': articulo, 'existencias': existencias})
 
 
 def nuevo_articulo(request):

@@ -1,6 +1,33 @@
-    {% extends 'base.html' %}
-
-    {% block content %}
-        <h2>{{ articulo.nombre }}</h2>
-        
-    {% endblock %}
+ {% extends 'base.html' %} {% block content %}
+<div class="row center-xs">
+    <div class="col-xs-6" style="margin-top: 50px; background-color: #ECEFF1; border-radius: 5px">
+        <div class="box" style="padding: 5%">
+            <h4>{{articulo.nombre}}</h4>
+            <hr>
+            <div class="text-left">
+                {% if existencias.existencias > 0 %}
+                <span class="badge badge-success">En inventario</span>
+                {% else %}
+                <span class="badge badge-danger">Agotado</span>
+                {% endif %}
+                <span class="badge badge-info">Mas Vendidos</span>
+                <hr>
+                <b>Existencias: </b> {{existencias.existencias}} <br>
+                <b>Veces vendido: </b> 1 <br>
+                <b>Puesto entre los mas vendidos: </b> 1
+                <hr>
+                <div class="card card-inverse card-info mb-3 text-center">
+                    <div class="card-block">
+                        <blockquote class="card-blockquote">
+                            <b>Descripción</b>
+                            <p>{{ articulo.descripcion }}</p>
+                        </blockquote>
+                    </div>
+                </div>
+                <a href="{% url 'realizar_venta' %}" class="btn btn-success">Vender</a>
+                <a href="{% url 'act_existencias' articulo.id %}" class="btn btn-primary">Ver en el inventario</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
