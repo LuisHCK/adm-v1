@@ -2,54 +2,53 @@
 <link rel="stylesheet" href="{% static 'css/factura.min.css' %}">
 
 <body>
-		<header>
-			<h1>Factura</h1>
-			<address>
-				<p>Impresiones "La Fe"</p>
-				<p>Del juzgado local<br>1c 1/2 al este</p>
-				<p>8601-4017</p>
-			</address>
-			<span><img alt="" src="logo.png"><input type="file" accept="image/*"></span>
-		</header>
-		<article>
-			<address>
-				Cliente:
-				<p>{{factura.cliente}}</p>
-			</address>
-			<table class="meta">
+	<header>
+		<h1>Factura</h1>
+		<address>
+			<p>Impresiones "La Fe"</p>
+			<p>Del juzgado local<br>1c 1/2 al este</p>
+			<p>8601-4017</p>
+		</address>
+	</header>
+	<article>
+		<address>
+			Cliente:
+			<p>{{factura.cliente}}</p>
+		</address>
+		<table class="meta">
+			<tr>
+				<th><span>Factura #</span></th>
+				<td><span>{{factura.id}}</span></td>
+			</tr>
+			<tr>
+				<th><span>Fecha</span></th>
+				<td><span>{{factura.fecha_factura}}</span></td>
+			</tr>
+		</table>
+		<table class="inventory">
+			<thead>
 				<tr>
-					<th><span>Factura #</span></th>
-					<td><span>{{factura.id}}</span></td>
+					<th><span>Concepto</span></th>
+					<th><span>Precio</span></th>
 				</tr>
+			</thead>
+			<tbody>
+				{% for item in items.all %}
 				<tr>
-					<th><span>Fecha</span></th>
-					<td><span>{{factura.fecha_factura}}</span></td>
+					<td><span>{{item.concepto}}</span></td>
+					<td class="center-xs"><span data-prefix>$</span><span>{{item.precio}}</span></td>
 				</tr>
-			</table>
-			<table class="inventory">
-				<thead>
-					<tr>
-						<th><span>Concepto</span></th>
-						<th><span>Precio</span></th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for item in items.all %}
-					<tr>
-						<td><span>{{item.concepto}}</span></td>
-						<td class="center-xs"><span data-prefix>$</span><span>{{item.precio}}</span></td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-			<table class="balance">
-				<tr>
-					<th><span><b>Total</b></span></th>
-					<td><span data-prefix>$</span><span>{{factura.total}}</span></td>
-				</tr>
-			</table>
-		</article>
-		<hr>
-		<small>Usuario: <em>{{factura.usuario.username}}</em></small><br>
-		<small class="pull-right">Administra v0.1</small>
-	</body>
+				{% endfor %}
+			</tbody>
+		</table>
+		<table class="balance">
+			<tr>
+				<th><span><b>Total</b></span></th>
+				<td><span data-prefix>$</span><span>{{factura.total}}</span></td>
+			</tr>
+		</table>
+	</article>
+	<hr>
+	<div class="center-xs"> <small>Usuario: <em>{{factura.usuario.username}} | Administra {{project_ver}}</small>
+	</div>
+</body>

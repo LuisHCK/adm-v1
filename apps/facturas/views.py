@@ -2,6 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.conf import settings
 from .models import Factura, FacturaItems
 from .forms import FacturaForm, ItemsForm
 
@@ -81,7 +82,7 @@ def detalles_factura(request, pk):
     """Muestra los detalles de una factura"""
     factura = get_object_or_404(Factura, pk=pk)
     items = FacturaItems.objects.filter(factura=factura).all()
-
+    project_ver = settings.PROJECT_VERSION
     if request.method == "POST":
         form = ItemsForm(request.POST)
         if form.is_valid():
@@ -97,7 +98,9 @@ def detalles_factura(request, pk):
     else:
         form = ItemsForm()
 
-    return render(request, 'facturas/detalles_factura.html', {'factura': factura, 'items': items, 'form_item': form})
+    return render(request, 'facturas/detalles_factura.html',
+                  {'factura': factura, 'items': items, 'form_item': form,
+                   'project_ver': project_ver})
 
 def eliminar_item(request, pk):
     """Elimina un item de la factura"""
