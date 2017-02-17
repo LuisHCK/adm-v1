@@ -18,6 +18,10 @@ class Factura(models.Model):
         self.cobrada = True
         self.save()
 
+    def __str__(self):
+        return self.cliente
+
+
 class FacturaItems(models.Model):
     """Almacena individualmente los items de una Factura"""
     factura = models.ForeignKey(Factura, on_delete=models.CASCADE)
