@@ -1,11 +1,8 @@
-
-{% extends 'base.html' %}
-
-{% block content %}
+ {% extends 'base.html' %} {% block content %}
 <hr>
 <h2>Articulos en el Inventario</h2>
-<div class="btn-group" role="group" aria-label="Basic example">
-  <a href="{% url 'crear_articulo' %}" class="btn btn-secondary">Añadir un articulo nuevo</a>
+<div class="btn-group" role="group" aria-label="acciones-1">
+  <a href="{% url 'crear_articulo' %}" class="btn btn-info">Añadir un articulo nuevo</a>
 </div>
 <table class="table table-striped">
   <thead class="thead-inverse">
@@ -20,18 +17,18 @@
   <tbody>
     {% for inventario in inventario.all %}
     <tr>
-        <th scope="row">{{ inventario.articulo.id}}</th>
-        <td>{{ inventario.articulo.nombre }}</td>   
-        <td>{{ inventario.existencias }}</td>        
-        <td>{{ inventario.articulo.precio_venta }}</td>  
-        <td>
-          <a href = {% url 'act_existencias' inventario.id %}> Administrar </a> | 
-          <a href="{% url 'ver_articulo' inventario.articulo.pk %}">Ver detalles</a>
-        </td>
+      <th scope="row">{{ inventario.articulo.id}}</th>
+      <td>{{ inventario.articulo.nombre }}</td>
+      <td>{{ inventario.existencias }}</td>
+      <td>{{ inventario.articulo.precio_venta }}</td>
+      <td>
+        <div class="btn-group" role="group" aria-label="acciones">
+          <a href="{% url 'act_existencias' inventario.id %}" class="btn btn-outline-primary"> Administrar </a>
+          <a href="{% url 'ver_articulo' inventario.articulo.pk %}" class="btn btn-outline-primary">Ver detalles</a>
+        </div>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
-
-
 {% endblock content %}
