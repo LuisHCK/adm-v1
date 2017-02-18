@@ -41,6 +41,14 @@ def inicio(request):
             inventario.existencias = (inventario.existencias - venta.cantidad)
             inventario.save()
 
+            # Guardar en Caja
+            caja = Caja.objects.last()
+            if caja:
+                caja.saldo += venta.total
+                caja.save()
+            else:
+                Caja.objects.create(saldo=venta.total, usuario=request.user)
+
         return redirect('inicio')
     else:
         form = VentaForm()
