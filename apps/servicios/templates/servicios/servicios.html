@@ -28,6 +28,19 @@
             <td>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <a href="#" class="btn btn-outline-primary">Detalles</a>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">Facturar a</button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            {% if facturas %}
+                                {% for factura in facturas.all %}
+                                <a class="dropdown-item" href={% url 'agregar_a_factura' servicio.id factura.id %}>{{factura.cliente}}</a>
+                                {% endfor %}
+                            {% else %}
+                            <div class="dropdown-item">No hay facturas</div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </td>
         </tr>
