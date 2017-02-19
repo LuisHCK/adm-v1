@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ['192.168.1.12', 'localhost', '127.0.0.1', 'administra.admin']
 # Application definition
 
 INSTALLED_APPS = [
-    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -64,7 +63,7 @@ ROOT_URLCONF = 'administra.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,6 +127,18 @@ USE_L10N = True
 
 USE_TZ = True
 
+OPTIONS = {
+    'context_processors': [
+        'django.template.context_processors.debug',
+        'django.template.context_processors.request',
+        'django.contrib.auth.context_processors.auth',
+        'django.contrib.messages.context_processors.messages',
+    ],
+    'libraries': {  # Adding this section should work around the issue.
+        'staticfiles': 'django.templatetags.static',
+        'i18n': 'django.templatetags.i18n',
+    },
+},
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
@@ -139,6 +150,6 @@ STATICFILES_DIRS = [
     'static/',
 ]
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+#STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 LOGIN_REDIRECT_URL = 'inicio'
