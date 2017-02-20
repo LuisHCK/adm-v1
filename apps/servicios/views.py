@@ -33,6 +33,11 @@ def realizar_servicio(request):
             servicio.tipo_servicio = tiposervicio
 
             # Calcular el precio en base a la cantidad de producto
+
+            # Si no se escribe una cantidad se asiga un 1
+            if servicio.cantidad is None:
+                servicio.cantidad = 1
+
             servicio.precio = (tiposervicio.costo * servicio.cantidad)
             servicio.descripcion = tiposervicio.nombre
 

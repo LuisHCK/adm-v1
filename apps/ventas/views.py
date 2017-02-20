@@ -25,11 +25,16 @@ def realizar_venta(request):
             # Registra el usuario que realiza la venta
             venta.usuario = request.user
             # Calcula el total de la venta
-            venta.total = venta.articulo.precio_venta * venta.cantidad
+            venta.total = (venta.articulo.precio_venta * venta.cantidad)
             venta.save()
 
         # Restar producto del inventario
         inventario = Inventario.objects.get(articulo=venta.articulo)
+
+        # Si la cantidad es nula o menor a uno se le asigna un 1
+        if venta.cantidad < 1:
+            venta.cantidad = 1
+
         inventario.existencias = (inventario.existencias - venta.cantidad)
         inventario.save()
 
