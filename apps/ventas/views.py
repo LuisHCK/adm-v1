@@ -17,7 +17,7 @@ def ventas(request):
 
 def realizar_venta(request):
     """Realiza la venta de un artículo"""
-    #Obtener las existencias actuales del producto
+    # Obtener las existencias actuales del producto
     if request.method == "POST":
         form = VentaForm(request.POST)
         if form.is_valid():

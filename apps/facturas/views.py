@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.conf import settings
 from .models import Factura, FacturaItems
-from .forms import FacturaForm, ItemsForm
+from .forms import FacturaForm, FacturaArticuloForm
 
 @login_required(login_url='login') #redirect when user is not logged in
 
@@ -55,14 +55,14 @@ def agregar_items(request, pk):
     """Agrega items a la factura abierta"""
     factura = get_object_or_404(Factura, pk=pk)
     if request.method == "POST":
-        form = ItemsForm(request.POST)
+        form = FacturaArticuloForm(request.POST)
         if form.is_valid():
             item = form.save(commit=False)
             item.factura = factura.id
             item.save()
         return redirect('detalles_factura', factura.id)
     else:
-        form = ItemsForm()
+        form = FacturaArticuloForm()
 
     return render(request, 'facturas/detalles_factura.html', {'form': form})
 
@@ -84,7 +84,7 @@ def detalles_factura(request, pk):
     items = FacturaItems.objects.filter(factura=factura).all()
     project_ver = settings.PROJECT_VERSION
     if request.method == "POST":
-        form = ItemsForm(request.POST)
+        form = FacturaArticuloForm(request.POST)
         if form.is_valid():
             item = form.save(commit=False)
             item.factura = factura
@@ -96,7 +96,7 @@ def detalles_factura(request, pk):
             messages.success(request, "Se agregó el item")
         return redirect('detalles_factura', factura.id)
     else:
-        form = ItemsForm()
+        form = FacturaArticuloForm()
 
     return render(request, 'facturas/detalles_factura.html',
                   {'factura': factura, 'items': items, 'form_item': form,
