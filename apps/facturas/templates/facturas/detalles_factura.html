@@ -8,12 +8,3 @@
     {% include 'facturas/parciales/imprimir.html' %}
 {% endif %}
 {% endblock content %}
-<script>
-    $(document).ready(function () {
-        $('.delete').click(function (e) {
-            e.preventDefault();
-            var a = confirm('Sure?');
-            if (a) {} else if (!a) {}
-        });
-    });
-</script>

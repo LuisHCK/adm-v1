@@ -1,36 +1,57 @@
 <div class="btn-group" role="group" aria-label="Basic example">
-    <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-primary">Cobrar</a>
 </div>
 <div class="row">
     <div class="col-xs-4">
-        <div class="box" style="padding: 5%; background-color: white">
-            <h3>Añadir a la factura</h3>
-            <form method="POST" class="post-form text-left">{% csrf_token %} {{ form_item.as_p }}
-                <button style="width: 100%" type="submit" class="save btn btn-success">Añadir</button>
+        <div class="box" style="padding: 3%; background-color: white">
+            <h4>Añadir Artículo</h4>
+            <form method="POST" action="{% url 'agregar_articulo_factura' factura.id %}" 
+            class="post-form text-left" id="agregar_articulo">{% csrf_token %} {{ form_articulo.as_p }}
+                <button style="width: 100%" type="submit" class="save btn btn-primary">Añadir</button>
+            </form>
+        </div>
+        <hr>
+        <div class="box" style="padding: 3%; background-color: white">
+            <h4>Añadir Servicios</h4>
+            <form method="POST" action="{% url 'agregar_servicio_factura' factura.id %}" 
+            class="post-form text-left" id="agregar_servicio">{% csrf_token %} {{ form_servicio.as_p }}
+                <button style="width: 100%" type="submit" class="save btn btn-primary">Añadir</button>
             </form>
         </div>
         <p>
-            <h4><b>Total: </b> <em>{{ factura.total }}</em> </h4>
+            <h4><b>Total: </b> <em id="total_factura">{{ factura.total }}</em> </h4>
+            <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-success">Cobrar</a>
         </p>
     </div>
     <div class="col-xs-8">
         <table class="table table-striped">
             <thead class="thead-inverse">
                 <tr>
-                    <th>#</th>
                     <th>Concepto</th>
                     <th>Precio</th>
+                    <th>Cantidad</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for item in items.all %}
+            <tbody id="tabla_factura">
+
+                {% for item_servicio in item_servicios.all %}
                 <tr>
-                    <th scope="row">{{ item.id}}</th>
-                    <td>{{ item.concepto}}</td>
-                    <td>{{ item.precio }}</td>
+                    <td>{{ item_servicio.tipo_servicio }}</td>
+                    <td>{{ item_servicio.tipo_servicio.costo }}</td>
+                    <td>{{ item_servicio.cantidad }}</td>
                     <td>
-                        <a class="btn btn-danger" href="{% url 'eliminar_item' item.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
+                        <a class="btn btn-danger" href="{% url 'eliminar_servicios_factura' item_servicio.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                
+                {% for item_articulo in item_articulos.all %}
+                <tr>
+                    <td>{{ item_articulo.articulo}}</td>
+                    <td>{{ item_articulo.articulo.precio_venta }}</td>
+                    <td>{{ item_articulo.cantidad }}</td>
+                    <td>
+                        <a class="btn btn-danger" href="{% url 'eliminar_articulos_factura' item_articulo.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -38,3 +59,65 @@
         </table>
     </div>
 </div>
+
+<script>
+$("#agregar_articulo").submit(function(event) {
+    event.preventDefault();
+    $.ajax({
+        url: "{% url 'agregar_articulo_factura' factura.id %}",
+        data: {
+                articulo: $('#id_articulo').val(),
+                cantidad: $('#id_cantidad').val(),
+                csrfmiddlewaretoken:'{{ csrf_token }}'
+               },
+        dataType: "json",
+        type: "POST",
+        // handle a successful response
+        success : function(json) {
+            $('#id_articulo').val(''); // remove the value from the input
+            console.log(json); // log the returned json to the console
+            console.log("success"); // another sanity check
+        },
+
+         success : function(json) {
+            $('#id_articulo').val(''); // remove the value from the input
+            console.log(json); // log the returned json to the console
+            console.log("success"); // another sanity check
+            $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>"+json.articulo+"</td><td>"+json.precio+"</td><td>"+json.cantidad+"</td><td><a class='btn btn-danger' href='/facturas/articulos/"+json.item_id+"/eliminar/'>Eliminar</a></td></tr>");
+            $('#hide_item').fadeIn('slow');
+            document.getElementById("total_factura").innerHTML = json.total_factura;
+        },
+    });
+});
+
+$("#agregar_servicio").submit(function(event) {
+    event.preventDefault();
+    $.ajax({
+        url: "{% url 'agregar_servicio_factura' factura.id %}",
+        data: {
+                tipo_servicio: $('#id_tipo_servicio').val(),
+                cantidad: $('#cantidad_servicio').val(),
+                csrfmiddlewaretoken:'{{ csrf_token }}'
+               },
+        dataType: "json",
+        type: "POST",
+        // Si hay un error enviar un mensaje 
+        error : function(json) {
+            $('#id_tipo_servicio').val('');
+            $('#cantidad_servicio').val(1);
+            console.log(json); // ver en la consola el json enviado
+            alert('Ocurrió un error al agregar el servicio');
+        },
+
+         success : function(json) {
+            $('#id_tipo_servicio').val('');
+            $('#cantidad_servicio').val(1);
+            console.log(json); // ver en la consola el json enviado
+            console.log("success"); // Exito GG
+            $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>"+json.servicio+"</td><td>"+json.costo+"</td><td>"+json.cantidad+"</td><td><a class='btn btn-danger' href='/facturas/servicios/"+json.item_id+"/eliminar/'>Eliminar</a></td></tr>");
+            $('#hide_item').fadeIn('slow');
+            document.getElementById("total_factura").innerHTML = json.total_factura;
+        },
+    });
+});
+</script>

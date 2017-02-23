@@ -2,7 +2,7 @@
 from django.db import models
 from django.utils import timezone
 from apps.inventario.models import Articulos
-from apps.servicios.models import Servicio
+from apps.servicios.models import TipoServicio
 
 # Create your models here.
 
@@ -13,7 +13,7 @@ class Factura(models.Model):
     cliente = models.CharField(max_length=100)
     total = models.DecimalField(max_digits=6, decimal_places=2, default=0, blank=True)
     cobrada = models.BooleanField(default=False)
-    fecha_factura = models.DateField(default=timezone.now)
+    fecha_factura = models.DateTimeField(default=timezone.now)
 
     def cobrar(self):
         """Si la factura es pagada se guarda"""
@@ -33,11 +33,13 @@ class FacturaItems(models.Model):
 
 class FacturaArticulos(models.Model):
     """Almacena el articulo que se planea vender"""
+    factura = models.ForeignKey(Factura, on_delete=models.CASCADE)
     articulo = models.ForeignKey(Articulos, on_delete=models.CASCADE)
     cantidad = models.IntegerField(default=1)
 
 
 class FacturaServicios(models.Model):
-    """Almacena el articulo que se planea vender"""
-    servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
+    """Almacena el articulo que se planea vender"""    
+    factura = models.ForeignKey(Factura, on_delete=models.CASCADE)
+    tipo_servicio = models.ForeignKey(TipoServicio, on_delete=models.CASCADE)
     cantidad = models.IntegerField(default=1)

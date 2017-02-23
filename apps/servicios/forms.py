@@ -21,19 +21,3 @@ class ServicioForm(forms.ModelForm):
             'articulo': _('Articulo (Opcional)'),
             'tipo_servicio': _('Tipo de Servicio realizado'),
         }
-
-
-class ServicioRapidoForm(forms.ModelForm):
-    """Formulario para los articulos"""
-    class Meta:
-        model = Servicio
-
-        fields = ['tipo_servicio', 'cantidad']
-        widgets = {
-            'tipo_servicio': Select(attrs={'class': 'form-control'}),
-            'cantidad': NumberInput(attrs={'class': 'form-control'}),
-        }
-        labels = {
-            'articulo': _('Articulo (Opcional)'),
-            'tipo_servicio': _('Tipo de Servicio realizado'),
-        }

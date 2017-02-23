@@ -12,7 +12,8 @@
   <link rel="stylesheet" href="{% static 'css/flexboxgrid.css' %}">
   <!--[if lt IE 9]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
-  <![endif]-->
+  <![endif]-->  
+  <script src="{% static 'js/jquery.js' %}"></script>
 </head>
 
 <body style="background-color: #F5F5F5;">
@@ -51,10 +52,10 @@
   <div class="container-fluid" style="margin-top: 55px">
     {% block content %} {% endblock %}
   </div>
-  <script src="{% static 'js/jquery.js' %}"></script>
   <script src="{% static 'js/bootstrap.js' %}"></script>
   <script src="{% static 'js/scripts.js' %}"></script>
-
+  {% block js %}
+  {% endblock %}
 </body>
 
 </html>
