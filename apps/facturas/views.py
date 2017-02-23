@@ -13,16 +13,39 @@ from apps.servicios.models import Servicio
 from apps.caja.models import Caja
 
 from .forms import FacturaArticuloForm, FacturaForm, ServicioRapidoForm
-from .models import Factura, FacturaArticulos, FacturaItems, FacturaServicios
+from .models import Factura, FacturaArticulos, FacturaServicios
 
 
-@login_required(login_url='login') #redirect when user is not logged in
-
+@login_required(login_url='login')  # redirect when user is not logged in
 # Create your views here.
 def facturas(request):
     """Ver todas las facturas"""
-    facturas = Factura.objects.all()
-    return render(request, 'facturas/facturas.html', {'facturas': facturas})
+    lista_facturas = Factura.objects.all()
+    pendientes = Factura.objects.filter(cobrada=False).count
+    return render(request, 'facturas/facturas.html', {
+        'facturas': lista_facturas,
+        'pendientes': pendientes
+    })
+
+
+def facturas_pagadas(request):
+    """Muestra las facturas que ya fueron pagadas"""
+    lista_facturas = Factura.objects.filter(cobrada=True)
+    pendientes = Factura.objects.filter(cobrada=False).count
+    return render(request, 'facturas/facturas.html', {
+        'facturas': lista_facturas,
+        'pendientes': pendientes,
+        })
+
+
+def facturas_pendientes(request):
+    """Muestra las facturas que ya fueron pagadas"""
+    lista_facturas = Factura.objects.filter(cobrada=False)
+    pendientes = Factura.objects.filter(cobrada=False).count
+    return render(request, 'facturas/facturas.html', {
+        'facturas': lista_facturas,
+        'pendientes': pendientes,
+        })
 
 
 def nueva_factura(request):
@@ -45,7 +68,7 @@ def cobrar_factura(request, pk):
     factura = get_object_or_404(Factura, pk=pk)
     servicios_count = FacturaArticulos.objects.filter(factura=factura).count()
     articulos_count = FacturaServicios.objects.filter(factura=factura).count()
-    items_count = (servicios_count+articulos_count)
+    items_count = (servicios_count + articulos_count)
     if items_count < 1:
         messages.error(request, "No se puede cobrar una factura sin items")
         return redirect('facturas_pagadas')
@@ -60,8 +83,8 @@ def cobrar_factura(request, pk):
                 usuario=request.user,
                 articulo=articulo.articulo,
                 cantidad=articulo.cantidad,
-                total=(articulo.cantidad*articulo.articulo.precio_venta)
-                )
+                total=(articulo.cantidad * articulo.articulo.precio_venta)
+            )
 
         # Realizar la venta de cada servicio
         for servicio in servicios:
@@ -70,7 +93,7 @@ def cobrar_factura(request, pk):
                 descripcion=servicio.tipo_servicio.nombre,
                 cantidad=servicio.cantidad,
                 tipo_servicio=servicio.tipo_servicio,
-                precio=(servicio.tipo_servicio.costo*servicio.cantidad),
+                precio=(servicio.tipo_servicio.costo * servicio.cantidad),
             )
 
         factura.cobrar()
@@ -105,7 +128,7 @@ def agregar_articulo(request, pk):
 
         # Suma al total de la factura
         articulo = Articulos.objects.get(id=item_articulos.articulo.id)
-        factura.total += (articulo.precio_venta*item_articulos.cantidad)
+        factura.total += (articulo.precio_venta * item_articulos.cantidad)
         factura.save()
 
         # Devolver un json con los datos del articulo
@@ -135,7 +158,7 @@ def eliminar_articulos(request, articulo):
 
     # Resta la cantidad del total
     factura = Factura.objects.get(id=item.factura.id)
-    factura.total -= (item.articulo.precio_venta*item.cantidad)
+    factura.total -= (item.articulo.precio_venta * item.cantidad)
     factura.save()
 
     messages.success(request, "Se borró el item de la factura")
@@ -155,7 +178,7 @@ def agregar_servicio(request, pk):
 
         # Suma al total de la factura
         servicio = TipoServicio.objects.get(id=item_servicio.tipo_servicio.id)
-        factura.total += (servicio.costo*item_servicio.cantidad)
+        factura.total += (servicio.costo * item_servicio.cantidad)
         factura.save()
 
         # Devolver un json con los datos del articulo
@@ -185,22 +208,11 @@ def eliminar_servicios(request, servicio):
 
     # Resta la cantidad del total
     factura = Factura.objects.get(id=item.factura.id)
-    factura.total -= (item.tipo_servicio.costo*item.cantidad)
+    factura.total -= (item.tipo_servicio.costo * item.cantidad)
     factura.save()
 
     messages.success(request, "Se borró el item de la factura")
     return redirect('detalles_factura', item.factura.id)
-
-
-def facturas_pagadas(request):
-    """Muestra las facturas que ya fueron pagadas"""
-    facturas = Factura.objects.filter(cobrada=True)
-    return render(request, 'facturas/facturas.html', {'facturas': facturas})
-
-def facturas_pendientes(request):
-    """Muestra las facturas que ya fueron pagadas"""
-    facturas = Factura.objects.filter(cobrada=False)
-    return render(request, 'facturas/facturas.html', {'facturas': facturas})
 
 
 def detalles_factura(request, pk):
@@ -216,4 +228,4 @@ def detalles_factura(request, pk):
         'form_articulo': FacturaArticuloForm,
         'form_servicio': ServicioRapidoForm,
         'project_ver': project_ver,
-        })
+    })
