@@ -39,7 +39,7 @@ class FacturaArticulos(models.Model):
 
 
 class FacturaServicios(models.Model):
-    """Almacena el articulo que se planea vender"""    
+    """Almacena el articulo que se planea vender"""
     factura = models.ForeignKey(Factura, on_delete=models.CASCADE)
     tipo_servicio = models.ForeignKey(TipoServicio, on_delete=models.CASCADE)
     cantidad = models.IntegerField(default=1)

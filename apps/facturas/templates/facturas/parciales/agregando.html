@@ -60,6 +60,27 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eModalLabel">Ocurrió un Error</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="descripcion_msg"></div>
+        <em id="error_msg"></em>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Entiendo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 $("#agregar_articulo").submit(function(event) {
     event.preventDefault();
@@ -77,7 +98,11 @@ $("#agregar_articulo").submit(function(event) {
             $('#id_articulo').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
             console.log("success"); // another sanity check
-            alert(json.responseJSON.result);
+
+            document.getElementById("descripcion_msg").innerHTML = json.responseJSON.result;
+            document.getElementById("error_msg").innerHTML = json.responseJSON.reason;    
+            $('#errorModal').modal('show');
+            //alert(json.responseJSON.result + " " + json.responseJSON.reason);
         },
 
          success : function(json) {

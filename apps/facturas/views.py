@@ -146,6 +146,7 @@ def agregar_articulo(request, pk):
             else:
                 # Devolver una excepcion por que o hay suficientes articulos
                 response_data['result'] = 'No hay suficientes articulos para vender'
+                response_data['reason'] = 'Existencias disponibles: ' + str(inventario.existencias)
                 return HttpResponse(
                     json.dumps(response_data),
                     content_type="application/json",
