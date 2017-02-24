@@ -20,7 +20,7 @@
     <tbody>
         {% for venta in venta.all %}
         <tr>
-            <th scope="row">{{ venta.articulo.id}}</th>
+            <th scope="row">{{ venta.id}}</th>
             <td>{{ venta.articulo.nombre }}</td>
             <td>{{ venta.cantidad }}</td>
             <td>{{ venta.articulo.precio_venta }}</td>
