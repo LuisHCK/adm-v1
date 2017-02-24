@@ -1,29 +1,35 @@
 <div class="btn-group" role="group" aria-label="Basic example">
 </div>
+<div class="row text-center box mdl-shadow--2dp" style="padding: 1%; background-color: white">
+    <div class="col-xs-4">
+        <h5><b>Cliente: </b> {{factura.cliente}}</h5>
+    </div>
+    <div class="col-xs-4">
+        <h5><b>Total: </b> <em id="total_factura">{{ factura.total }}</em> </h5>
+    </div>
+    <div class="col-xs-4">
+            <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-success btn-block">Cobrar</a>
+    </div>
+</div>
+<hr>
 <div class="row">
     <div class="col-xs-4">
-        <div class="box" style="padding: 3%; background-color: white">
-            <h4>Añadir Artículo</h4>
-            <form method="POST" action="{% url 'agregar_articulo_factura' factura.id %}" 
-            class="post-form text-left" id="agregar_articulo">{% csrf_token %} {{ form_articulo.as_p }}
+        <div class="box mdl-shadow--2dp" style="padding: 3%; background-color: white">
+            <h5>Añadir Artículo</h4>
+            <form method="POST" action="{% url 'agregar_articulo_factura' factura.id %}" class="post-form text-left" id="agregar_articulo">{% csrf_token %} {{ form_articulo.as_p }}
                 <button style="width: 100%" type="submit" class="save btn btn-primary">Añadir</button>
             </form>
         </div>
         <hr>
-        <div class="box" style="padding: 3%; background-color: white">
+        <div class="box mdl-shadow--2dp" style="padding: 3%; background-color: white">
             <h4>Añadir Servicios</h4>
-            <form method="POST" action="{% url 'agregar_servicio_factura' factura.id %}" 
-            class="post-form text-left" id="agregar_servicio">{% csrf_token %} {{ form_servicio.as_p }}
+            <form method="POST" action="{% url 'agregar_servicio_factura' factura.id %}" class="post-form text-left" id="agregar_servicio">{% csrf_token %} {{ form_servicio.as_p }}
                 <button style="width: 100%" type="submit" class="save btn btn-primary">Añadir</button>
             </form>
         </div>
-        <p>
-            <h4><b>Total: </b> <em id="total_factura">{{ factura.total }}</em> </h4>
-            <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-success">Cobrar</a>
-        </p>
     </div>
     <div class="col-xs-8">
-        <table class="table table-striped">
+        <table class="table table-striped mdl-shadow--2dp box">
             <thead class="thead-inverse">
                 <tr>
                     <th>Concepto</th>
@@ -43,9 +49,7 @@
                         <a class="btn btn-danger" href="{% url 'eliminar_servicios_factura' item_servicio.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
                     </td>
                 </tr>
-                {% endfor %}
-                
-                {% for item_articulo in item_articulos.all %}
+                {% endfor %} {% for item_articulo in item_articulos.all %}
                 <tr>
                     <td>{{ item_articulo.articulo}}</td>
                     <td>{{ item_articulo.articulo.precio_venta }}</td>
@@ -62,88 +66,94 @@
 
 <!-- Modal -->
 <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="eModalLabel">Ocurrió un Error</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eModalLabel">Ocurrió un Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <div id="descripcion_msg"></div>
-        <em id="error_msg"></em>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Entiendo</button>
-      </div>
+            </div>
+            <div class="modal-body">
+                <div id="descripcion_msg"></div>
+                <em id="error_msg"></em>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Entiendo</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <script>
-$("#agregar_articulo").submit(function(event) {
-    event.preventDefault();
-    $.ajax({
-        url: "{% url 'agregar_articulo_factura' factura.id %}",
-        data: {
+    $("#agregar_articulo").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "{% url 'agregar_articulo_factura' factura.id %}",
+            data: {
                 articulo: $('#id_articulo').val(),
                 cantidad: $('#id_cantidad').val(),
-                csrfmiddlewaretoken:'{{ csrf_token }}'
-               },
-        dataType: "json",
-        type: "POST",
-        // handle a successful response
-        error : function(json) {
-            $('#id_articulo').val(''); // remove the value from the input
-            console.log(json); // log the returned json to the console
-            console.log("success"); // another sanity check
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            type: "POST",
+            // handle a successful response
+            error: function (json) {
+                $('#id_articulo').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
 
-            document.getElementById("descripcion_msg").innerHTML = json.responseJSON.result;
-            document.getElementById("error_msg").innerHTML = json.responseJSON.reason;    
-            $('#errorModal').modal('show');
-            //alert(json.responseJSON.result + " " + json.responseJSON.reason);
-        },
+                document.getElementById("descripcion_msg").innerHTML = json.responseJSON.result;
+                document.getElementById("error_msg").innerHTML = json.responseJSON.reason;
+                $('#errorModal').modal('show');
+                //alert(json.responseJSON.result + " " + json.responseJSON.reason);
+            },
 
-         success : function(json) {
-            $('#id_articulo').val(''); // remove the value from the input
-            console.log(json); // log the returned json to the console
-            console.log("success"); // another sanity check
-            $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>"+json.articulo+"</td><td>"+json.precio+"</td><td>"+json.cantidad+"</td><td><a class='btn btn-danger' href='/facturas/articulos/"+json.item_id+"/eliminar/'>Eliminar</a></td></tr>");
-            $('#hide_item').fadeIn('slow');
-            document.getElementById("total_factura").innerHTML = json.total_factura;
-        },
+            success: function (json) {
+                $('#id_articulo').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+                $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>" + json.articulo +
+                    "</td><td>" + json.precio + "</td><td>" + json.cantidad +
+                    "</td><td><a class='btn btn-danger' href='/facturas/articulos/" + json.item_id +
+                    "/eliminar/'>Eliminar</a></td></tr>");
+                $('#hide_item').fadeIn('slow');
+                document.getElementById("total_factura").innerHTML = json.total_factura;
+            },
+        });
     });
-});
 
-$("#agregar_servicio").submit(function(event) {
-    event.preventDefault();
-    $.ajax({
-        url: "{% url 'agregar_servicio_factura' factura.id %}",
-        data: {
+    $("#agregar_servicio").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "{% url 'agregar_servicio_factura' factura.id %}",
+            data: {
                 tipo_servicio: $('#id_tipo_servicio').val(),
                 cantidad: $('#cantidad_servicio').val(),
-                csrfmiddlewaretoken:'{{ csrf_token }}'
-               },
-        dataType: "json",
-        type: "POST",
-        // Si hay un error enviar un mensaje 
-        error : function(json) {
-            $('#id_tipo_servicio').val('');
-            $('#cantidad_servicio').val(1);
-            console.log(json); // ver en la consola el json enviado
-            alert(json.responseJSON.result);
-        },
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            type: "POST",
+            // Si hay un error enviar un mensaje 
+            error: function (json) {
+                $('#id_tipo_servicio').val('');
+                $('#cantidad_servicio').val(1);
+                console.log(json); // ver en la consola el json enviado
+                alert(json.responseJSON.result);
+            },
 
-         success : function(json) {
-            $('#id_tipo_servicio').val('');
-            $('#cantidad_servicio').val(1);
-            console.log(json); // ver en la consola el json enviado
-            console.log("success"); // Exito GG
-            $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>"+json.servicio+"</td><td>"+json.costo+"</td><td>"+json.cantidad+"</td><td><a class='btn btn-danger' href='/facturas/servicios/"+json.item_id+"/eliminar/'>Eliminar</a></td></tr>");
-            $('#hide_item').fadeIn('slow');
-            document.getElementById("total_factura").innerHTML = json.total_factura;
-        },
+            success: function (json) {
+                $('#id_tipo_servicio').val('');
+                $('#cantidad_servicio').val(1);
+                console.log(json); // ver en la consola el json enviado
+                console.log("success"); // Exito GG
+                $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>" + json.servicio +
+                    "</td><td>" + json.costo + "</td><td>" + json.cantidad +
+                    "</td><td><a class='btn btn-danger' href='/facturas/servicios/" + json.item_id +
+                    "/eliminar/'>Eliminar</a></td></tr>");
+                $('#hide_item').fadeIn('slow');
+                document.getElementById("total_factura").innerHTML = json.total_factura;
+            },
+        });
     });
-});
 </script>
