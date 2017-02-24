@@ -1,6 +1,5 @@
  {% extends 'base.html' %} {% block content %}
 <br> {% include 'messages.html' %}
-<h3>Factura a nombre de:  <em>{{ factura.cliente }}</em> </h3>
 
 {% if factura.cobrada is False %}
     {% include 'facturas/parciales/agregando.html' %}
@@ -8,12 +7,3 @@
     {% include 'facturas/parciales/imprimir.html' %}
 {% endif %}
 {% endblock content %}
-<script>
-    $(document).ready(function () {
-        $('.delete').click(function (e) {
-            e.preventDefault();
-            var a = confirm('Sure?');
-            if (a) {} else if (!a) {}
-        });
-    });
-</script>

@@ -1,7 +1,8 @@
 
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 from django.forms import TextInput, Select, NumberInput
-from .models import Factura, FacturaItems
+from .models import *
 
 
 class FacturaForm(forms.ModelForm):
@@ -15,12 +16,29 @@ class FacturaForm(forms.ModelForm):
         }
 
 
-class ItemsForm(forms.ModelForm):
+class FacturaArticuloForm(forms.ModelForm):
     """Añadir items a la factura"""
     class Meta:
-        model = FacturaItems
-        fields = ('concepto', 'precio')
+        model = FacturaArticulos
+        fields = ('articulo', 'cantidad')
         widgets = {
-            'concepto': TextInput(attrs={'class': 'form-control'}),
-            'precio': NumberInput(attrs={'class': 'form-control'}),
+            'articulo': Select(attrs={'class': 'form-control'}),
+            'cantidad': NumberInput(attrs={'class': 'form-control',}),
         }
+
+
+class ServicioRapidoForm(forms.ModelForm):
+    """Formulario para los articulos"""
+    class Meta:
+        model = FacturaServicios
+
+        fields = ['tipo_servicio', 'cantidad']
+        widgets = {
+            'tipo_servicio': Select(attrs={'class': 'form-control',}),
+            'cantidad': NumberInput(attrs={'class': 'form-control','id': 'cantidad_servicio'}),
+        }
+        labels = {
+            'articulo': _('Articulo (Opcional)'),
+            'tipo_servicio': _('Tipo de Servicio realizado'),
+        }
+

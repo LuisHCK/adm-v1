@@ -1,60 +1,68 @@
 {% load staticfiles %}
 
 <div id="factura">
+	<!-- Se incluye CSS directamente para que funcione la plantilla de impresión -->
 <style>
-	body,html{padding:.5in}header span,td,th{position:relative}*{border:0;box-sizing:content-box;color:inherit;font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;line-height:inherit;list-style:none;margin:0;padding:0;text-decoration:none;vertical-align:top}header h1,td,th{border-radius:.25em}h1{font:700 100% sans-serif;letter-spacing:.5em;text-align:center;text-transform:uppercase}table{font-size:75%;table-layout:fixed;width:100%;border-collapse:separate;border-spacing:2px}td,th{border-width:1px;padding:.5em;text-align:left;border-style:solid}th{background:#EEE;border-color:#BBB}td{border-color:#DDD}html{font:16px/1 'Open Sans',sans-serif;overflow:auto;background:#999;cursor:default}body{box-sizing:border-box;height:11in;margin:0 auto;overflow:hidden;width:8.5in;background:#FFF;border-radius:1px;box-shadow:0 0 1in -.25in rgba(0,0,0,.5)}article,article address,header,table.inventory,table.meta{margin:0 0 3em}header:after{clear:both;content:"";display:table}header h1{background:#2f4f4f;color:#FFF;margin:0 0 1em;padding:.5em 0}header address{float:left;font-size:75%;font-style:normal;line-height:1.25;margin:0 1em 1em 0}header address p{margin:0 0 .25em}header img,header span{display:block;float:right}article:after,table.balance:after,table.meta:after{content:"";display:table;clear:both}header span{margin:0 0 1em 1em;max-height:25%;max-width:60%}.cut,article h1,header input{position:absolute}header img{max-height:100%;max-width:100%}header input{cursor:pointer;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";height:100%;left:0;opacity:0;top:0;width:100%}article h1{clip:rect(0 0 0 0)}article address{float:left;font-size:125%;font-weight:700}table.balance,table.meta{float:right;width:36%}table.meta th{width:40%}table.meta td{width:60%}table.inventory{clear:both;width:100%}table.inventory th{font-weight:700;text-align:center}table.inventory td:nth-child(1){width:26%}table.inventory td:nth-child(2){width:38%}table.inventory td:nth-child(3),table.inventory td:nth-child(4),table.inventory td:nth-child(5){text-align:right;width:12%}table.balance td,table.balance th{width:50%}table.balance td{text-align:right}aside h1{border:#999;border-width:0 0 1px;margin:0 0 1em;border-bottom-style:solid}.add,.cut{border-width:1px;display:block;font-size:.8rem;padding:.25em .5em;float:left;text-align:center;width:.6em;background:#9AF;box-shadow:0 1px 2px rgba(0,0,0,.2);background-image:-moz-linear-gradient(#00ADEE 5%,#0078A5 100%);background-image:-webkit-linear-gradient(#00ADEE 5%,#0078A5 100%);border-radius:.5em;border-color:#0076A3;color:#FFF;cursor:pointer;font-weight:700;text-shadow:0 -1px 2px rgba(0,0,0,.333)}.add{margin:-2.5em 0 0}.add:hover{background:#00ADEE}.cut{opacity:0;top:0;left:-1.5em;-webkit-transition:opacity .1s ease-in}tr:hover .cut{opacity:1}@media print{*{-webkit-print-color-adjust:exact}html{background:0 0;padding:0}body{box-shadow:none;margin:0}.add,.cut,span:empty{display:none}}@page{margin:0}
-	</style>
-<body>
-	<header>
-		<h1>Factura</h1>
-		<address>
-			<p>Impresiones "La Fe"</p>
-			<p>Del juzgado local<br>1c 1/2 al este</p>
-			<p>8601-4017</p>
-		</address>
-	</header>
-	<article>
-		<address>
-			Cliente:
-			<p>{{factura.cliente}}</p>
-		</address>
-		<table class="meta">
-			<tr>
-				<th><span>Factura #</span></th>
-				<td><span>{{factura.id}}</span></td>
-			</tr>
-			<tr>
-				<th><span>Fecha</span></th>
-				<td><span>{{factura.fecha_factura}}</span></td>
-			</tr>
-		</table>
-		<table class="inventory">
-			<thead>
+	body,html{padding:5%}header span,td,th{position:relative}*{border:0;box-sizing:content-box;color:inherit;font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;line-height:inherit;list-style:none;margin:0;padding:0;text-decoration:none;vertical-align:top}header h1,td,th{border-radius:.25em}h1{font:700 100% sans-serif;letter-spacing:.5em;text-align:center;text-transform:uppercase}table{font-size:75%;table-layout:fixed;width:100%;border-collapse:separate;border-spacing:2px}td,th{border-width:1px;padding:.5em;text-align:left;border-style:solid}th{background:#EEE;border-color:#BBB}td{border-color:#DDD}html{font:16px/1 'Open Sans',sans-serif;overflow:auto;background:#999;cursor:default}body{box-sizing:border-box;height:11in;margin:0 auto;overflow:hidden;width:8.5in;background:#FFF;border-radius:1px;box-shadow:0 0 1in -.25in rgba(0,0,0,.5)}article,article address,header,table.inventory,table.meta{margin:0 0 .5em}header:after{clear:both;content:"";display:table}header h1{background:#2f4f4f;color:#FFF;margin:0 0 1em;padding:.5em 0}header address{float:left;font-size:75%;font-style:normal;line-height:1.25;margin:0 1em 1em 0}header address p{margin:0 0 .25em}header img,header span{display:block;float:right}article:after,table.balance:after,table.meta:after{content:"";display:table;clear:both}header span{margin:0 0 1em 1em;max-height:25%;max-width:60%}.cut,article h1,header input{position:absolute}header img{max-height:100%;max-width:100%}header input{cursor:pointer;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";height:100%;left:0;opacity:0;top:0;width:100%}article h1{clip:rect(0 0 0 0)}article address{float:left;font-size:125%;font-weight:700}table.balance,table.meta{float:right;width:36%}table.meta th{width:40%}table.meta td{width:60%}table.inventory{clear:both;width:100%}table.inventory th{font-weight:700;text-align:center}table.inventory td:nth-child(1){width:26%}table.inventory td:nth-child(2){width:38%}table.inventory td:nth-child(3),table.inventory td:nth-child(4),table.inventory td:nth-child(5){text-align:right;width:12%}table.balance td,table.balance th{width:50%}table.balance td{text-align:right}aside h1{border:#999;border-width:0 0 1px;margin:0 0 1em;border-bottom-style:solid}.add,.cut{border-width:1px;display:block;font-size:.8rem;padding:.25em .5em;float:left;text-align:center;width:.6em;background:#9AF;box-shadow:0 1px 2px rgba(0,0,0,.2);background-image:-moz-linear-gradient(#00ADEE 5%,#0078A5 100%);background-image:-webkit-linear-gradient(#00ADEE 5%,#0078A5 100%);border-radius:.5em;border-color:#0076A3;color:#FFF;cursor:pointer;font-weight:700;text-shadow:0 -1px 2px rgba(0,0,0,.333)}.add{margin:-2.5em 0 0}.add:hover{background:#00ADEE}.cut{opacity:0;top:0;left:-1.5em;-webkit-transition:opacity .1s ease-in}tr:hover .cut{opacity:1}@media print{*{-webkit-print-color-adjust:exact}html{background:0 0;padding:0}body{box-shadow:none;margin:0}.add,.cut,span:empty{display:none}}@page{margin:0}
+</style>
+
+	<body>
+		<header>
+			<h1>Factura</h1>
+			<address>
+				<p>Impresiones "La Fe"</p>
+				<p>Del juzgado local<br>1c 1/2 al este</p>
+				<p>8601-4017</p>
+			</address>
+			<address>
+				Cliente:
+				<p>{{factura.cliente}}</p>
+			</address>
+			<table class="meta" style="max-height: 32px !important;">
 				<tr>
-					<th><span>Concepto</span></th>
-					<th><span>Precio</span></th>
+					<th>Factura #</th>
+					<td>{{factura.id}}</td>
 				</tr>
-			</thead>
-			<tbody>
-				{% for item in items.all %}
 				<tr>
-					<td><span>{{item.concepto}}</span></td>
-					<td class="center-xs"><span data-prefix>$</span><span>{{item.precio}}</span></td>
+					<th>Fecha</th>
+					<td>{{factura.fecha_factura|date:"D d M Y"}} {{factura.fecha_factura|time:"g:iA"}}</td>
 				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<table class="balance">
-			<tr>
-				<th><span><b>Total</b></span></th>
-				<td><span data-prefix>$</span><span>{{factura.total}}</span></td>
-			</tr>
-		</table>
-	</article>
-	<hr>
-	<div class="center-xs"> <small>Usuario: <em>{{factura.usuario.username}} | Administra {{project_ver}}</small>
-	</div>
-</body>
+			</table>
+		</header>
+		<article>
+
+			<table class="inventory">
+				<thead>
+					<tr>
+						<th><span>Concepto</span></th>
+						<th><span>Precio</span></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item_articulo in item_articulos.all %}
+					<tr>
+						<td><span>{{item_articulo.articulo}}</span></td>
+						<td class="center-xs"><span data-prefix>$</span><span>{{item_articulo.articulo.precio_venta}}</span></td>
+					</tr>
+					{% endfor %} {% for item_servicio in item_servicios.all %}
+					<tr>
+						<td><span>{{item_servicio.tipo_servicio}}</span></td>
+						<td class="center-xs"><span data-prefix>$</span><span>{{item_servicio.tipo_servicio.costo}}</span></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<table class="balance">
+				<tr>
+					<th><span><b>Total</b></span></th>
+					<td><span data-prefix>$</span><span>{{factura.total}}</span></td>
+				</tr>
+			</table>
+		</article>
+		<hr>
+		<div class="center-xs"> <small>Usuario: <em>{{factura.usuario.username}} | Administra {{project_ver}}</small>
+		</div>
+	</body>
 
 </div>
 

@@ -10,7 +10,6 @@ class ServicioForm(forms.ModelForm):
     class Meta:
         model = Servicio
 
-
         fields = ['tipo_servicio', 'precio', 'cantidad']
         widgets = {
             'tipo_servicio': Select(attrs={'class': 'form-control'}),

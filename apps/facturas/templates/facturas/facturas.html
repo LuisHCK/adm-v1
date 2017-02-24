@@ -5,7 +5,12 @@
 <div class="btn-group" role="group" aria-label="Basic example">
     <a href="{% url 'nueva_factura' %}" class="btn btn-info">Nueva factura</a>
     <a href="{% url 'facturas_pagadas' %}" class="btn btn-info">Cobradas</a>
-    <a href="{% url 'facturas_pendientes' %}" class="btn btn-info">Pendientes</a>
+    <a href="{% url 'facturas_pendientes' %}" class="btn btn-info">
+        Pendientes
+        {% if pendientes %}
+        <span class="badge badge-pill badge-default">{{ pendientes }}</span>
+        {% endif %}
+    </a>
 </div>
 <table class="table table-striped">
     <thead class="thead-inverse">
