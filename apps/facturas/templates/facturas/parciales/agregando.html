@@ -73,10 +73,11 @@ $("#agregar_articulo").submit(function(event) {
         dataType: "json",
         type: "POST",
         // handle a successful response
-        success : function(json) {
+        error : function(json) {
             $('#id_articulo').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
             console.log("success"); // another sanity check
+            alert(json.responseJSON.result);
         },
 
          success : function(json) {
@@ -106,7 +107,7 @@ $("#agregar_servicio").submit(function(event) {
             $('#id_tipo_servicio').val('');
             $('#cantidad_servicio').val(1);
             console.log(json); // ver en la consola el json enviado
-            alert('Ocurrió un error al agregar el servicio');
+            alert(json.responseJSON.result);
         },
 
          success : function(json) {

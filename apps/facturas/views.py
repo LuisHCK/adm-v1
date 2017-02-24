@@ -11,6 +11,7 @@ from apps.servicios.models import TipoServicio
 from apps.ventas.models import Venta
 from apps.servicios.models import Servicio
 from apps.caja.models import Caja
+from apps.inventario.models import Inventario
 
 from .forms import FacturaArticuloForm, FacturaForm, ServicioRapidoForm
 from .models import Factura, FacturaArticulos, FacturaServicios
@@ -124,21 +125,32 @@ def agregar_articulo(request, pk):
         if form.is_valid():
             item_articulos = form.save(commit=False)
             item_articulos.factura = factura
-            item_articulos.save()
 
-        # Suma al total de la factura
-        articulo = Articulos.objects.get(id=item_articulos.articulo.id)
-        factura.total += (articulo.precio_venta * item_articulos.cantidad)
-        factura.save()
+            inventario = get_object_or_404(Inventario, articulo=item_articulos.articulo)
+            if item_articulos.cantidad < inventario.existencias:
+                item_articulos.save()
 
-        # Devolver un json con los datos del articulo
-        response_data['result'] = 'Se agregó el '
-        response_data['item_id'] = item_articulos.pk
-        response_data['articulo'] = str(item_articulos.articulo)
-        response_data['articulo_id'] = str(item_articulos.articulo.id)
-        response_data['precio'] = str(item_articulos.articulo.precio_venta)
-        response_data['cantidad'] = str(item_articulos.cantidad)
-        response_data['total_factura'] = str(factura.total)
+                # Suma al total de la factura
+                articulo = Articulos.objects.get(id=item_articulos.articulo.id)
+                factura.total += (articulo.precio_venta * item_articulos.cantidad)
+                factura.save()
+
+                # Devolver un json con los datos del articulo
+                response_data['result'] = 'Se agregó el articulo'
+                response_data['item_id'] = item_articulos.pk
+                response_data['articulo'] = str(item_articulos.articulo)
+                response_data['articulo_id'] = str(item_articulos.articulo.id)
+                response_data['precio'] = str(item_articulos.articulo.precio_venta)
+                response_data['cantidad'] = str(item_articulos.cantidad)
+                response_data['total_factura'] = str(factura.total)
+            else:
+                # Devolver una excepcion por que o hay suficientes articulos
+                response_data['result'] = 'No hay suficientes articulos para vender'
+                return HttpResponse(
+                    json.dumps(response_data),
+                    content_type="application/json",
+                    status=410,
+                    )
 
         return HttpResponse(
             json.dumps(response_data),
