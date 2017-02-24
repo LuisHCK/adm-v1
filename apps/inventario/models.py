@@ -17,6 +17,7 @@ class Inventario(models.Model):
     """Controlar la disponibilidad de los Articulos"""
     articulo = models.ForeignKey('Articulos', on_delete=models.CASCADE,)
     existencias = models.IntegerField()
+    minimo_existencias = models.IntegerField(default=1)
     fecha_creacion = models.DateTimeField(default=timezone.now)
     def __int__(self):
         return self.existencias

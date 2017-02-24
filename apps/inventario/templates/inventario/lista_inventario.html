@@ -10,6 +10,7 @@
       <th>#</th>
       <th>Nombre</th>
       <th>Existencias</th>
+      <th>Minimo Existencias</th>
       <th>Precio de Venta</th>
       <th>Acciones</th>
     </tr>
@@ -20,6 +21,7 @@
       <th scope="row">{{ inventario.articulo.id}}</th>
       <td>{{ inventario.articulo.nombre }}</td>
       <td>{{ inventario.existencias }}</td>
+      <td>{{ inventario.minimo_existencias }}</td>
       <td>{{ inventario.articulo.precio_venta }}</td>
       <td>
         <div class="btn-group" role="group" aria-label="acciones">
