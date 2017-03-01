@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from apps.inventario.models import Inventario, Articulos
 from .forms import ArticuloForm, InventarioForm
-from apps.ventas.models import Venta
 
 # Create your views here.
 
@@ -12,7 +11,16 @@ from apps.ventas.models import Venta
 def lista_inventario(request):
     """"Retorna la lista de los articulos en el inventario"""
     inventario = Inventario.objects.select_related().all()
-    return render(request, 'inventario/lista_inventario.html', {'inventario': inventario})
+    # calcular el total de dinero invertido en el Inventario
+    total_inversion = 0
+    for inv in inventario:
+        total_inversion += (inv.articulo.precio_venta * inv.existencias)
+
+
+    return render(request, 'inventario/lista_inventario.html', {
+        'inventario': inventario,
+        'total_inversion': total_inversion
+        })
 
 
 def detalles_articulo(request, pk):
