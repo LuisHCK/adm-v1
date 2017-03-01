@@ -147,8 +147,8 @@ h1 {
 }
 
 .user {
-        border-bottom:solid lightslategrey 1px;
-
+  border-top: solid lightslategrey 1px;
+  border-bottom: solid lightslategrey 1px;
 }
 
 .photo {
