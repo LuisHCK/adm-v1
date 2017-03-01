@@ -17,7 +17,6 @@ body {
 h1 {
   margin-bottom: 20px;
   padding-bottom: 9px;
-  border-bottom: 1px solid #eee;
 }
 
 
@@ -80,11 +79,22 @@ h1 {
 }
 
 .div_hover {
-  border-bottom: solid #37474F 2px;
+  color: white;
+  /* First we need to help some browsers along for this to work.
+     Just because a vendor prefix is there, doesn't mean it will
+     work in a browser made by that vendor either, it's just for
+     future-proofing purposes I guess. */
+  -o-transition: .5s;
+  -ms-transition: .5s;
+  -moz-transition: .5s;
+  -webkit-transition: .5s;
+  /* ...and now for the proper property */
+  transition: .5s;
 }
 
 .div_hover:hover {
   background-color: #424242 !important;
+  color: white;
 }
 
 
@@ -105,12 +115,52 @@ h1 {
 /* mouse over link */
 
 .nav-link-styled:hover {
-  color: #1565C0 !important;
+  color: white !important;
 }
 
 
 /* selected link */
 
 .nav-link-styled:active {
-  color: #558B2F !important;
+  color: lightgrey !important;
+}
+
+.nav-icon {
+  font-size: 34px;
+  float: left;
+  margin-right: 15px;
+  line-height: 30px;
+  width: 30px;
+  text-align: center;
+}
+
+.nav-item-text {
+  margin: 0;
+  line-height: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  position: relative;
+  left: 0;
+  opacity: 1;
+  white-space: nowrap;
+}
+
+.user {
+        border-bottom:solid lightslategrey 1px;
+
+}
+
+.photo {
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 50%;
+  border-width: 5px;
+  margin: 0 auto;
+}
+
+.photo img {
+  width: 80px;
+  height: 80px;
 }
