@@ -35,18 +35,21 @@
 				<thead>
 					<tr>
 						<th><span>Concepto</span></th>
-						<th><span>Precio</span></th>
+						<th><span>Cantidad</span></th>
+						<th><span>Precio Unitario</span></th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for item_articulo in item_articulos.all %}
 					<tr>
 						<td><span>{{item_articulo.articulo}}</span></td>
+						<td><span>{{item_articulo.cantidad}}</span></td>
 						<td class="center-xs"><span data-prefix>$</span><span>{{item_articulo.articulo.precio_venta}}</span></td>
 					</tr>
 					{% endfor %} {% for item_servicio in item_servicios.all %}
 					<tr>
 						<td><span>{{item_servicio.tipo_servicio}}</span></td>
+						<td><span>{{item_servicio.cantidad}}</span></td>
 						<td class="center-xs"><span data-prefix>$</span><span>{{item_servicio.tipo_servicio.costo}}</span></td>
 					</tr>
 					{% endfor %}
