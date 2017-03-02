@@ -13,7 +13,7 @@ class VentaForm(forms.ModelForm):
         fields = ['articulo', 'cantidad']
         widgets = {
             'articulo': Select(attrs={'class': 'form-control'}),
-            'cantidad': NumberInput(attrs={'class': 'form-control'}),
+            'cantidad': NumberInput(attrs={'class': 'form-control', 'id': 'cantidad_articulo'}),
         }
 
 

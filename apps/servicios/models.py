@@ -20,7 +20,7 @@ class Servicio(models.Model):
     descripcion = models.TextField(max_length=150)
     precio = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     tipo_servicio = models.ForeignKey(TipoServicio, null=True)
-    cantidad = models.IntegerField(blank=True, null=True)
+    cantidad = models.IntegerField(default=1)
     fecha_servicio = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return self.descripcion

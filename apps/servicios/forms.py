@@ -13,7 +13,7 @@ class ServicioForm(forms.ModelForm):
         fields = ['tipo_servicio', 'cantidad']
         widgets = {
             'tipo_servicio': Select(attrs={'class': 'form-control'}),
-            'cantidad': NumberInput(attrs={'class': 'form-control'}),
+            'cantidad': NumberInput(attrs={'class': 'form-control', 'id': 'cantidad_servicio'}),
         }
         labels = {
             'articulo': _('Articulo (Opcional)'),

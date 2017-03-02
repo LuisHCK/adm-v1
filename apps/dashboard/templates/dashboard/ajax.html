@@ -1,0 +1,91 @@
+<script>
+    $("#form_vender").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "{% url 'venta_ajax' %}",
+            data: {
+                articulo: $('#id_articulo').val(),
+                cantidad: $('#cantidad_articulo').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            type: "POST",
+            // handle a successful response
+            error: function (json) {
+                $('#id_articulo').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("Error al realizar la venta");
+            },
+
+            success: function (json) {
+                $('#id_articulo').val('');
+                console.log(json);
+                console.log("success");
+
+                // Quitar las la ultima fila de la tabla
+                $('#tabla_ventas').prepend(
+                    `<tr>
+                    <th scope="row">` + json.venta_id +
+                    `</th>
+                    <td>` + json.articulo +
+                    `</td>
+                    <td>` + json.cantidad +
+                    `</td>
+                    <td>` + json.precio_venta +
+                    `</td>
+                    <td>` + json.total +
+                    `</td>
+                    <td>` + json.vendedor +
+                    `</td>
+                    <td>` + json.fecha_venta +
+                    `</td>
+                </tr>`
+                );
+
+                $('#tabla_ventas tr:last').remove();
+            },
+        });
+    });
+
+    $("#form_servicio").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "{% url 'servicio_ajax' %}",
+            data: {
+                tipo_servicio: $('#id_tipo_servicio').val(),
+                cantidad: $('#cantidad_servicio').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            type: "POST",
+            // handle a successful response
+            error: function (json) {
+                $('#id_articulo').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("Error al realizar la venta");
+            },
+
+            success: function (json) {
+                $('#id_articulo').val('');
+                console.log(json);
+                console.log("success");
+
+                // Quitar las la ultima fila de la tabla
+                $('#tabla_servicios').prepend(
+                    `<tr>
+                        <th scope="row">`+ json.servicio_id +`</th>
+                        <td>`+ json.servicio +`</td>
+                        <td>`+ json.cantidad +`</td>
+                        <td>`+ json.precio_servicio +`</td>
+                        <td>`+ json.total +`</td>
+                        <td>`+ json.vendedor +`</td>
+                        <td>`+ json.fecha_servicio +`</td>
+                        <td></td>
+                    </tr>`
+                );
+
+                $('#tabla_servicios tr:last').remove();
+            },
+        });
+    });
+</script>
