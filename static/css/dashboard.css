@@ -164,3 +164,16 @@ h1 {
   width: 80px;
   height: 80px;
 }
+
+.white-ammount {
+  font-size: 3rem;
+  color: white;
+}
+
+.darker-nav {
+  background-color: #66615b;
+}
+
+.white-text {
+  color: white;
+}
