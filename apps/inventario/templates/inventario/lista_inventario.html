@@ -1,40 +1,45 @@
- {% extends 'base.html' %} {% block content %}
-<hr>
-<h3>Articulos en el Inventario</h3>
-<div class="btn-group" role="group" aria-label="acciones-1">
-  <a href="{% url 'crear_articulo' %}" class="btn btn-info">Añadir un articulo nuevo</a>
-</div>
-<div class="float-right">
-  <em>Total invertido en inventario:  
+ {% extends 'base.html' %} {% load staticfiles %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<div class="row">
+  {% include 'inventario/navbar.html' %}
+  <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+    <h3>Articulos en el Inventario</h3>
+    <div class="btn-group" role="group" aria-label="acciones-1">
+      <a href="{% url 'crear_articulo' %}" class="btn btn-info">Añadir un articulo nuevo</a>
+    </div>
+    <div class="float-right">
+      <em>Total invertido en inventario:  
   {{total_inversion}}</em>
+    </div>
+    <table class="table table-striped">
+      <thead class="thead-inverse">
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Existencias</th>
+          <th>Minimo Existencias</th>
+          <th>Precio de Venta</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inventario in inventario.all %}
+        <tr>
+          <th scope="row">{{ inventario.articulo.id}}</th>
+          <td>{{ inventario.articulo.nombre }}</td>
+          <td>{{ inventario.existencias }}</td>
+          <td>{{ inventario.minimo_existencias }}</td>
+          <td>{{ inventario.articulo.precio_venta }}</td>
+          <td>
+            <div class="btn-group" role="group" aria-label="acciones">
+              <a href="{% url 'act_existencias' inventario.id %}" class="btn btn-outline-primary"> Administrar </a>
+              <a href="{% url 'ver_articulo' inventario.articulo.pk %}" class="btn btn-outline-primary">Ver detalles</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
 </div>
-<table class="table table-striped">
-  <thead class="thead-inverse">
-    <tr>
-      <th>#</th>
-      <th>Nombre</th>
-      <th>Existencias</th>
-      <th>Minimo Existencias</th>
-      <th>Precio de Venta</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for inventario in inventario.all %}
-    <tr>
-      <th scope="row">{{ inventario.articulo.id}}</th>
-      <td>{{ inventario.articulo.nombre }}</td>
-      <td>{{ inventario.existencias }}</td>
-      <td>{{ inventario.minimo_existencias }}</td>
-      <td>{{ inventario.articulo.precio_venta }}</td>
-      <td>
-        <div class="btn-group" role="group" aria-label="acciones">
-          <a href="{% url 'act_existencias' inventario.id %}" class="btn btn-outline-primary"> Administrar </a>
-          <a href="{% url 'ver_articulo' inventario.articulo.pk %}" class="btn btn-outline-primary">Ver detalles</a>
-        </div>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
 {% endblock content %}

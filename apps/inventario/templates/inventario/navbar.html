@@ -1,0 +1,31 @@
+{% load staticfiles %}
+<nav class="toggled col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar darker-nav">
+    <div class="nav nav-pills flex-column center-xs user">
+        <div class="photo">
+            <img src="{% static 'img/avatar.png' %}" alt="avatar" class="avatar-user">
+        </div>
+        <h3 style="color: lightgray;">{{user.username}}</h3>
+    </div>
+    <ul class="nav nav-pills flex-column div_hover">
+        <a class="nav-item nav-link nav-link-styled">
+            <i class="nav-icon fi-shopping-cart"></i>
+            <p class="nav-item-text float-left">Venta Rápida</p>
+        </a>
+        <form id="form_vender" method="POST" class="post-form white-text">{% csrf_token %}
+            <div class="form-group" style="padding: 5%">
+                {{ form_venta.as_p }}
+                <button type="submit" class="save btn btn-success">Listo</button>
+            </div>
+        </form>
+    </ul>
+    <ul class="nav nav-pills flex-column div_hover">
+        {% if user.is_authenticated %}
+        <a class="nav-item nav-link nav-link-styled" href="{% url 'logout' %}" onclick="return confirm('¿Estas seguro de cerrar la sesión?')">
+            <i class="nav-icon fi-lock"></i>
+            <p class="nav-item-text float-left">Cerrar Sesión</p>
+        </a>
+        {% else %}
+        <a class="nav-item nav-link nav-link-styled" href="{% url 'login' %}">Iniciar Sesión</a> {% endif %}
+
+    </ul>
+</nav>
