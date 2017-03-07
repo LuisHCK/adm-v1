@@ -12,10 +12,13 @@
   <link rel="stylesheet" href="{% static 'css/flexboxgrid.css' %}">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">  
   <link rel='stylesheet' href="{% static 'css/foundation-icons.css' %}" />
+  <link rel='stylesheet' href="{% static 'css/toastr.min.css' %}" />
   <!--[if lt IE 9]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
   <![endif]-->  
   <script src="{% static 'js/jquery.js' %}"></script>
+  <script src="{% static 'js/scripts.js' %}"></script>
+  <script src="{% static 'js/toastr.min.js' %}"></script>
 </head>
 <body style="background-color: #F5F5F5;">
   <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
@@ -54,7 +57,6 @@
     {% block content %} {% endblock %}
   </div>
   <script src="{% static 'js/bootstrap.js' %}"></script>
-  <script src="{% static 'js/scripts.js' %}"></script>
   {% block js %}
   {% endblock %}
 </body>
