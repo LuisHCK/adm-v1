@@ -28,7 +28,11 @@ def detalles_articulo(request, pk):
     articulo = get_object_or_404(Articulos, pk=pk)
     existencias = Inventario.objects.only('existencias').get(articulo=articulo)
     return render(request, 'inventario/detalles_articulo.html',
-                  {'articulo': articulo, 'existencias': existencias})
+                  {
+                      'articulo': articulo,
+                      'existencias': existencias,
+                      'form': InventarioForm
+                  })
 
 
 def nuevo_articulo(request):
@@ -77,16 +81,24 @@ def nuevo_articulo_ajax(request):
 def actualizar_existencias(request, pk):
     """Edita las existencias de un articulo en el inventario"""
     inventario = get_object_or_404(Inventario, pk=pk)
+    response_data = {}
     if request.method == "POST":
-        form = InventarioForm(request.POST, instance=inventario)
-        if form.is_valid():
-            inventario = form.save(commit=False)
-            inventario.save()
-        return redirect('ver_inventario')
-    else:
-        form = InventarioForm(instance=inventario)
-    return render(request, 'inventario/editar_existencias.html', {'form': form})
+        inventario.existencias = request.POST['existencias']
+        inventario.minimo_existencias = request.POST['minimo_existencias']
+        inventario.save()
 
+        response_data['result'] = str('El inventario se actualizó con éxito')
+        response_data['existencias'] = str(inventario.existencias)
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json"
+        )
+
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
 
 def eliminar_articulo_ajax(request, pk):
     """Elimina un articulo"""

@@ -3,11 +3,17 @@
 <div class="row">
   {% include 'inventario/navbar.html' %}
   <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
-    <h3>Articulos en el Inventario</h3>
-    <div class="float-right">
-      <em>Total invertido en inventario:  
-  {{total_inversion}}</em>
+    <div class="row">
+      <div class="col-xs-6">
+        <h3>Articulos en el Inventario</h3>
+      </div>
+      <div class="col-xs-6">
+        <div class="float-right" style="margin-top: 1%;">
+          <span class="badge badge-info">Total invertido en inventario: {{total_inversion}}</span>
+        </div>
+      </div>
     </div>
+
     <table id="tabla_inventario" class="table table-striped">
       <thead class="thead-inverse">
         <tr>
@@ -31,8 +37,7 @@
 
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
               <a href="{% url 'ver_articulo' inventario.articulo.id %}" class="btn btn-outline-primary" }>Detalles</a>
-              <button class="btn btn-outline-danger del-btn" 
-                dir="{% url 'eliminar_articulo' inventario.articulo.id %}">
+              <button class="btn btn-outline-danger del-btn" dir="{% url 'eliminar_articulo' inventario.articulo.id %}">
                 Eliminar
               </button>
             </div>
@@ -46,7 +51,7 @@
 </div>
 
 <script id="ajax-script">
-  $(document).on('click', '.del-btn', function(event) {
+  $(document).on('click', '.del-btn', function (event) {
     event.preventDefault();
     var eliminar_art = $(this).parent();
     if (confirm("¿Seguro que quieres borrar el artículo?")) {
@@ -68,7 +73,7 @@
           $('#form_articulo')[0].reset();
           console.log(json);
           toastr["success"]("Se eliminó el artículo con éxito");
-          document.getElementById("art_"+json.articulo_id).remove();
+          document.getElementById("art_" + json.articulo_id).remove();
         },
       });
     }
