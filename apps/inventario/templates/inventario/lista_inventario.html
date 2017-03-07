@@ -4,14 +4,11 @@
   {% include 'inventario/navbar.html' %}
   <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
     <h3>Articulos en el Inventario</h3>
-    <div class="btn-group" role="group" aria-label="acciones-1">
-      <a href="{% url 'crear_articulo' %}" class="btn btn-info">Añadir un articulo nuevo</a>
-    </div>
     <div class="float-right">
       <em>Total invertido en inventario:  
   {{total_inversion}}</em>
     </div>
-    <table class="table table-striped">
+    <table id="tabla_inventario" class="table table-striped">
       <thead class="thead-inverse">
         <tr>
           <th>#</th>
@@ -24,17 +21,22 @@
       </thead>
       <tbody>
         {% for inventario in inventario.all %}
-        <tr>
+        <tr id="art_{{ inventario.articulo.id }}">
           <th scope="row">{{ inventario.articulo.id}}</th>
           <td>{{ inventario.articulo.nombre }}</td>
           <td>{{ inventario.existencias }}</td>
           <td>{{ inventario.minimo_existencias }}</td>
           <td>{{ inventario.articulo.precio_venta }}</td>
           <td>
-            <div class="btn-group" role="group" aria-label="acciones">
-              <a href="{% url 'act_existencias' inventario.id %}" class="btn btn-outline-primary"> Administrar </a>
-              <a href="{% url 'ver_articulo' inventario.articulo.pk %}" class="btn btn-outline-primary">Ver detalles</a>
+
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+              <a href="{% url 'ver_articulo' inventario.articulo.id %}" class="btn btn-outline-primary" }>Detalles</a>
+              <button class="btn btn-outline-danger del-btn" 
+                dir="{% url 'eliminar_articulo' inventario.articulo.id %}">
+                Eliminar
+              </button>
             </div>
+
           </td>
         </tr>
         {% endfor %}
@@ -42,4 +44,35 @@
     </table>
   </main>
 </div>
+
+<script id="ajax-script">
+  $(document).on('click', '.del-btn', function(event) {
+    event.preventDefault();
+    var eliminar_art = $(this).parent();
+    if (confirm("¿Seguro que quieres borrar el artículo?")) {
+      $.ajax({
+        url: $(this).attr('dir'),
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        dataType: "json",
+        type: "POST",
+        // Mostar un mensaje de error 
+        error: function (json) {
+          $('#form_articulo')[0].reset();
+          console.log(json);
+          toastr["error"]("Ocurrió un error al eliminar el artículo");
+        },
+
+        success: function (json) {
+          $('#form_articulo')[0].reset();
+          console.log(json);
+          toastr["success"]("Se eliminó el artículo con éxito");
+          document.getElementById("art_"+json.articulo_id).remove();
+        },
+      });
+    }
+  });
+</script>
+
 {% endblock content %}
