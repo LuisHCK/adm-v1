@@ -1,0 +1,53 @@
+<script>
+    $("#form_articulo").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "{% url 'ajax_crear_articulo' %}",
+            data: {
+                nombre: $('#id_nombre').val(),
+                descripcion: $('#id_descripcion').val(),
+                precio_compra: $('#id_precio_compra').val(),
+                precio_venta: $('#id_precio_venta').val(),                
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            type: "POST",
+            // Mostar un mensaje de error 
+            error: function (json) {
+                $('#form_articulo')[0].reset();
+                console.log(json); // log the returned json to the console
+                toastr["error"]("No se pudo crear el artículo")
+            },
+
+            success: function (json) {
+                $('#form_articulo')[0].reset();
+                toastr["success"]("Se creó el artículo con éxito")
+
+                // Agregar el artículo a la tabla
+                $('#tabla_inventario').prepend(
+                    `<tr id="art_`+ json.articulo_id +`">
+                    <th scope="row">` + json.articulo_id +
+                    `</th>
+                    <td>` + json.nombre +
+                    `</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>` + json.precio_venta +
+                    `</td>
+                    <td>
+
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <a href="/inventario/articulo/`+ json.articulo_id +`" class="btn btn-outline-primary" }>Detalles</a>
+                        <button class="btn btn-outline-danger del-btn" 
+                            dir="/inventario/eliminar/`+ json.articulo_id +`/">
+                            Eliminar
+                        </button>
+                        </div>
+
+                    </td>
+                </tr>`
+                );
+            },
+        });
+    });
+</script>
