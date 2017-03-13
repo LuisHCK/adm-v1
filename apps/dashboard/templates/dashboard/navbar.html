@@ -1,9 +1,9 @@
 <nav class="toggled col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar darker-nav">
     <div class="nav nav-pills flex-column center-xs user">
-        <div class="photo">
+        <a href="{% url 'configuracion' %}"><div class="photo">
             <img src="static/img/11.jpg" alt="avatar" class="avatar-user">
         </div>
-        <h3 style="color: lightgray;">{{user.username}}</h3>
+        <h3 style="color: lightgray;">{{user.username}}</h3></a>
     </div>
     <ul class="nav nav-pills flex-column div_hover">
         <a href="#" id="vender" class="nav-item nav-link nav-link-styled">
@@ -31,10 +31,18 @@
     </ul>
     <ul class="nav nav-pills flex-column div_hover">
         {% if user.is_authenticated %}
-        <a class="nav-item nav-link nav-link-styled" href="{% url 'logout' %}" onclick="return confirm('¿Estas seguro de cerrar la sesión?')">
+         <li><a href="#" onClick="document.getElementById('logout').submit()"></a>
+
+        <a href="#" class="nav-item nav-link nav-link-styled"  method="POST" action="{% url 'logout' %}" 
+        onClick="document.getElementById('logout').submit()">
             <i class="nav-icon fi-lock"></i>
             <p class="nav-item-text float-left">Cerrar Sesión</p>
         </a>
+        <form onclick="return confirm('¿Estas seguro de cerrar la sesión?')" id="logout" method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <input type="hidden">             
+        </form>
+
         {% else %}
         <a class="nav-item nav-link nav-link-styled" href="{% url 'login' %}">Iniciar Sesión</a> {% endif %}
 

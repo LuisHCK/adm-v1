@@ -1,0 +1,18 @@
+{% extends 'userbase.html' %}
+{% block forms %}
+<div class="container">
+  <div class="row">
+  	<div class="col-md-6">    
+          <form class="form-horizontal" method="post" action="{% url 'configuracion' %}">
+  			{% csrf_token %}
+         	{{userform}}
+         	{{perfilform}}
+         	<img src="{{ perfilform.instance.foto.url }}" />
+    		<button type="submit" class="btn btn-lg btn-primary btn-block">Guardar</button>
+        </form>
+    
+    </div> 
+  </div>
+</div>
+
+{% endblock %}

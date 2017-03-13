@@ -16,11 +16,16 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from apps.usuarios import views as user_views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     url(r'', include('apps.dashboard.urls')),
-    url(r'^login/$', auth_views.login, name='login'),
-    url(r'^logout/$', auth_views.logout, {'next_page': 'login'}, name='logout'),
+    url(r'^login/$', user_views.iniciar_sesion, name='login'),
+    url(r'^logout/$', user_views.cerrar_sesion, name='logout'),
+    url(r'^signup/$', user_views.crear_cuenta, name='signup'),
+    url(r'^configuracion/$', user_views.configuracion, name='configuracion'),
     url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', admin.site.urls),
     url(r'^inventario/', include('apps.inventario.urls')),
@@ -28,4 +33,6 @@ urlpatterns = [
     url(r'^caja/', include('apps.caja.urls')),
     url(r'^servicios/', include('apps.servicios.urls')),
     url(r'^facturas/', include('apps.facturas.urls')),
-]
+    url(r'^usuarios/', include('apps.usuarios.urls')),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

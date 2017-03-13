@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'apps.caja',
     'apps.servicios',
     'apps.facturas',
+    'apps.usuarios',
 ]
 
 MIDDLEWARE = [
@@ -153,3 +154,5 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 #STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 LOGIN_REDIRECT_URL = 'inicio'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR

@@ -1,0 +1,16 @@
+{% extends 'userbase.html' %}
+{% block forms %}
+<div class="container #CFD8DC center-xs " id="login">
+  <form class="form-signin login-box" method="post" action="{% url 'usuarios:iniciar_sesion' %}">
+  	{% csrf_token %}
+    <h2 class="form-signin-heading">Inicia Sesión</h2>
+    {% csrf_token %}
+    <label for="username" class="sr-only">Nombre de Usuario</label>
+    <input type="text" id="username" name="username" class="form-control" placeholder="Nombre de Usuario" required autofocus>
+    <label for="password" class="sr-only">Contraseña</label>
+    <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
+    <button type="submit" class="btn btn-lg btn-primary btn-block">Iniciar</button>
+    <a href="{% url 'signup' %}"><span class="align-text-bottom">¿No tienes una cuenta?, registrate</span></a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'userbase.html' %}
+{% block forms %}
+<div class="container">
+  <div class="row">
+  	<div class="col-md-6">
+    
+          <form class="form-horizontal" method="post" action="{% url 'usuarios:registrar_usuario' %}">
+  			{% csrf_token %}
+          <fieldset>
+            <div id="legend">
+              <legend class="">Registrate</legend>
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="username">Nombre de usuario</label>
+              <div class="controls">           
+                {{form.username}}
+                <p class="help-block">El usuario puede contener letras y numeros, sin espacios.</p>
+              </div>
+            </div>
+          <div class="control-group">
+              <label class="control-label" for="username">Nombre</label>
+              <div class="controls">                
+                {{form.first_name}}
+              </div>
+            </div>
+          <div class="control-group">
+              <label class="control-label" for="username">Apellido</label>
+              <div class="controls">                
+                {{form.last_name}}        
+              </div>
+            </div>
+         
+            <div class="control-group">
+              <label class="control-label" for="email">E-mail</label>
+              <div class="controls">
+                {{form.email}}
+                <p class="help-block">Por favor brindanos tu correo</p>
+              </div>
+            </div>
+         
+            <div class="control-group">
+              <label class="control-label" for="password">Contraseña</label>
+              <div class="controls">
+                {{form.password}}
+                <p class="help-block">La coontraseña debe tener al menos 8 caracteres</p>
+              </div>
+            </div>
+         
+            <div class="control-group">
+              <label class="control-label" for="password_confirm">Contraseña (Confirmacion)</label>
+              <div class="controls">
+                {{form.confirmar_passwd}}
+                <p class="help-block">Por favor confirma tu contraseña</p>
+              </div>
+            </div>
+         
+            <div class="control-group">
+              <div class="controls">
+                <button class="btn btn-success">Registrarse</button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+    
+    </div> 
+  </div>
+</div>
+
+{% endblock %}
