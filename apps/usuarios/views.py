@@ -54,27 +54,34 @@ def crear_cuenta(request):
 def configuracion(request):
 	current_user = User.objects.get(id=request.user.id)
 	try:
-		current_settings = Perfil.objects.get(usuario_id=current_user.id)		
+		current_settings = Perfil.objects.get(usuario_id=current_user.id)
 	except Perfil.DoesNotExist:
 		Perfil.objects.create(usuario_id=current_user.id)
-		current_settings = Perfil.objects.get(usuario_id=current_user.id)		
+		current_settings = Perfil.objects.get(usuario_id=current_user.id)
 	if request.POST:
 		user_form = UserFormSettings(request.POST, instance=current_user)
 		perfil_form = PerfilForm(request.POST, request.FILES, instance=current_settings)
-		if user_form.is_valid() and perfil_form.is_valid():			
+
+		if user_form.is_valid() and perfil_form.is_valid():
 			user_form.save()
 			perfil_form.save()
-			x = perfil_form(foto= request.FILES['foto'])
-			x.save()
+
 			return redirect('inicio')
-		else:			
-			return render(request, 'usuarios/configuracion.html', {'userform': user_form, 'perfilform': perfil_form})
-	else:		
+
+		else:
+			return render(request, 'usuarios/configuracion.html', {
+				'userform': user_form, 'perfilform': perfil_form
+				})
+	else:
 		user_form = UserFormSettings(initial={'username': current_user.username,
 			'first_name': current_user.first_name, 'last_name':current_user.last_name,
 			'email':current_user.email})
 		perfil_form = PerfilForm(initial={'cedula': current_settings.cedula,
-			'puesto': current_settings.puesto, 'telefono': current_settings.telefono, 'direccion': current_settings.direccion,
+			'puesto': current_settings.puesto, 'telefono': current_settings.telefono,
+			'direccion': current_settings.direccion,
 			'foto': current_settings.foto.url})
-		return render(request, 'usuarios/configuracion.html', {'userform': user_form, 'perfilform': perfil_form})
+		foto = current_settings.foto
+		return render(request, 'usuarios/configuracion.html', {
+			'userform': user_form, 'perfilform': perfil_form, 'foto': foto
+			})
 

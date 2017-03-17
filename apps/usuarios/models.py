@@ -22,7 +22,7 @@ class Perfil(models.Model):
 
 	''' Los siguientes dos metodos se entrelazan con el modelo de usuarios de django
 	cuando se lanza un evento de guardado.
-	
+
 	@receiver(post_save, sender=User)
 	def crear_usuario(sender, instance, created, **kwargs):
 		if created:

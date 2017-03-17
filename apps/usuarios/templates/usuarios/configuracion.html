@@ -1,18 +1,35 @@
-{% extends 'userbase.html' %}
-{% block forms %}
+{% extends 'base.html' %} {% load staticfiles %} {% block content %}
 <div class="container">
-  <div class="row">
-  	<div class="col-md-6">    
-          <form class="form-horizontal" method="post" action="{% url 'configuracion' %}">
-  			{% csrf_token %}
-         	{{userform}}
-         	{{perfilform}}
-         	<img src="{{ perfilform.instance.foto.url }}" />
-    		<button type="submit" class="btn btn-lg btn-primary btn-block">Guardar</button>
-        </form>
-    
-    </div> 
-  </div>
+	<div class="row">
+		<div class="col-md-3">
+			<img src="{{foto.url}}" class="responsive-img" />
+
+		</div>
+		<div class="col-md-4">
+			<h5 class="center-xs"><b>Datos de Cuenta</b></h5>
+			<hr>
+			<form class="form-horizontal" method="post" action="{% url 'configuracion' %}">
+				{% csrf_token %} {{userform}}
+				<br>
+					<button type="submit" class="btn btn-primary">Guardar</button>
+			</form>
+		</div>
+
+		<div class="col-md-4">
+			<h5 class="center-xs"><b>Datos Personales</b></h5>
+			<hr>
+			<form class="form-horizontal" method="post" action="{% url 'configuracion' %}">
+				{% csrf_token %}{{perfilform}}
+				<br>
+				<button type="submit" class="btn btn-primary">Guardar</button>
+			</form>
+		</div>
+	</div>
 </div>
 
+<style>
+	body {
+		padding-top: 15px;
+	}
+</style>
 {% endblock %}
