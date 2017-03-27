@@ -41,3 +41,4 @@ var/
 assets/ # The directory set as STATIC_ROOT where Apache creates new static files on live web servers.
 
 .idea/*
+media/*
