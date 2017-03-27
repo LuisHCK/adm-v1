@@ -22,3 +22,11 @@
 .box{
   border-radius: 4px;
 }
+
+.circle-img{
+  border-radius: 50%
+}
+.responsive-img{
+  width: auto;
+  height: 100%;
+}
