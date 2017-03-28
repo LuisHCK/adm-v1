@@ -20,13 +20,22 @@
   box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2); }
 
 .box{
-  border-radius: 4px;
+  border-radius: 6px;
+}
+
+.white, .box{
+  background-color: white;
 }
 
 .circle-img{
   border-radius: 50%
 }
-.responsive-img{
-  width: auto;
-  height: 100%;
+img.responsive-img,
+video.responsive-video {
+  max-width: 100%;
+	height: auto;
+}
+.card {
+    color: #607D8B !important;
+    text-decoration: none !important;
 }
