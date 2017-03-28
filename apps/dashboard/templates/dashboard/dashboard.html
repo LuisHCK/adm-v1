@@ -1,5 +1,6 @@
  {% extends 'base.html' %} {% load staticfiles %} {% block content %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<br> {% include 'messages.html' %}
 <div class="row">
 {% include 'dashboard/navbar.html' %}
   <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
