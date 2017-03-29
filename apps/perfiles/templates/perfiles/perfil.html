@@ -1,0 +1,145 @@
+{% extends 'base.html' %} {% block content %} {% include 'messages.html' %}
+<br> {% include 'messages.html' %}
+<div style="margin-top: 60px;">
+    <button class="btn btn-primary float-right" id="btn_editar">
+        <i class="fi fi-pencil"></i>
+        Editar
+  </button>
+    <h4>Detalles del Empleado</h4>
+    <hr>
+    <div id="perfil_card" class="card mdl-shadow--2dp">
+        <div class="card-block row">
+            {% comment %}BLOQUE AVATAR{% endcomment %}
+            <div class="col-md-2 text-center">
+                <strong>Foto</strong>
+                <hr>
+                <img src="{{perfil.foto.url}}" alt="{{perfil}}" class="responsive-img circle-img">
+
+            </div>
+            {% comment %}BLOQUE DATOS USUARIO{% endcomment %}
+            <div class="col-md-5">
+                <div class="text-center"><strong>Datos Personales</strong></div>
+                <hr>
+                <ul>
+                    <li id=""><b>Nombres: </b> {{perfil.nombres}} </li>
+                    <li id=""><b>Apellidos: </b> {{perfil.apellidos}} </li>
+                    <li id=""><b>Cédula: </b> {{perfil.cedula}} </li>
+                    <li id=""><b>Teléfono: </b> {{perfil.telefono}} </li>
+                    <li id=""><b>Dirección:</b> {{perfil.direccion}} </li>
+                    <li id=""><b>Fecha Nacimiento: </b> {{perfil.fecha_nacimiento}} </li>
+                    <li id=""><b>Fecha Inicio: </b> {{perfil.fecha_entrada}} </li>
+                </ul>
+            </div>
+            {% comment %}BLOQUE DATOS PERSONALES{% endcomment %}
+            <div class="col-md-5">
+                <div class="text-center"><strong>Datos de Acceso</strong></div>
+                <hr>
+                <ul>
+                    <li><b>Nombre de Usuario: </b></li>
+                    <li><b>Correo: </b> {{perfil.usuario.email}} </li>
+                    <li><b>Cargo: </b> {{puesto}} </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% comment %}FORMULARIO EDITAR PERFIL{% endcomment %}
+<div class="text-center" style="display: none" id="formulario_perfil">
+    <div class="box mdl-shadow--2dp" style="padding: 3%">
+        {% comment %}FORM PERFIL{% endcomment %}
+        <h4>Editar Empleado</h4>
+        <hr>
+        <form action="{% url 'editar_perfil' perfil.id %}" method="POST" class="post-form text-left" id="form_perfil" enctype="multipart/form-data">{% csrf_token %} {% if next %}
+            <input type="hidden" name="next" value="{{ next }}" /> {% endif %}
+
+            <div class="row">
+
+                <div class="col-md-4 col-sm-6">
+                    <label for="id_nombres">Nombres Completos:</label>
+                    <input class="form-control" id="id_nombres" maxlength="100" name="nombres" type="text" value="{{perfil.nombres}}" required/>
+
+                    <label for="id_apellidos">Apellidos:</label>
+                    <input class="form-control" id="id_apellidos" maxlength="100" name="apellidos" type="text" value="{{perfil.apellidos}}" required/>
+
+                    <label for="id_cedula">Cédula de Identidad:</label>
+                    <input class="form-control" id="id_cedula" maxlength="200" name="cedula" type="text" value="{{perfil.cedula}}" required/>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <label for="id_direccion">Dirección de recidencia:</label>
+                    <input class="form-control" id="id_direccion" maxlength="200" name="direccion" type="text" value="{{perfil.direccion}}"
+                        required/>
+
+                    <label for="id_email">Correo Electrónico:</label>
+                    <input class="form-control" id="id_email" maxlength="100" name="email" type="email" value="{{perfil.email}}" required/>
+
+                    <label for="id_telefono">Número de teléfono:</label>
+                    <input class="form-control" id="id_telefono" maxlength="100" name="telefono" type="text" value="{{perfil.telefono}}" required/>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <label for="id_fecha_nacimiento">Fecha de Nacimiento:</label>
+                    <input class="form-control" id="id_fecha_nacimiento" name="fecha_nacimiento" type="text" value="{{perfil.fecha_nacimiento|date:'d/m/Y'}}" />
+
+                    <label for="id_fecha_entrada">Fecha de entrada:</label>
+                    <input class="form-control" id="id_fecha_entrada" name="fecha_entrada" type="text" value="{{perfil.fecha_entrada|date:'d/m/Y'}}" />
+
+                    <label for="id_foto">Foto:</label>
+                    <input class="form-control" id="id_foto" name="foto" type="file" />
+                </div>
+
+            </div>
+            <button type="submit" class="save btn btn-success">Guardar</button>
+        </form>
+    </div>
+
+    <style>
+        .box {
+            color: #546E7A;
+        }
+    </style>
+
+    <script>
+        $("#btn_editar").click(function () {
+            // assumes element with id='button'
+            $("#formulario_perfil").slideToggle();
+            $("#perfil_card").slideToggle();
+        });
+
+        $("#form_perfil_").submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{% url 'editar_perfil' perfil.id %}",
+                data: {
+                    nombres: $('#id_nombres').val(),
+                    apellidos: $('#id_apellidos').val(),
+                    cedula: $('#id_cedula').val(),
+                    direccion: $('#id_direccion').val(),
+                    email: $('#id_email').val(),
+                    telefono: $('#id_telefono').val(),
+                    fecha_entrada: $('#id_fecha_entrada').val(),
+                    fecha_nacimiento: $('#id_fecha_nacimiento').val(),
+                    foto: $('#id_foto').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                dataType: "json",
+                type: "POST",
+                // Mostar un mensaje de error 
+                error: function (json) {
+                    $('#form_perfil')[0].reset();
+                    console.log(json); // log the returned json to the console
+                    toastr["error"]("No se pudo editar el perfil del empleado")
+                },
+
+                success: function (json) {
+                    $('#form_perfil')[0].reset();
+                    toastr["success"]("Se editó con éxito")
+
+                    // Agregar el artículo a la tabla
+                },
+            });
+        });
+    </script>
+
+    {% endblock content %}
