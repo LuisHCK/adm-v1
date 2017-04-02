@@ -1,0 +1,38 @@
+{% extends 'base.html' %} {% block content %} {% include 'messages.html' %}
+<br> {% include 'messages.html' %}
+<div style="margin-top: 60px;">
+  <h4>Empleados</h4>
+  {% for perfil in perfiles %}
+
+  <a href="{% url 'ver_perfil' perfil.id %}" class="card">
+    <div class="card-block">
+      <div class="row">
+        <div class="col-md-1 col-sm-2">
+          <img src="{{perfil.foto.url}}" alt="{{perfil}}" class="circle-img responsive-img">
+        </div>
+        <div class="col-md-3 col-sm-3">
+          <strong>{{perfil}}</strong><br>
+          <span class="username">{{perfil.usuario}}</span><br>
+          <em>
+         {% if perfil.usuario.is_staff %}
+            <b>ADMINISTRADOR</b>
+         {% else %}
+            {{perfil.usuario.groups.all.0}}
+         {% endif %}
+       </em>
+        </div>
+        <div class="col-md-3 col-sm-3">
+          <strong>Teléfono: </strong> {{perfil.telefono}} <br>
+          <strong>Dirección: </strong> {{perfil.direccion}} <br>
+          <strong>Fecha Ingreso: </strong> {{perfil.fecha_entrada}} <br>
+          <strong>Cédula: </strong> {{perfil.cedula}}
+        </div>
+        <div class="col-md-3 col-sm-3">
+          <strong>Fecha Nacimiento: </strong> {{perfil.fecha_nacimiento}}
+        </div>
+      </div>
+    </div>
+</div>
+</a>
+
+{% endfor %} {% endblock content %}
