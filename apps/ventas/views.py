@@ -12,7 +12,7 @@ from .forms import VentaForm
 def ventas(request):
     """Retorna la pagina de inicio"""
     venta = Venta.objects.all().order_by('-fecha_venta')
-    return render(request, 'ventas/venta.html', {'venta': venta})
+    return render(request, 'ventas/venta.html', {'venta': venta, 'form_venta': VentaForm})
 
 
 def realizar_venta(request):

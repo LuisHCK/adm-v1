@@ -94,6 +94,7 @@ def venta_ajax(request):
         response_data['articulo'] = str(venta.articulo)
         response_data['cantidad'] = str(venta.cantidad)
         response_data['precio_venta'] = str(venta.articulo.precio_venta)
+        response_data['precio_compra'] = str(venta.articulo.precio_compra)
         response_data['total'] = str(venta.total)
         response_data['vendedor'] = str(venta.usuario.username)
         response_data['fecha_venta'] = str(localize(venta.fecha_venta))
