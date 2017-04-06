@@ -2084,7 +2084,7 @@ pre code {
 
 .table th,
 .table td {
-  padding: 0.75rem;
+  padding: 0.40rem;
   vertical-align: top;
   border-top: 1px solid #eceeef;
 }
@@ -2206,7 +2206,8 @@ pre code {
 
 .thead-inverse th {
   color: #fff;
-  background-color: #292b2c;
+  background-color: #37474F;
+  height: 35px;
 }
 
 .thead-default th {
