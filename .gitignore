@@ -42,3 +42,4 @@ assets/ # The directory set as STATIC_ROOT where Apache creates new static files
 
 .idea/*
 media/*
+.vscode/*
