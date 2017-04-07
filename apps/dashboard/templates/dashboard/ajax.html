@@ -15,12 +15,14 @@
                 $('#id_articulo').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
                 console.log("Error al realizar la venta");
+                toastr["eror"](json.message)                
             },
 
             success: function (json) {
                 $('#id_articulo').val('');
                 console.log(json);
                 console.log("success");
+                toastr["success"](json.message)
 
                 // Quitar las la ultima fila de la tabla
                 $('#tabla_ventas').prepend(
