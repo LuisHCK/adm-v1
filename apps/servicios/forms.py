@@ -19,3 +19,14 @@ class ServicioForm(forms.ModelForm):
             'articulo': _('Articulo (Opcional)'),
             'tipo_servicio': _('Tipo de Servicio realizado'),
         }
+
+class TipoServicioForm(forms.ModelForm):
+    '''Formulario para crear tipos de serivicio'''
+    class Meta:
+        model = TipoServicio
+
+        fields = ['nombre', 'costo']
+        widgets = {
+            'nombre': TextInput(attrs={'class': 'form-control'}),
+            'costo': NumberInput(attrs={'class': 'form-control'}),
+        }
