@@ -71,6 +71,7 @@ abbr[title] {
 b,
 strong {
   font-weight: inherit;
+  color: #4e4e4e;
 }
 
 b,
@@ -4425,6 +4426,7 @@ tbody.collapse.show {
 
 .card-title {
   margin-bottom: 0.75rem;
+  color: #212121;
 }
 
 .card-subtitle {
