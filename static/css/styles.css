@@ -27,6 +27,10 @@
   background-color: white;
 }
 
+.box-form{
+  padding: 2%;
+}
+
 .circle-img{
   border-radius: 50%
 }
@@ -38,4 +42,10 @@ video.responsive-video {
 .card {
     color: #607D8B !important;
     text-decoration: none !important;
+}
+
+@media only screen and (max-width: 320px) {
+
+   .responsive-text { font-size: 2em; }
+
 }
