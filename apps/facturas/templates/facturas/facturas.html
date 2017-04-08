@@ -1,59 +1,46 @@
- {% extends 'base.html' %} {% block content %}
-<br>
- {% include 'messages.html' %}
-<h3>Facutras realizadas</h3>
-<div class="btn-group" role="group" aria-label="Basic example">
-    <a href="{% url 'nueva_factura' %}" class="btn btn-info">Nueva factura</a>
-    <a href="{% url 'facturas_pagadas' %}" class="btn btn-info">Cobradas</a>
-    <a href="{% url 'facturas_pendientes' %}" class="btn btn-info">
-        Pendientes
+ {% extends 'base.html' %} {% load staticfiles %} {% block content %}
+ <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% include 'messages.html' %}
+<div class="row">
+    {% include 'facturas/navbar.html' with form_factura=form_factura %}
+  <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+<h3>Facturas</h3>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="#todas" role="tab">Todas</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#abiertas" role="tab">
+        Facturas Abiertas
         {% if pendientes %}
         <span class="badge badge-pill badge-default">{{ pendientes }}</span>
         {% endif %}
-    </a>
+        </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#messages" role="tab">Pendientes</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#settings" role="tab">Informes</a>
+  </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane active" id="todas" role="tabpanel">
+      {% include 'facturas/parciales/tabla.html' with id="tabla_lista" %}
+  </div>
+
+  <div class="tab-pane" id="abiertas" role="tabpanel">
+      {% include 'facturas/parciales/pendientes.html' %}
+  </div>
+
+  <div class="tab-pane" id="messages" role="tabpanel">...</div>
+
+  <div class="tab-pane" id="settings" role="tabpanel">...</div>
 </div>
-<table class="table table-striped">
-    <thead class="thead-inverse">
-        <tr>
-            <th>#</th>
-            <th>Cliente</th>
-            <th>Items</th>
-            <th>Total</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for factura in facturas.all %}
-        <tr>
-            <th scope="row">{{ factura.id}}</th>
-            <td>{{ factura.cliente}}</td>
-            <td>{{ factura.items.count }}</td>
-            <td>{{ factura.total }}</td>
-            <td>
-                {% if factura.cobrada %}
-                    Cobrado
-                {% else %}
-                    Pendiente
-                {% endif %}
-            </td>
-            <td>
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <a href="{% url 'detalles_factura' factura.id %}" class="btn btn-outline-primary" }>Detalles</a>
-                    <div class="btn-group" role="group">
-                        <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">Acciones</button>
-                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                            <a class="dropdown-item" href="{% url 'cobrar_factura' factura.id %}">Cobrar</a>
-                            <a class="dropdown-item" href="{% url 'eliminar_factura' factura.id %}" onclick="return confirm('¿Estas seguro que de eliminar la factura?')">Eliminar</a>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
 {% endblock content %}
 
