@@ -19,7 +19,5 @@ urlpatterns = [
 
     ##
     url(r'^(?P<pk>[0-9]+)/$', views.detalles_factura, name='detalles_factura'),
-    url(r'^pagadas/$', views.facturas_pagadas, name='facturas_pagadas'),
-    url(r'^pendientes/$', views.facturas_pendientes, name='facturas_pendientes'),
     url(r'^cobrar/(?P<pk>[0-9]+)$', views.cobrar_factura, name='cobrar_factura'),
 ]
