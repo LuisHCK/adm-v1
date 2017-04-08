@@ -5,4 +5,7 @@ $(document).ready(function () {
     $("#servicio").click(function () {
         $("#form_servicio").toggle(500);
     });
+    $("#abrirfact").click(function () {
+        $("#form_factura").toggle(500);
+    });
 });
