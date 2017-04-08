@@ -113,45 +113,55 @@ def venta_ajax(request):
 def servicio_ajax(request):
     """Realiza un registro del servicio realizado"""
     response_data = {}
-    caja = Caja.objects.last()
+
     if request.method == "POST":
         form = ServicioForm(request.POST)
-        if form.is_valid():
-            servicio = form.save(commit=False)
-            servicio.usuario = request.user
 
-            # Asignar el precio del servicio segun el tipo de servicio
-            tiposervicio = TipoServicio.objects.get(
-                id=servicio.tipo_servicio.id)
-            servicio.tipo_servicio = tiposervicio
+        if Caja.objects.count() > 0:
+            if form.is_valid():
+                servicio = form.save(commit=False)
+                servicio.usuario = request.user
 
-            # Calcular el precio en base a la cantidad de producto
+                # Asignar el precio del servicio segun el tipo de servicio
+                tiposervicio = TipoServicio.objects.get(
+                    id=servicio.tipo_servicio.id)
+                servicio.tipo_servicio = tiposervicio
 
-            # Si no se escribe una cantidad se asiga un 1
-            if servicio.cantidad is None:
-                servicio.cantidad = 1
+                # Calcular el precio en base a la cantidad de producto
 
-            servicio.precio = (tiposervicio.costo * servicio.cantidad)
-            servicio.descripcion = tiposervicio.nombre
+                # Si no se escribe una cantidad se asiga un 1
+                if servicio.cantidad is None:
+                    servicio.cantidad = 1
 
-            servicio.save()
+                servicio.precio = (tiposervicio.costo * servicio.cantidad)
+                servicio.descripcion = tiposervicio.nombre
 
-        # Guardar en caja el monto del servicio
-        caja.saldo = (caja.saldo + servicio.precio)
-        caja.save()
+                servicio.save()
 
-        response_data['result'] = "Se realizó la venta!"
-        response_data['servicio_id'] = str(servicio.id)
-        response_data['servicio'] = str(servicio.tipo_servicio)
-        response_data['cantidad'] = str(servicio.cantidad)
-        response_data['precio_servicio'] = str(servicio.tipo_servicio.costo)
-        response_data['total'] = str(servicio.precio)
-        response_data['vendedor'] = str(servicio.usuario.username)
-        response_data['fecha_servicio'] = str(localize(servicio.fecha_servicio))
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type="application/json"
-        )
+            # Guardar en caja el monto del servicio
+            caja = Caja.objects.last()
+            caja.saldo = (caja.saldo + servicio.precio)
+            caja.save()
+
+            response_data['result'] = "Se realizó la venta!"
+            response_data['servicio_id'] = str(servicio.id)
+            response_data['servicio'] = str(servicio.tipo_servicio)
+            response_data['cantidad'] = str(servicio.cantidad)
+            response_data['precio_servicio'] = str(servicio.tipo_servicio.costo)
+            response_data['total'] = str(servicio.precio)
+            response_data['vendedor'] = str(servicio.usuario.username)
+            response_data['fecha_servicio'] = str(localize(servicio.fecha_servicio))
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+            )
+        else:
+            response_data['result'] = "Aun no se ha realizado la apertura de caja"
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500,
+            )
     else:
         form = ServicioForm()
         return HttpResponse(
