@@ -1,14 +1,14 @@
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .forms import CajaForm, EgresoForm
 from .models import Caja, Capital, Egresos
+from apps.common import validaciones
 
 @login_required(login_url='login') #redirect when user is not logged in
 
-
-# Create your views here.
 def inicio(request):
     """Muestra el estado actual de la caja"""
     caja = Caja.objects.all().order_by('-fecha_apertura')
@@ -21,43 +21,43 @@ def apertura_caja(request):
     if caja:
         return redirect('caja_inicio')
     else:
-        if request.method == 'POST':
+        if request.method == 'POST' and validaciones.es_administrador(request.user):
             form = CajaForm(request.POST)
             if form.is_valid():
                 caja = form.save(commit=False)
                 caja.usuario = request.user
                 caja.save()
+            messages.success(request, "Se realizó la apertura.")
             return redirect('caja_inicio')
         else:
             form = CajaForm()
         return render(request, 'caja/saldo_form.html', {'form': form})
 
 
-def cierre_caja(request):
+def cierre_caja(request, saldo):
     """Cierra caja y se retira el dinero"""
     ultima_caja = Caja.objects.last()
     if request.method == "POST":
-        form = CajaForm(request.POST)
-        if form.is_valid():
-            caja = form.save(commit=False)
-            caja.usuario = request.user
+        if validaciones.es_administrador(request.user):
+            form = CajaForm(request.POST)
+            # Actualizar el saldo en caja
+            ultima_caja.saldo = saldo
+            ultima_caja.fecha_cierre = str(timezone.now())
+            ultima_caja.save()
 
-            # Guardar el monto extrído en el Capital
+                # Guardar el monto extrído en el Capital
             capital = Capital.objects.last()
             if capital:
                 capital.monto = (capital.monto + caja.saldo)
                 capital.save()
             else:
                 Capital.objects.create(monto=caja.saldo)
+            messages.success(request, "Se realizó el cierre")
+            return redirect('caja_inicio')
+        else:
+            messages.success(request, "No tienes permisos para esta acción")
+            return redirect('caja_inicio')
 
-            # Especifical el saldo que quedará en caja luego del retiro
-            caja.saldo = (ultima_caja.saldo - caja.saldo)
-            caja.save()
-
-            # Actualizar el saldo en caja
-            ultima_caja.fecha_cierre = str(timezone.now())
-            ultima_caja.save()
-        return redirect('caja_inicio')
     else:
         form = CajaForm()
     return render(request, 'caja/saldo_form.html', {'form': form, 'ultima_caja': ultima_caja})

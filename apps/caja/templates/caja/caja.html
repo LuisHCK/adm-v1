@@ -27,7 +27,7 @@
             <td>
                 <div class="btn-group" role="group" aria-label="acciones">
                     {% if not caja.fecha_cierre %}
-                    <a href="{% url 'cierre_caja' %}" class="btn btn-outline-primary">Cerrar caja</a> {% else %}
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Cerrar Caja</button>
                     <a href="#" class="btn btn-outline-warning">Ver informe</a> {% endif %}
                 </div>
             </td>
@@ -35,4 +35,50 @@
         {% endfor %}
     </tbody>
 </table>
+<div style="display: none" id="saldo_actual">{{caja.last.saldo}}</div>
+<!-- Small modal -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Realizar Cierre de Caja</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <b>Saldo: </b> <span id="saldocaja">{{caja.last.saldo}}</span>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="retiro">Retiro</label>
+                        <input type="number" id="retiro" class="form-control mx-sm-3" min="1">
+                        <small id="passwordHelpInline" class="text-muted"> cantidad a retirar de la caja</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cerrarmodal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Realizar Cierre</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#retiro').on('input',function(e){
+        var saldo_actual = parseFloat($('#saldo_actual').text());
+        var retiro = parseFloat($('#retiro').val());
+        var saldo_final = (saldo_actual-retiro);
+        if(retiro && retiro < saldo_actual){
+            $('#saldocaja').html(saldo_final.toString());
+        }
+    });
+    $('#cerrarmodal').on('click', function(e){
+        $('#retiro').val(0);
+        var saldo_actual = parseFloat($('#saldo_actual').text());
+        $('#saldocaja').html(saldo_actual.toString());
+    });
+    
+</script>
 {% endblock %}
