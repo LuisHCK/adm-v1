@@ -34,32 +34,38 @@ def realizar_servicio(request):
     caja = Caja.objects.last()
     if request.method == "POST":
         form = ServicioForm(request.POST)
-        if form.is_valid():
-            servicio = form.save(commit=False)
-            servicio.usuario = request.user
 
-            # Asignar el precio del servicio segun el tipo de servicio
-            tiposervicio = TipoServicio.objects.get(
-                id=servicio.tipo_servicio.id)
-            servicio.tipo_servicio = tiposervicio
+        if hasattr(caja, 'saldo'):
+            if form.is_valid():
+                servicio = form.save(commit=False)
+                servicio.usuario = request.user
 
-            # Calcular el precio en base a la cantidad de producto
+                # Asignar el precio del servicio segun el tipo de servicio
+                tiposervicio = TipoServicio.objects.get(
+                    id=servicio.tipo_servicio.id)
+                servicio.tipo_servicio = tiposervicio
 
-            # Si no se escribe una cantidad se asiga un 1
-            if servicio.cantidad is None:
-                servicio.cantidad = 1
+                # Calcular el precio en base a la cantidad de producto
 
-            servicio.precio = (tiposervicio.costo * servicio.cantidad)
-            servicio.descripcion = tiposervicio.nombre
+                # Si no se escribe una cantidad se asiga un 1
+                if servicio.cantidad is None:
+                    servicio.cantidad = 1
 
-            servicio.save()
+                servicio.precio = (tiposervicio.costo * servicio.cantidad)
+                servicio.descripcion = tiposervicio.nombre
 
-        # Guardar en caja el monto del servicio
-        caja.saldo = (caja.saldo + servicio.precio)
-        caja.save()
+                servicio.save()
 
-        messages.success(request, "Se realizó el servicio")
-        return redirect('servicios_realizados')
+            # Guardar en caja el monto del servicio
+            caja.saldo = (caja.saldo + servicio.precio)
+            caja.save()
+
+            messages.success(request, "Se realizó el servicio")
+            return redirect('servicios_realizados')
+        else:
+            messages.error(request, "Aún no se ha realizado la apertura de caja.")
+            return redirect('servicios_realizados')
+
     else:
         form = ServicioForm()
     return render(request, 'servicios/servicio_form.html', {'form': form})
