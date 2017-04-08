@@ -65,12 +65,14 @@
                 $('#id_articulo').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
                 console.log("Error al realizar la venta");
+                toastr["error"](json.responseJSON.result)
             },
 
             success: function (json) {
                 $('#id_articulo').val('');
                 console.log(json);
                 console.log("success");
+                toastr["success"](json.responseJSON.result)
 
                 // Quitar las la ultima fila de la tabla
                 $('#tabla_servicios').prepend(
@@ -82,7 +84,8 @@
                         <td>`+ json.total +`</td>
                         <td>`+ json.vendedor +`</td>
                         <td>`+ json.fecha_servicio +`</td>
-                        <td></td>
+                        <td><a href="#" class="btn btn-outline-primary">Detalles</a></td>
+                        
                     </tr>`
                 );
 
