@@ -1,7 +1,7 @@
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
 import json
@@ -12,20 +12,23 @@ from apps.ventas.models import Venta
 from apps.servicios.models import Servicio
 from apps.caja.models import Caja
 from apps.inventario.models import Inventario
+from apps.common import validaciones
 
 from .forms import FacturaArticuloForm, FacturaForm, ServicioRapidoForm
 from .models import Factura, FacturaArticulos, FacturaServicios
 
-
 @login_required(login_url='login')  # redirect when user is not logged in
-# Create your views here.
+
 def facturas(request):
     """Ver todas las facturas"""
-    lista_facturas = Factura.objects.all()
+    lista_facturas = Factura.objects.filter(cobrada=True)
+    lista_pendientes = Factura.objects.filter(cobrada=False)
     pendientes = Factura.objects.filter(cobrada=False).count
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
-        'pendientes': pendientes
+        'pendientes': pendientes,
+        'lista_pendientes': lista_pendientes,
+        'form_factura': FacturaForm,
     })
 
 
@@ -51,17 +54,36 @@ def facturas_pendientes(request):
 
 def nueva_factura(request):
     """Crear un nuevo factura"""
-    if request.method == "POST":
-        form = FacturaForm(request.POST)
-        if form.is_valid():
-            factura = form.save(commit=False)
-            factura.usuario = request.user
-            factura.save()
-        messages.success(request, "La factura se creó")
-        return redirect('detalles_factura', factura.pk)
+    response_data = {}
+    if (Caja.objects.count() > 0):    
+        if request.method == "POST":
+            form = FacturaForm(request.POST)
+            if form.is_valid():
+                factura = form.save(commit=False)
+                factura.usuario = request.user
+                factura.save()
+
+                response_data['result'] = 'Se creó la factura.'
+                response_data['id'] = str(factura.pk)
+                response_data['cliente'] = str(factura.cliente)
+                response_data['contado'] = str(factura.contado) 
+            
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+                )
+        else:
+            return HttpResponse(
+                json.dumps({"nothing to see": "this isn't happening"}),
+                content_type="application/json" 
+            )
     else:
-        form = FacturaForm()
-    return render(request, 'facturas/nueva_factura.html', {'form': form})
+        response_data['result'] = 'Aún no se rea realizado la apertura de caja.'
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json",
+            status=500,
+        )
 
 
 def cobrar_factura(request, pk):
@@ -70,50 +92,59 @@ def cobrar_factura(request, pk):
     servicios_count = FacturaArticulos.objects.filter(factura=factura).count()
     articulos_count = FacturaServicios.objects.filter(factura=factura).count()
     items_count = (servicios_count + articulos_count)
-    if items_count < 1:
-        messages.error(request, "No se puede cobrar una factura sin items")
-        return redirect('facturas_pagadas')
+    
+    if (Caja.objects.count() > 0):
+        if items_count < 1:
+            messages.error(request, "No se puede cobrar una factura sin items")
+            return redirect('facturas_pagadas')
+        else:
+            # Obtener todos los items articulos y servicios de la factura
+            articulos = FacturaArticulos.objects.filter(factura=factura)
+            servicios = FacturaServicios.objects.filter(factura=factura)
+
+            # Realizar la venta de cada articulo
+            for articulo in articulos:
+                Venta.objects.create(
+                    usuario=request.user,
+                    articulo=articulo.articulo,
+                    cantidad=articulo.cantidad,
+                    total=(articulo.cantidad * articulo.articulo.precio_venta)
+                )
+
+            # Realizar la venta de cada servicio
+            for servicio in servicios:
+                Servicio.objects.create(
+                    usuario=request.user,
+                    descripcion=servicio.tipo_servicio.nombre,
+                    cantidad=servicio.cantidad,
+                    tipo_servicio=servicio.tipo_servicio,
+                    precio=(servicio.tipo_servicio.costo * servicio.cantidad),
+                )
+
+            factura.cobrar()
+
+            # Guardar el monto en caja
+            caja = Caja.objects.last()
+            caja.saldo += factura.total
+            caja.save()
+
+            messages.success(request, "Se cobró la factura")
+            return redirect('detalles_factura', factura.id)
     else:
-        # Obtener todos los items articulos y servicios de la factura
-        articulos = FacturaArticulos.objects.filter(factura=factura)
-        servicios = FacturaServicios.objects.filter(factura=factura)
-
-        # Realizar la venta de cada articulo
-        for articulo in articulos:
-            Venta.objects.create(
-                usuario=request.user,
-                articulo=articulo.articulo,
-                cantidad=articulo.cantidad,
-                total=(articulo.cantidad * articulo.articulo.precio_venta)
-            )
-
-        # Realizar la venta de cada servicio
-        for servicio in servicios:
-            Servicio.objects.create(
-                usuario=request.user,
-                descripcion=servicio.tipo_servicio.nombre,
-                cantidad=servicio.cantidad,
-                tipo_servicio=servicio.tipo_servicio,
-                precio=(servicio.tipo_servicio.costo * servicio.cantidad),
-            )
-
-        factura.cobrar()
-
-        # Guardar el monto en caja
-        caja = Caja.objects.last()
-        caja.saldo += factura.total
-        caja.save()
-
-        messages.success(request, "Se cobró la factura")
+        messages.error(request, "Aun no se ha realizado la apertura de caja")
         return redirect('detalles_factura', factura.id)
 
 
 def eliminar_factura(request, pk):
     """Elimina una factura, solo si no ha sido cobrada"""
     factura = get_object_or_404(Factura, pk=pk)
-    factura.delete()
-    messages.success(request, "Se borró la factura")
-    return redirect('facturas_pagadas')
+    if (validaciones.es_administrador(request.user) and factura.cobrada == False):
+        factura.delete()
+        messages.success(request, "Se borró la factura")
+        return redirect('facturas')
+    else:
+        messages.error("No se puede eliminar la factura")
+        return redirect('facturas')
 
 
 def agregar_articulo(request, pk):
