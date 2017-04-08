@@ -13,15 +13,27 @@ class Factura(models.Model):
     cliente = models.CharField(max_length=100)
     total = models.DecimalField(max_digits=6, decimal_places=2, default=0, blank=True)
     cobrada = models.BooleanField(default=False)
+    contado = models.BooleanField(default=True)
     fecha_factura = models.DateTimeField(default=timezone.now)
+    fecha_cobro = models.DateTimeField(blank=True, null=True)
 
     def cobrar(self):
         """Si la factura es pagada se guarda"""
         self.cobrada = True
+        self.fecha_cobro = timezone.now()
         self.save()
 
     def __str__(self):
         return self.cliente
+
+    def productos_count(self):
+        '''Devolver la cantidad de productos adquiridos'''
+        item_articulos = FacturaArticulos.objects.filter(factura=self).count()
+        return item_articulos
+    
+    def servicios_count(self):
+        item_servicios = FacturaServicios.objects.filter(factura=self).count()
+        return item_servicios
 
 
 class FacturaItems(models.Model):

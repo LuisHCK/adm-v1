@@ -1,7 +1,7 @@
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.forms import TextInput, Select, NumberInput
+from django.forms import TextInput, Select, NumberInput, RadioSelect
 from .models import *
 
 
@@ -9,10 +9,10 @@ class FacturaForm(forms.ModelForm):
     """Formulario de existencias en inventario"""
     class Meta:
         model = Factura
-        fields = ('cliente', 'cobrada')
+        fields = ('cliente', 'contado')
         widgets = {
             'cliente': TextInput(attrs={'class': 'form-control'}),
-            'cobrada': Select(choices={(True, 'Cobrado'), (False, 'Sin Cobrar')}, attrs={'class': 'form-control'}),
+            'contado': RadioSelect(choices={(True, 'Contado'), (False, 'Crédito')}, attrs={type:'radio'}),
         }
 
 
