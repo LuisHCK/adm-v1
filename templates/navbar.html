@@ -1,0 +1,10 @@
+{% load ayudantes %}
+<nav class="toggled col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar darker-nav">
+    <div class="nav nav-pills flex-column center-xs user">
+        <div class="photo">          
+            <img src="{{request.user|avatar}}" alt="avatar" class="avatar-user">
+        </div>
+        <p style="color: lightgray;">
+            <h4 class="white-text">{{user.perfil.nombres}}</h4>
+        </p>
+    </div>
