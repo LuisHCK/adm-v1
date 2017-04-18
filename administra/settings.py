@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps.facturas',
     'apps.perfiles',
     'apps.common',
+    'apps.notificaciones',
 ]
 
 MIDDLEWARE = [
