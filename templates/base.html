@@ -54,6 +54,26 @@
         </li>
       </ul>
       <form class="form-inline mt-2 mt-md-0">
+        <div class="dropdown white-text" style="width: 50px;">
+          <a style="font-size:20px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="badge badge-pill badge-info" style="font-size:10px;">{{ total_notif }}</span>
+            <i class="fi-mail float-left"></i>
+          </a>
+
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="min-width: 20rem;">
+            
+            <div class="alert alert-{{mensajes_caja.tipo}}" role="alert" style="margin:1%;">
+              {{mensajes_caja.texto}}
+            </div>
+
+            {% for notificacion in notificaciones %}
+            <div class="alert alert-{{notificacion.tipo}}" role="alert" style="margin:1%;">
+              {{notificacion.texto}}
+            </div>
+            {% endfor %}
+
+          </div>
+        </div>
         <input class="form-control mr-sm-2" type="text" placeholder="Ayuda">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
       </form>
