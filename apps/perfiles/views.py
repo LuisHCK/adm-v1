@@ -38,7 +38,7 @@ def ver_perfil(request, pk):
         puesto = None
         try:
             puesto = str(perfil.usuario.groups.all()[0])
-        except:
+        except IndexError:
             puesto = "No definido"
             messages.error(request, "No se ha defindo el cargo para "+ str(perfil) +". Error 0x01")
 
@@ -54,10 +54,14 @@ def ver_perfil(request, pk):
 
 def editar_perfil(request, pk):
     '''Edita el perfil de un usuario'''
+    puesto = "No definido"
     if admin_required(request.user):
         perfil = get_object_or_404(Perfil, pk=pk)
 
-        puesto = str(perfil.usuario.groups.all()[0])
+        try:
+            puesto = str(perfil.usuario.groups.all()[0])
+        except IndexError:
+            print("Index Error")
 
         form = FormPerfil(request.POST or None, request.FILES, instance=perfil)
         if request.method == 'POST' and form.is_valid():
@@ -67,9 +71,9 @@ def editar_perfil(request, pk):
 
         else:
             return render(request, 'perfiles/perfil.html', {
-            'perfil': perfil,
-            'puesto': puesto,
-            'form': form
+                'perfil': perfil,
+                'puesto': puesto,
+                'form': form
             })
     else:
         messages.error(request, "Permisos Insuficientes. Error 0x01")
