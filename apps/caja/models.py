@@ -14,8 +14,9 @@ class Caja(models.Model):
     """LLeva un resgistro del dinero en caja"""
     saldo = models.DecimalField(max_digits=6, decimal_places=2)
     usuario = models.ForeignKey('auth.User')
-    fecha_apertura = models.DateTimeField(default=timezone.now)
+    fecha_apertura = models.DateTimeField(null=True, blank=True)
     fecha_cierre = models.DateTimeField(null=True, blank=True)
+    estado = models.BooleanField(default=False)
 
 class Capital(models.Model):
     """Registra el capital total"""
