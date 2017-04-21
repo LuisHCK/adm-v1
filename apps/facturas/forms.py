@@ -12,7 +12,8 @@ class FacturaForm(forms.ModelForm):
         fields = ('cliente', 'contado')
         widgets = {
             'cliente': TextInput(attrs={'class': 'form-control'}),
-            'contado': RadioSelect(choices={(True, 'Contado'), (False, 'Crédito')}, attrs={type:'radio'}),
+            'contado': RadioSelect(choices={(True, 'Contado'), (False, 'Crédito')},
+                                   attrs={type:'radio'}),
         }
 
 
@@ -35,7 +36,10 @@ class ServicioRapidoForm(forms.ModelForm):
         fields = ['tipo_servicio', 'cantidad']
         widgets = {
             'tipo_servicio': Select(attrs={'class': 'form-control',}),
-            'cantidad': NumberInput(attrs={'class': 'form-control','id': 'cantidad_servicio'}),
+            'cantidad': NumberInput(attrs={
+                'class': 'form-control',
+                'id': 'cantidad_servicio'
+                }),
         }
         labels = {
             'articulo': _('Articulo (Opcional)'),
