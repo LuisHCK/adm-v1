@@ -1,19 +1,72 @@
 
-from django.contrib.auth.decorators import login_required
+import json
+
 from django.contrib import messages
-from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+
+from apps.common import validaciones
+
 from .forms import CajaForm, EgresoForm
 from .models import Caja, Capital, Egresos
-from apps.common import validaciones
+
 
 @login_required(login_url='login') #redirect when user is not logged in
 
 def inicio(request):
     """Muestra el estado actual de la caja"""
-    caja = Caja.objects.all().order_by('-fecha_apertura')
-    return render(request, 'caja/caja.html', {'caja': caja})
+    ult = Caja.objects.last()
+    ultima_caja_id = 0
 
+    if ult:
+        ultima_caja_id = ult.id
+    else:
+        ultima_caja_id = 0
+
+    caja = Caja.objects.all().order_by('-fecha_apertura').exclude(id=ultima_caja_id)
+    capital = Capital.objects.first()
+    return render(request, 'caja/caja.html',
+                  {'caja': caja,
+                   'form_retiro': CajaForm,
+                   'ultima_caja': ult,
+                   'capital': capital,
+                  })
+
+def primera_apertura(request):
+    '''Realiza la apertura inicial de la caja'''
+    if request.method == 'POST' and validaciones.es_administrador(request.user):
+        response_data = {}
+        form = CajaForm(request.POST)
+
+        if form.is_valid():
+            caja = form.save(commit=False)
+            caja.usuario = request.user
+            caja.save()
+
+            response_data['estado'] = str(caja.estado)
+            response_data['fecha_apertura'] = str(caja.fecha_apertura)
+            response_data['usuario'] = str(caja.usuario)
+            response_data['saldo'] = str(caja.saldo)
+
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+            )
+        else:
+            response_data['result'] = 'El formulario no es válido.'
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500,
+            )
+
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
 
 def apertura_caja(request):
     """Abre el uso de la caja"""
@@ -33,31 +86,78 @@ def apertura_caja(request):
             form = CajaForm()
         return render(request, 'caja/saldo_form.html', {'form': form})
 
+def apertura_ajax(request, pk):
+    '''Realiza apertura de caja mediante ajax'''
+    response_data = {}
+    if request.method == 'POST' and validaciones.es_administrador(request.user):
+        caja_abierta = Caja.objects.get(pk=pk)
 
-def cierre_caja(request, saldo):
+        #Si caja ya está abierta retornar un mensaje
+        if caja_abierta.estado:
+            response_data['result'] = 'La caja ya se encuentra abierta'
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+                )
+        # En caso contrario realizar las operaciones de apertura
+        else:
+            caja_abierta.estado = True
+            caja_abierta.fecha_apertura = str(timezone.now())
+            caja_abierta.usuario = request.user
+            caja_abierta.save()
+
+            response_data['estado'] = str(caja_abierta.estado)
+            response_data['fecha_apertura'] = str(caja_abierta.fecha_apertura)
+            response_data['usuario'] = str(caja_abierta.usuario)
+            response_data['saldo'] = str(caja_abierta.saldo)
+
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+            )
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
+
+
+
+def cierre_caja(request):
     """Cierra caja y se retira el dinero"""
     ultima_caja = Caja.objects.last()
     if request.method == "POST":
-        if validaciones.es_administrador(request.user):
-            form = CajaForm(request.POST)
-            # Actualizar el saldo en caja
-            ultima_caja.saldo = saldo
-            ultima_caja.fecha_cierre = str(timezone.now())
-            ultima_caja.save()
+        form = CajaForm(request.POST)
+        if form.is_valid():
+            caja = form.save(commit=False)
+            caja.usuario = request.user
 
-                # Guardar el monto extrído en el Capital
+            # La ultima caja (la caja que estamos cerrando) debe reflejar el dinero ingresado
+            # menos la cantidad que retiramos
+            # Ejemplo Si entraron 1000 y retiramos 900 la ultima caja debere reflejar 900
+            # entonces nuestro saldo inicial sería 100
+            saldo_retiro = caja.saldo
+
+            # Especifical el saldo que quedará en caja luego del retiro
+            caja.saldo = (ultima_caja.saldo - caja.saldo)
+            caja.save()
+
+            # Restar de la caja el monto de retiro
+            ultima_caja.saldo = saldo_retiro
+
+            # Guardar el monto extrído en el Capital
             capital = Capital.objects.last()
             if capital:
                 capital.monto = (capital.monto + caja.saldo)
                 capital.save()
             else:
                 Capital.objects.create(monto=caja.saldo)
-            messages.success(request, "Se realizó el cierre")
-            return redirect('caja_inicio')
-        else:
-            messages.success(request, "No tienes permisos para esta acción")
-            return redirect('caja_inicio')
 
+
+            # Actualizar el saldo en caja
+            ultima_caja.fecha_cierre = str(timezone.now())
+            ultima_caja.save()
+        return redirect('caja_inicio')
     else:
         form = CajaForm()
     return render(request, 'caja/saldo_form.html', {'form': form, 'ultima_caja': ultima_caja})
@@ -98,4 +198,6 @@ def detalles_egreso(request, pk):
 def estado_capital(request):
     """Mostar el capital con el que se cuenta"""
     capital = Capital.objects.first()
-    return render(request, 'capital/capital.html', {'capital': capital})
+    ultima_caja = Caja.objects.last()
+    caja = Caja.objects.exclude(id=ultima_caja.id).order_by('fecha_apertura')[:6]
+    return render(request, 'capital/capital.html', {'capital': capital, 'caja': caja})

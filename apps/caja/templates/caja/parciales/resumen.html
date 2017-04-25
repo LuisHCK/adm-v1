@@ -1,0 +1,57 @@
+<div class="row center-xs">
+    <div class="card col-xs-6" style="width: 20rem;">
+        <div style="background-color: #0097A7; padding: 10%" class="center-xs">
+            <h5><b>SALDO</b></h5>
+            <h3 id="ultima_caja_saldo" style="color: white; font-size: 5rem"> ${{ ultima_caja.saldo }} </h3>
+        </div>
+        <div class="card-block" id="botones">
+
+        {% if ultima_caja.estado %}
+            <h4 class="card-title">Caja Activa</h4>
+            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Cerrar Caja</button> 
+            {% else %}
+            <h4 class="card-title text-muted">Caja Cerrada</h4>
+
+            {% if ultima_caja %}
+            <a href="{% url 'apertura_ajax' ultima_caja.id %}" class="apertura_btn btn btn-primary">Abrir</a> {% else %}
+            <!-- Boton muestra form -->
+            <button class="btn btn-secondary" id="primera_apertura">
+                            Primera Apertura de Caja
+                        </button>
+            <form id="form_primera_apertura" method="POST" style="display: none" action="{% url 'primera_apertura' %}" class="post-form text-left form-inline">{% csrf_token %} 
+                <label for="id_saldo">Saldo Inicial:</label> 
+                <input type="number" name="saldo" id="id_saldo_inicial" class="form-control" required="" step="0.01">
+                
+                <button type="submit" class="save btn btn-success">Retirar Dinero</button>
+            </form>
+            {% endif %}
+        {% endif %}
+        </div>
+    </div>
+</div>
+<hr>
+<h4>Registros</h4>
+<table class="table table-striped">
+    <thead class="thead-inverse">
+        <tr>
+            <th>#</th>
+            <th>Saldo</th>
+            <th>Fecha de Apertura</th>
+            <th>Fecha de Cierre</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for caja in caja.all %}
+        <tr>
+            <th scope="row">{{ caja.id }}</th>
+            <td>{{ caja.saldo }}</td>
+            <td>{{ caja.fecha_apertura }}</td>
+            <td>{{ caja.fecha_cierre }}</td>
+            <td>
+                <a href="#" class="btn btn-outline-warning">Ver informe</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
