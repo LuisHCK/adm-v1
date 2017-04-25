@@ -8,4 +8,7 @@ $(document).ready(function () {
     $("#abrirfact").click(function () {
         $("#form_factura").toggle(500);
     });
+    $("#primera_apertura").click(function () {
+        $("#form_primera_apertura").toggle(500);
+    });
 });

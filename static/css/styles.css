@@ -46,6 +46,9 @@ video.responsive-video {
 
 @media only screen and (max-width: 320px) {
 
-   .responsive-text { font-size: 2em; }
+   .responsive-text { font-size: 2em !important; }
 
+}
+.post-form{
+  padding-top: 3%;
 }
