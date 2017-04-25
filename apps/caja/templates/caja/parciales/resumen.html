@@ -13,7 +13,7 @@
             <div id="cierre_form" style="display: none">
                 <b>Saldo: </b> <span id="saldocaja">{{ultima_caja.saldo}}</span>
                 <form method="POST" action="{% url 'cierre_caja' %}" class="post-form text-left">{% csrf_token %} {{ form_retiro.as_p }}
-                    <button style="width: 100%" type="submit" class="save btn btn-success">Retirar Dinero</button>
+                    <button style="width: 100%" type="submit" class="save btn btn-success">Abrir Caja</button>
                 </form>
             </div>
             {% else %}
