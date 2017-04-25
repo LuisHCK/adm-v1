@@ -31,31 +31,6 @@
 </div>
 
 <div style="display: none" id="saldo_actual">{{ultima_caja.saldo}}</div>
-<!-- Small modal -->
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Realizar Cierre de Caja</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-            </div>
-            <div class="modal-body">
-                <b>Saldo: </b> <span id="saldocaja">{{ultima_caja.saldo}}</span>
-            <form method="POST" action="{% url 'cierre_caja' %}" class="post-form text-left">{% csrf_token %} 
-                {{ form_retiro.as_p }}                
-                <button style="width: 100%" type="submit" class="save btn btn-success">Retirar Dinero</button>
-            </form>
-            </div>
-            <div class="modal-footer">
-                <button id="cerrarmodal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Realizar Cierre</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     $('#id_saldo').on('input',function(e){

@@ -11,4 +11,7 @@ $(document).ready(function () {
     $("#primera_apertura").click(function () {
         $("#form_primera_apertura").toggle(500);
     });
+    $("#cierre_caja").click(function () {
+        $("#cierre_form").toggle(500);
+    });
 });

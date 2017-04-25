@@ -157,8 +157,10 @@ def cierre_caja(request):
             # Actualizar el saldo en caja
             ultima_caja.fecha_cierre = str(timezone.now())
             ultima_caja.save()
+            messages.success(request, "Se realizó el cierre con éxito.")
         return redirect('caja_inicio')
     else:
+        messages.error(request, "Ocurrió un error al realizar el cierre de caja.")
         form = CajaForm()
     return render(request, 'caja/saldo_form.html', {'form': form, 'ultima_caja': ultima_caja})
 

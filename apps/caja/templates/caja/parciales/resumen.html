@@ -8,7 +8,14 @@
 
         {% if ultima_caja.estado %}
             <h4 class="card-title">Caja Activa</h4>
-            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Cerrar Caja</button> 
+            <button type="button" class="btn btn-outline-primary" id="cierre_caja">Cerrar Caja</button> 
+
+            <div id="cierre_form" style="display: none">
+                <b>Saldo: </b> <span id="saldocaja">{{ultima_caja.saldo}}</span>
+                <form method="POST" action="{% url 'cierre_caja' %}" class="post-form text-left">{% csrf_token %} {{ form_retiro.as_p }}
+                    <button style="width: 100%" type="submit" class="save btn btn-success">Retirar Dinero</button>
+                </form>
+            </div>
             {% else %}
             <h4 class="card-title text-muted">Caja Cerrada</h4>
 
