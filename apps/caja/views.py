@@ -20,6 +20,7 @@ def inicio(request):
     ult = Caja.objects.last()
     ultima_caja_id = 0
 
+    # Si la caja devuelve nulo evitar error en el template
     if ult:
         ultima_caja_id = ult.id
     else:
@@ -27,11 +28,22 @@ def inicio(request):
 
     caja = Caja.objects.all().order_by('-fecha_apertura').exclude(id=ultima_caja_id)
     capital = Capital.objects.first()
+
+    egresos = object
+    # Si el el usuario es administrador podrá ver todas las solicitudes de egresos
+    # Sólo se muestran las solicitudes que se realizan durante la caja esté abierta
+    if validaciones.es_administrador(request.user):
+        egresos = Egresos.objects.filter(caja=ult)
+    else:
+        egresos = Egresos.objects.filter(caja=ult, usuario=request.user)
+
     return render(request, 'caja/caja.html',
                   {'caja': caja,
                    'form_retiro': CajaForm,
                    'ultima_caja': ult,
                    'capital': capital,
+                   'form_egreso': EgresoForm,
+                   'egresos': egresos
                   })
 
 def primera_apertura(request):
@@ -64,8 +76,9 @@ def primera_apertura(request):
 
     else:
         return HttpResponse(
-            json.dumps({"nothing to see": "this isn't happening"}),
-            content_type="application/json"
+            json.dumps({"error": "No estás autorizado para esta acción"}),
+            content_type="application/json",
+            status=500,
         )
 
 def apertura_caja(request):
@@ -170,19 +183,17 @@ def egreso_caja(request):
     if request.method == "POST":
         form = EgresoForm(request.POST)
         if form.is_valid():
+            caja = Caja.objects.last()
+
             egreso = form.save(commit=False)
             egreso.usuario = request.user
+            egreso.caja = caja
             egreso.save()
 
-        # Restar del saldo de caja la cantidad del egreso
-        caja = Caja.objects.last()
-        caja.saldo = (caja.saldo - egreso.cantidad)
-        caja.save()
-
-        return redirect('detalles_egreso', egreso.id)
+        return redirect('caja_inicio')
     else:
         form = EgresoForm()
-    return render(request, 'egresos/egreso_form.html', {'form': form})
+    return redirect('caja_inicio')
 
 
 def ver_egresos(request):
