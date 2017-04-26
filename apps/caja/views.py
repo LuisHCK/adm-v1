@@ -1,4 +1,3 @@
-
 import json
 
 from django.contrib import messages
@@ -135,7 +134,6 @@ def apertura_ajax(request, pk):
         )
 
 
-
 def cierre_caja(request):
     """Cierra caja y se retira el dinero"""
     ultima_caja = Caja.objects.last()
@@ -178,8 +176,17 @@ def cierre_caja(request):
     return render(request, 'caja/saldo_form.html', {'form': form, 'ultima_caja': ultima_caja})
 
 
+def estado_capital(request):
+    """Mostar el capital con el que se cuenta"""
+    capital = Capital.objects.first()
+    ultima_caja = Caja.objects.last()
+    caja = Caja.objects.exclude(id=ultima_caja.id).order_by('fecha_apertura')[:6]
+    return render(request, 'capital/capital.html', {'capital': capital, 'caja': caja})
+
+
+####### EGRESOS #######
 def egreso_caja(request):
-    """Realiza un retiro de dinero de la caja abierta"""
+    '''Solicita un egreso de caja'''
     if request.method == "POST":
         form = EgresoForm(request.POST)
         if form.is_valid():
@@ -206,11 +213,3 @@ def detalles_egreso(request, pk):
     """Ver detalles de un egreso"""
     egreso = get_object_or_404(Egresos, pk=pk)
     return render(request, 'egresos/detalles_egreso.html', {'egreso': egreso})
-
-
-def estado_capital(request):
-    """Mostar el capital con el que se cuenta"""
-    capital = Capital.objects.first()
-    ultima_caja = Caja.objects.last()
-    caja = Caja.objects.exclude(id=ultima_caja.id).order_by('fecha_apertura')[:6]
-    return render(request, 'capital/capital.html', {'capital': capital, 'caja': caja})
