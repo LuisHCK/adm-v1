@@ -26,7 +26,9 @@
       <br>
       {% include 'caja/parciales/resumen.html' %}
   </div>
-  <div class="tab-pane fade" id="egresos" role="tabpanel">...</div>
+  <div class="tab-pane fade" id="egresos" role="tabpanel">
+      {% include 'caja/parciales/egresos.html' %}
+  </div>
   <div class="tab-pane fade" id="settings" role="tabpanel">...</div>
 </div>
 
@@ -89,7 +91,7 @@
             error: function (json) {
                 $('#id_saldo_inicial').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
-                toastr["error"]("No se pudo realizar la venta")
+                toastr["error"](json.responseJSON.error)
             },
 
             success: function (json) {
@@ -103,7 +105,10 @@
         });
     });
 
-   
-    
+
+    $('.list-group-item').on('click', function (e) {
+        id_dropdown = 'egreso_' + $(this).attr('egreso');
+        $("#" + id_dropdown + "").toggle(500);
+    });
 </script>
 {% endblock %}
