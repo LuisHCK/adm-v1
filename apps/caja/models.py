@@ -28,7 +28,7 @@ class Egresos(models.Model):
     cantidad = models.DecimalField(max_digits=5, decimal_places=2)
     concepto = models.CharField(max_length=200)
     usuario = models.ForeignKey('auth.User')
-    estado = models.CharField(max_length=50, choices=ESTADOS_EGRESO, default=ESTADOS_EGRESO[0],
+    estado = models.CharField(max_length=50, choices=ESTADOS_EGRESO, default='estado_pendiente',
                               blank=True, null=True
                              )
     caja = models.ForeignKey(Caja, on_delete=models.CASCADE)
