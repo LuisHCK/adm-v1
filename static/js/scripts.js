@@ -14,4 +14,7 @@ $(document).ready(function () {
     $("#cierre_caja").click(function () {
         $("#cierre_form").toggle(500);
     });
+    $("#btn_egreso").click(function () {
+        $("#form_egreso").toggle(500);
+    });
 });
