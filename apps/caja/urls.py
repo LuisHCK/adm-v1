@@ -11,4 +11,7 @@ urlpatterns = [
     url(r'^egresos/(?P<pk>[0-9]+)/$', views.detalles_egreso, name='detalles_egreso'),
     url(r'^egresos/nuevo/', views.egreso_caja, name='nuevo_egreso'),
     url(r'^egresos/$', views.ver_egresos, name='ver_egresos'),
+    url(r'^egresos/(?P<pk>[0-9]+)/(?P<accion>[\w\-]+)/$', views.aprovar_egreso,
+        name='aprovar_egreso'),
+    url(r'^egresos/cobrar/(?P<pk>[0-9]+)/$', views.cobrar_egreso, name='cobrar_egreso'),
 ]

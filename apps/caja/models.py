@@ -1,5 +1,6 @@
 
 from django.db import models
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 class Caja(models.Model):
@@ -25,11 +26,15 @@ class Egresos(models.Model):
         ('estado_denegado', 'Denegado'),
         )
 
-    cantidad = models.DecimalField(max_digits=5, decimal_places=2)
+    cantidad = models.DecimalField(max_digits=7, decimal_places=2)
     concepto = models.CharField(max_length=200)
     usuario = models.ForeignKey('auth.User')
     estado = models.CharField(max_length=50, choices=ESTADOS_EGRESO, default='estado_pendiente',
                               blank=True, null=True
                              )
     caja = models.ForeignKey(Caja, on_delete=models.CASCADE)
+    aprovado_por = models.ForeignKey(
+        User, related_name='%(class)s_requests_created',
+        on_delete=models.CASCADE, null=True, blank=True)
+    cobrado = models.BooleanField(default=False)
     fecha_egreso = models.DateTimeField(default=timezone.now)

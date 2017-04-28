@@ -2,7 +2,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -187,18 +187,19 @@ def estado_capital(request):
 ####### EGRESOS #######
 def egreso_caja(request):
     '''Solicita un egreso de caja'''
-    if request.method == "POST":
+    caja = Caja.objects.last()
+    if request.method == "POST" and caja.estado:
         form = EgresoForm(request.POST)
         if form.is_valid():
-            caja = Caja.objects.last()
-
             egreso = form.save(commit=False)
             egreso.usuario = request.user
             egreso.caja = caja
             egreso.save()
 
+        messages.success(request, "Se realizó la solicitud de egreso")
         return redirect('caja_inicio')
     else:
+        messages.error(request, "El formulario no es válido")
         form = EgresoForm()
     return redirect('caja_inicio')
 
@@ -212,4 +213,139 @@ def ver_egresos(request):
 def detalles_egreso(request, pk):
     """Ver detalles de un egreso"""
     egreso = get_object_or_404(Egresos, pk=pk)
-    return render(request, 'egresos/detalles_egreso.html', {'egreso': egreso})
+
+    if egreso.estado == 'estado_aprovado' and egreso.cobrado is True:
+        return render(request, 'egresos/detalles_egreso.html', {'egreso': egreso})
+    else:
+        raise Http404
+
+
+def aprovar_egreso(request, pk, accion):
+    if request.method == "POST" and validaciones.es_administrador(
+            request.user):
+        caja = Caja.objects.last()
+        egreso = Egresos.objects.get(pk=pk)
+        response_data = {}
+
+        # Validar si el egreso es aprobable
+        if egreso.cantidad < caja.saldo and accion == 'estado_aprovado' and egreso.estado == 'estado_pendiente' and caja.estado:
+            egreso.aprovado_por = request.user
+            egreso.estado = accion
+            egreso.save()
+            # Retornar la respuesta
+            response_data['id'] = egreso.id
+            response_data['aprovado_por'] = str(egreso.aprovado_por)
+            # Retornar estado legible
+            response_data['estado'] = str(egreso.estado)
+
+            response_data['result'] = "El egreso fue Aprovado"
+            return HttpResponse(
+                json.dumps(response_data), content_type="application/json")
+        # Validar que el monto a egresar no supere el estado en caja
+        elif egreso.cantidad > caja.saldo and accion == 'estado_aprovado':
+            response_data[
+                'error'] = "La cantidad de egreso es mayor al saldo en caja."
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500)
+        # Si una solicitud ya fue denegada no se puede volver a aprovar
+        elif accion == 'estado_aprovado' and egreso.estado == 'estado_denegado':
+            response_data['error'] = "El egreso ya no puede ser Aprovado"
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500)
+        elif accion == 'estado_aprovado' and caja.estado is False:
+            response_data[
+                'error'] = "No se puede aprovar un egreso mientras la caja está cerrada"
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500)
+
+        elif accion == 'estado_denegado':
+            egreso.estado = accion
+            egreso.save()
+
+            response_data['id'] = egreso.id
+            response_data['aprovado_por'] = str(egreso.aprovado_por)
+            # Retornar estado legible
+            response_data['estado'] = str(egreso.estado)
+
+            response_data['result'] = "El egreso fue denegado"
+            return HttpResponse(
+                json.dumps(response_data), content_type="application/json")
+        else:
+            response_data[
+                'error'] = "La solicitud no es válida, por favor revise los datos"
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500)
+    else:
+        return HttpResponse(
+            json.dumps({
+                "nothing_to_see": "nothing to see here :)"
+            }),
+            content_type="application/json")
+
+
+def cobrar_egreso(request, pk):
+    response_data = {}
+    if request.method == "POST" and validaciones.es_cajero(request.user):
+        egreso = Egresos.objects.get(pk=pk)
+        caja = Caja.objects.last()
+
+        if egreso.estado == "estado_aprovado" and egreso.caja == caja and egreso.cobrado is False:
+            egreso.cobrado = True
+            egreso.save()
+
+            # Retirar el dinero de caja
+            caja.saldo -= egreso.cantidad
+            caja.save()
+
+            response_data['result'] = "Se completó el egreso de: $"+str(egreso.cantidad)
+            response_data['id'] = egreso.id
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json")
+
+        # Si el egreso ha sido denegado no se puede cobrar
+        elif egreso.estado == "estado_denegado":
+            response_data['error'] = "No se puede cobrar un egreso Denegado"
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500)
+
+        # El egreso no puede ser cobrado dos veces
+        elif egreso.cobrado is True:
+            response_data['error'] = "El egreso no se puede cobrar otra vez"
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500)
+
+        # Si el egreso pertenece a una caja anterior ya no es válido
+        elif egreso.caja != caja.id:
+            response_data[
+                'error'] = "La caja ya fue cerrada, el egreso ya no es válido"
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500)
+        else:
+            response_data['error'] = "La solicitud de egreso no es válida"
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json",
+                status=500)
+
+        # Si no se cumple ninguna de las condiciones, considerar la solicitud como inválida
+    else:
+        response_data['error'] = "La acción no es válida. Se requiere el Rol de Cajero"
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json",
+            status=500)

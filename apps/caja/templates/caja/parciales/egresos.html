@@ -14,7 +14,7 @@
             <button type="submit" class="btn btn-success">Listo</button>
         </form>
     </div>
-    <button id="btn_egreso" type="button" class="btn btn-secondary dropdown-toggle">
+    <button id="btn_egreso" type="button" class="btn btn-info dropdown-toggle float-right">
         Solictar un Egreso
     </button>
 
@@ -24,18 +24,81 @@
     <ul class="list-group">
 
         {% for egreso in egresos %}
-        <a href="#" egreso="{{egreso.id}}" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-{{ egreso.estado|estado_lista }}">
+        <a id="list_egreso_{{egreso.id}}" egreso="{{egreso.id}}" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-{{ egreso.estado|estado_lista }}">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1"><b>{{ egreso.concepto }}</b></h5>
-                <small><b>Estado:</b> {{ egreso.estado|estado_solicitud_egreso }}</small>
+                <h5 class="mb-1"><b>#{{egreso.id}}-</b> {{ egreso.concepto }}</h5>
+                <small><b>Estado:</b> <span id="estado_{{egreso.id}}">{{ egreso.estado|estado_solicitud_egreso }}</span></small>
             </div>
             <p class="mb-1"><b>Monto: </b>${{egreso.cantidad}}</p>
             <small><b>Solicitante: </b> {{ egreso.usuario }}</small>
         </a>
-        <div id="egreso_{{egreso.id}}" style="display: none;" class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-success">Aprovar</button>
-            <button type="button" class="btn btn-warning">Denegar</button>
+        <div id="egreso_{{egreso.id}}" style="display: none;" class="btn-group" role="group">
+            
+            {% if egreso.estado == 'estado_pendiente' %}
+                <button href="{% url 'aprovar_egreso' egreso.id 'estado_aprovado' %}" type="button" class="btn btn-success btn-accion">Aprovar</button>
+                <button href="{% url 'aprovar_egreso' egreso.id 'estado_denegado' %}" type="button" class="btn btn-danger btn-accion">Denegar</button>
+            {% elif egreso.estado == 'estado_aprovado' and egreso.cobrado == False %}
+                <button href="{% url 'cobrar_egreso' egreso.id %}" class="btn btn-primary btn-cobrar-egreso">Entregar Dinero</button>
+            {% else %}
+                <a href="{% url 'detalles_egreso' egreso.id %}" class="btn btn-info" target="_blank">Imprimir Comprovante</a>
+            {% endif %}
+                
         </div>
         {% endfor %}
     </ul>
 </div>
+
+<script>
+    $('.btn-cobrar-egreso').on('click', function(e){
+        $.ajax({
+            url: $(this).attr('href'),
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            type: "POST",
+            error: function(json){
+                console.log(json);
+                toastr["error"](json.responseJSON.error)
+            },
+            success: function(json){
+                toastr["success"](json.result);
+                $("#egreso_"+json.id).html("<a href='/caja/egresos/'"+json.id+" class='btn btn-info' target='_blank'>Imprimir Comprovante</a>");
+            }
+        });
+    });
+
+    $('.btn-accion').on('click',function(e){
+        $.ajax({
+            url: $(this).attr('href'),
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            type: "POST",
+            // handle a successful response
+            error: function (json) {
+                console.log(json); // log the returned json to the console
+                toastr["error"](json.responseJSON.error)
+            },
+
+            success: function (json) {
+                console.log(json);
+                toastr["success"](json.result);
+                $('#estado_'+json.id).html(json.estado.toString());
+                
+                if (json.estado == 'estado_denegado'){
+                    $("#list_egreso_"+json.id).removeClass("list-group-item-success");                    
+                    $("#list_egreso_"+json.id).addClass("list-group-item-warning");                    
+                }
+                else if(json.estado == 'estado_aprovado'){
+                    $("#list_egreso_"+json.id).removeClass("list-group-item-warning");
+                    $("#list_egreso_"+json.id).addClass("list-group-item-success");
+                }
+                else{
+                    $("#list_egreso_"+json.id).addClass("list-group-item-danger");                    
+                };
+            },
+        });
+    })
+</script>

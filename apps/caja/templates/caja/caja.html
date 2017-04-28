@@ -16,7 +16,7 @@
     <a class="nav-link" data-toggle="tab" href="#egresos" role="tab">Egresos</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#settings" role="tab">Settings</a>
+    <a class="nav-link" data-toggle="tab" href="#configuracion" role="tab">Configuración</a>
   </li>
 </ul>
 
@@ -29,7 +29,7 @@
   <div class="tab-pane fade" id="egresos" role="tabpanel">
       {% include 'caja/parciales/egresos.html' %}
   </div>
-  <div class="tab-pane fade" id="settings" role="tabpanel">...</div>
+  <div class="tab-pane fade" id="configuracion" role="tabpanel">...</div>
 </div>
 
 <div style="display: none" id="saldo_actual">{{ultima_caja.saldo}}</div>
@@ -111,4 +111,5 @@
         $("#" + id_dropdown + "").toggle(500);
     });
 </script>
+
 {% endblock %}
