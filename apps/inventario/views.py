@@ -59,13 +59,23 @@ def nuevo_articulo_ajax(request):
             articulo = form.save(commit=False)
             articulo.save()
         # Agregar el producto al inventario
-        Inventario.objects.create(articulo=articulo, existencias=0)
+        Inventario.objects.create(articulo=articulo, existencias=articulo.cantidad_inicial)
+        # Obtener el artículo del inventario y asignarle un mínimo por defecto
+        inventario = Inventario.objects.get(articulo=articulo)
+        inventario.minimo_existencias = 1
+        inventario.save()
 
         response_data['result'] = "Se creó correctamente el artículo"
         response_data['articulo_id'] = str(articulo.id)
         response_data['nombre'] = str(articulo)
+        response_data['codigo'] = str(articulo.codigo)
         response_data['precio_venta'] = str(articulo.precio_venta)
         response_data['precio_compra'] = str(articulo.precio_compra)
+        response_data['precio_compra2'] = str(articulo.precio_compra2)
+        response_data['precio_compra3'] = str(articulo.precio_compra3)
+        response_data['iva'] = str(articulo.iva)
+        response_data['cantidad_inicial'] = str(articulo.cantidad_inicial)
+        response_data['minimo_existencias'] = str(inventario.minimo_existencias)
 
         return HttpResponse(
             json.dumps(response_data),

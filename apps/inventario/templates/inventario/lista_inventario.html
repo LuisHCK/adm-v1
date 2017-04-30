@@ -17,24 +17,30 @@
     <table id="tabla_inventario" class="table table-striped">
       <thead class="thead-inverse">
         <tr>
-          <th>#</th>
+          <th>Código</th>
           <th>Nombre</th>
           <th>Existencias</th>
           <th>Minimo Existencias</th>
-          <th>Precio de Compra</th>
-          <th>Precio de Venta</th>
+          <th>Precio Compra</th>
+          <th>Precio Venta 1</th>
+          <th>Precio Venta 2</th>
+          <th>Precio Venta 3</th>
+          <th>IVA(%)</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         {% for inventario in inventario.all %}
         <tr id="art_{{ inventario.articulo.id }}">
-          <th scope="row">{{ inventario.articulo.id}}</th>
+          <th style="width: 100px;">{{ inventario.articulo.codigo}}</th>
           <td>{{ inventario.articulo.nombre }}</td>
           <td>{{ inventario.existencias }}</td>
           <td>{{ inventario.minimo_existencias }}</td>
           <td>{{ inventario.articulo.precio_compra }}</td>
           <td>{{ inventario.articulo.precio_venta }}</td>
+          <td>{{ inventario.articulo.precio_venta2 }}</td>
+          <td>{{ inventario.articulo.precio_venta3 }}</td>
+          <td>{{ inventario.articulo.iva }}</td>
           <td>
 
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -82,5 +88,5 @@
     }
   });
 </script>
-
+{% include "inventario/ajax.html" %}
 {% endblock content %}

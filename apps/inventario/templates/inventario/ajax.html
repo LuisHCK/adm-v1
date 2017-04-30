@@ -2,12 +2,17 @@
     $("#form_articulo").submit(function (event) {
         event.preventDefault();
         $.ajax({
-            url: "{% url 'ajax_crear_articulo' %}",
+            url: $(this).attr('action'),
             data: {
                 nombre: $('#id_nombre').val(),
+                codigo: $('#id_codigo').val(),
                 descripcion: $('#id_descripcion').val(),
                 precio_compra: $('#id_precio_compra').val(),
                 precio_venta: $('#id_precio_venta').val(),                
+                precio_venta2: $('#id_precio_venta2').val(),                
+                precio_venta3: $('#id_precio_venta3').val(),                
+                iva: $('#id_iva').val(),                
+                cantidad_inicial: $('#id_cantidad_inicial').val(),                
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
@@ -26,16 +31,17 @@
                 // Agregar el artículo a la tabla
                 $('#tabla_inventario').prepend(
                     `<tr id="art_`+ json.articulo_id +`">
-                    <th scope="row">` + json.articulo_id +
+                    <th scope="row">` + json.codigo +
                     `</th>
                     <td>` + json.nombre +
                     `</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>` + json.precio_compra +
-                    `</td>
-                    <td>` + json.precio_venta +
-                    `</td>
+                    <td>`+ json.cantidad_inicial +`</td>
+                    <td>`+ json.minimo_existencias +`</td>
+                    <td>`+ json.precio_compra +`</td>
+                    <td>`+ json.precio_venta +`</td>
+                    <td>`+ json.precio_venta2 +`</td>
+                    <td>`+ json.precio_venta3 +`</td>
+                    <td>`+ json.iva +`</td>
                     <td>
 
                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
