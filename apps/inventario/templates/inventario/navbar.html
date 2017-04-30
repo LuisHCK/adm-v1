@@ -1,17 +1,10 @@
 {% load staticfiles %}
 {% include 'navbar.html' %}
     <ul class="nav nav-pills flex-column div_hover">
-        <a class="nav-item nav-link nav-link-styled">
+        <a class="nav-item nav-link nav-link-styled" data-toggle="modal" data-target=".bd-example-modal-lg">
             <i class="nav-icon fi-shopping-cart"></i>
             <p class="nav-item-text float-left">Nuevo Artículo</p>
         </a>
-        <form id="form_articulo" method="POST" class="post-form white-text" action="{% url 'ajax_crear_articulo' %}">
-            {% csrf_token %}
-            <div class="form-group" style="padding: 5%">
-                {{ form_articulo.as_p }}
-                <button type="submit" class="save btn btn-success btn-block">Listo</button>
-            </div>
-        </form>
     </ul>
     <ul class="nav nav-pills flex-column div_hover">
         {% if user.is_authenticated %}

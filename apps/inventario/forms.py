@@ -8,12 +8,31 @@ class ArticuloForm(forms.ModelForm):
     """Formulario para los articulos"""
     class Meta:
         model = Articulos
-        fields = ('nombre', 'descripcion', 'precio_compra', 'precio_venta')
+        fields = ('codigo',
+                  'nombre',
+                  'descripcion',
+                  'precio_compra',
+                  'precio_venta',
+                  'precio_venta2',
+                  'precio_venta3',
+                  'iva',
+                  'cantidad_inicial')
         widgets = {
+            'codigo': TextInput(attrs={'class': 'form-control'}),
             'nombre': TextInput(attrs={'class': 'form-control'}),
             'descripcion': TextInput(attrs={'class': 'form-control'}),
             'precio_compra': NumberInput(attrs={'class': 'form-control'}),
             'precio_venta': NumberInput(attrs={'class': 'form-control'}),
+            'precio_venta2': NumberInput(attrs={'class': 'form-control'}),
+            'precio_venta3': NumberInput(attrs={'class': 'form-control'}),
+            'iva': NumberInput(attrs={'class': 'form-control'}),
+            'cantidad_inicial': NumberInput(attrs={'class': 'form-control'}),
+
+        }
+        labels = {
+            'precio_venta': "Precio 1",
+            'precio_venta2': "Precio 2",
+            'precio_venta3': "Precio 3",
         }
 
 
