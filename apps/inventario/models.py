@@ -27,3 +27,28 @@ class Inventario(models.Model):
     fecha_creacion = models.DateTimeField(default=timezone.now)
     def __int__(self):
         return self.existencias
+
+class Proveedor(models.Model):
+    '''Proveedores de articulos'''
+    VALORACIONES = (
+        ('Excelente', 'excelente'),
+        ('Muy bueno', 'muy_bueno'),
+        ('Bueno', 'bueno'),
+        ('Regular', 'regular'),
+        ('Deficiente', 'deficiente'),
+        ('Malo', 'malo'),
+        ('Muy malo', 'muy_malo'),
+        )
+
+    '''Datos del provedor de articulos'''
+    nombre = models.CharField(max_length=100)
+    codigo = models.CharField(max_length=20)
+    descripcion = models.TextField()
+    direccion = models.TextField()
+    email = models.EmailField()
+    telefono = models.CharField(max_length=30)
+    telefono2 = models.CharField(max_length=30)
+    valoracion = models.CharField(max_length=50, choices=VALORACIONES,
+                                  default='',
+                                  blank=True, null=True)
+
