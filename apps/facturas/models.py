@@ -30,8 +30,9 @@ class Factura(models.Model):
         '''Devolver la cantidad de productos adquiridos'''
         item_articulos = FacturaArticulos.objects.filter(factura=self).count()
         return item_articulos
-    
+
     def servicios_count(self):
+        '''Devuelve la cantidad de serivicios adquiridos'''
         item_servicios = FacturaServicios.objects.filter(factura=self).count()
         return item_servicios
 
