@@ -14,6 +14,7 @@ class Factura(models.Model):
     total = models.DecimalField(max_digits=6, decimal_places=2, default=0, blank=True)
     cobrada = models.BooleanField(default=False)
     contado = models.BooleanField(default=True)
+    fecha_limite = models.DateTimeField(blank=True, null=True)
     fecha_factura = models.DateTimeField(default=timezone.now)
     fecha_cobro = models.DateTimeField(blank=True, null=True)
 
@@ -36,6 +37,27 @@ class Factura(models.Model):
         item_servicios = FacturaServicios.objects.filter(factura=self).count()
         return item_servicios
 
+    def estado(self):
+        '''Devuelve el estado en que se encuentra una factura'''
+        if self.contado:
+            estado = {'class': 'success', 'mensaje': 'Factura de Contado'}
+            return estado
+
+        elif self.contado is False and self.fecha_limite < timezone.now():
+            estado = {'class': 'warning', 'mensaje': 'Factura de pendiente de cobro'}
+            return estado
+
+        elif self.contado is False and self.fecha_limite > timezone.now():
+            estado = {'class': 'danger', 'mensaje': 'Se venció la fecha limite de pago'}
+            return estado
+
+        elif self.contado is False and self.fecha_limite > timezone.now() and self.cobrada is True:
+            estado = {'class': 'success', 'mensaje': 'Factura pagada'}
+            return estado
+
+        else:
+            estado = {'class': 'warning', 'mensaje': 'La factura no es válida'}
+            return estado
 
 class FacturaItems(models.Model):
     """Almacena individualmente los items de una Factura"""
