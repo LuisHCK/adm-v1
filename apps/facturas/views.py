@@ -21,9 +21,9 @@ from .models import Factura, FacturaArticulos, FacturaServicios
 
 def facturas(request):
     """Ver todas las facturas"""
-    lista_facturas = Factura.objects.filter(cobrada=True)
-    lista_pendientes = Factura.objects.filter(cobrada=False)
-    pendientes = Factura.objects.filter(cobrada=False).count
+    lista_facturas = Factura.objects.filter(cerrada=True)
+    lista_pendientes = Factura.objects.filter(cerrada=False)
+    pendientes = Factura.objects.filter(cerrada=False).count
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'pendientes': pendientes,
@@ -34,8 +34,8 @@ def facturas(request):
 
 def facturas_pagadas(request):
     """Muestra las facturas que ya fueron pagadas"""
-    lista_facturas = Factura.objects.filter(cobrada=True)
-    pendientes = Factura.objects.filter(cobrada=False).count
+    lista_facturas = Factura.objects.filter(cerrada=True)
+    pendientes = Factura.objects.filter(cerrada=False).count
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'pendientes': pendientes,
@@ -44,8 +44,8 @@ def facturas_pagadas(request):
 
 def facturas_pendientes(request):
     """Muestra las facturas que ya fueron pagadas"""
-    lista_facturas = Factura.objects.filter(cobrada=False)
-    pendientes = Factura.objects.filter(cobrada=False).count
+    lista_facturas = Factura.objects.filter(cerrada=False)
+    pendientes = Factura.objects.filter(cerrada=False).count
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'pendientes': pendientes,
@@ -136,14 +136,14 @@ def cobrar_factura(request, pk):
 
 
 def eliminar_factura(request, pk):
-    """Elimina una factura, solo si no ha sido cobrada"""
+    """Elimina una factura, solo si no ha sido cerrada"""
     factura = get_object_or_404(Factura, pk=pk)
-    if (validaciones.es_administrador(request.user) and factura.cobrada == False):
+    if (validaciones.es_administrador(request.user) and factura.cerrada == False):
         factura.delete()
         messages.success(request, "Se borró la factura")
         return redirect('facturas')
     else:
-        messages.error("No se puede eliminar la factura")
+        messages.error(request, "No se puede eliminar la factura")
         return redirect('facturas')
 
 
