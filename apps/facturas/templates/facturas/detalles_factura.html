@@ -1,7 +1,7 @@
  {% extends 'base.html' %} {% block content %}
 <br> {% include 'messages.html' %}
 
-{% if factura.cobrada is False %}
+{% if factura.cerrada is False %}
     {% include 'facturas/parciales/agregando.html' %}
 {% else %}
     {% include 'facturas/parciales/imprimir.html' %}
