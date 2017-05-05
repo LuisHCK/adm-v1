@@ -3,7 +3,7 @@
         <tr>
             <th>#</th>
             <th>Cliente</th>
-            <th>Items</th>
+            <th>Método Pago</th>
             <th>Total</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -11,30 +11,23 @@
     </thead>
     <tbody>
         {% for factura in facturas.all %}
-        <tr>
+        <tr class="bg-{{ factura.estado.class }} white-text">
             <th scope="row">{{ factura.id}}</th>
             <td>{{ factura.cliente}}</td>
-            <td>{{ factura.items.count }}</td>
+            <td> {% if factura.contado %}
+                <strong class="white-text">Contado</strong> {% else %}
+                <strong class="white-text">Crédito</strong> {% endif %}</td>
             <td>{{ factura.total }}</td>
             <td>
-                {% if factura.cobrada %}
-                    Cobrado
-                {% else %}
-                    Pendiente
-                {% endif %}
+                {% if factura.cerrada %} Cobrado {% else %} Pendiente {% endif %}
             </td>
-            <td>
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <a href="{% url 'detalles_factura' factura.id %}" class="btn btn-outline-primary" }>Detalles</a>
-                    <div class="btn-group" role="group">
-                        <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">Acciones</button>
-                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                            <a class="dropdown-item" href="{% url 'cobrar_factura' factura.id %}">Cobrar</a>
-                            <a class="dropdown-item" href="{% url 'eliminar_factura' factura.id %}" onclick="return confirm('¿Estas seguro que de eliminar la factura?')">Eliminar</a>
-                        </div>
-                    </div>
-                </div>
+            <td class="white-text">
+
+                {% if factura.cobrado == False %}
+                <a class="btn btn-primary btn-sm" href="{% url 'cobrar_factura' factura.id %}">Cobrar</a> {% endif %}
+
+                <a href="{% url 'detalles_factura' factura.id %}" class="btn btn-info btn-sm" }>Detalles</a>
+                <a class="btn btn-danger btn-sm" href="{% url 'eliminar_factura' factura.id %}" onclick="return confirm('¿Estas seguro que de eliminar la factura?')">Eliminar</a>
             </td>
         </tr>
         {% endfor %}
