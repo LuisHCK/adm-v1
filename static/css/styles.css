@@ -2,6 +2,9 @@
   font-family: 'Roboto';
   src: url('../fonts/Roboto.ttf')
 }
+.hidden{
+  display: none;
+}
 body{
   font-family: 'Roboto';
 }
@@ -34,12 +37,34 @@ body{
   box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
 }
 
+.clear-btn{
+  background-color: #FF7043 !important;
+  color: white;
+}
+.clear-btn:hover{
+  background-color: #BF360C !important;
+}
+
+.list-art:hover{
+  background-color: #0288D1;
+  color: white;
+}
+
+.verticalLine {
+  border-left: thick solid gray;
+  padding-left: 1%;
+  padding-right: 1%;
+}
+
 .box {
   border-radius: 6px;
 }
 
-.white,
-.box {
+.gray.box{
+  background-color: #ECEFF1 !important;
+}
+
+.white.box {
   background-color: white;
 }
 

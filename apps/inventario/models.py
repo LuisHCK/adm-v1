@@ -18,6 +18,15 @@ class Articulos(models.Model):
     def __str__(self):
         return self.nombre
 
+    def as_dict(self):
+        '''Retorna un diccionario serializable'''
+        return dict(
+            id=self.id,
+            nombre=self.nombre,
+            codigo=self.codigo,
+            precio_venta=str(self.precio_venta)
+        )
+
 class Inventario(models.Model):
     """Controlar la disponibilidad de los Articulos"""
     articulo = models.ForeignKey('Articulos', on_delete=models.CASCADE,)

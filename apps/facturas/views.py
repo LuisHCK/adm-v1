@@ -1,21 +1,23 @@
 
+import json
+
+from django.contrib.postgres.search import SearchVector
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import get_object_or_404, redirect, render
+from django.core import serializers
 from django.http import HttpResponse
-import json
+from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.inventario.models import Articulos
-from apps.servicios.models import TipoServicio
-from apps.ventas.models import Venta
-from apps.servicios.models import Servicio
 from apps.caja.models import Caja
-from apps.inventario.models import Inventario
 from apps.common import validaciones
+from apps.inventario.models import Articulos, Inventario
+from apps.servicios.models import Servicio, TipoServicio
+from apps.ventas.models import Venta
 
 from .forms import FacturaArticuloForm, FacturaForm, ServicioRapidoForm
 from .models import Factura, FacturaArticulos, FacturaServicios
+
 
 @login_required(login_url='login')  # redirect when user is not logged in
 
@@ -66,8 +68,8 @@ def nueva_factura(request):
                 response_data['result'] = 'Se creó la factura.'
                 response_data['id'] = str(factura.pk)
                 response_data['cliente'] = str(factura.cliente)
-                response_data['contado'] = str(factura.contado) 
-            
+                response_data['contado'] = str(factura.contado)
+
             return HttpResponse(
                 json.dumps(response_data),
                 content_type="application/json"
@@ -75,7 +77,7 @@ def nueva_factura(request):
         else:
             return HttpResponse(
                 json.dumps({"nothing to see": "this isn't happening"}),
-                content_type="application/json" 
+                content_type="application/json"
             )
     else:
         response_data['result'] = 'Aún no se rea realizado la apertura de caja.'
@@ -273,3 +275,15 @@ def detalles_factura(request, pk):
         'form_servicio': ServicioRapidoForm,
         'project_ver': project_ver,
     })
+
+def buscar_articulo(request, codigo=None):
+    '''Busca los articulos en la base de datos'''
+    articulos = Articulos.objects.annotate(
+        search=SearchVector('codigo', 'nombre')).filter(search=codigo)
+
+    # Serializar el objeto que contiene los resultados la busqueda
+    arts = [obj.as_dict() for obj in articulos]
+
+    return HttpResponse(
+        json.dumps(arts),
+        content_type="application/json",)

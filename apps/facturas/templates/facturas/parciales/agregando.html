@@ -8,24 +8,56 @@
         <h5><b>Total: </b> <em id="total_factura">{{ factura.total }}</em> </h5>
     </div>
     <div class="col-xs-4">
-            <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-success btn-block">Cobrar</a>
+        <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-success btn-block">Cobrar</a>
     </div>
 </div>
 <hr>
 <div class="row">
     <div class="col-xs-4">
         <div class="box mdl-shadow--2dp" style="padding: 3%; background-color: white">
-            <h5>Añadir Artículo</h4>
-            <form method="POST" action="{% url 'agregar_articulo_factura' factura.id %}" class="post-form text-left" id="agregar_articulo">{% csrf_token %} {{ form_articulo.as_p }}
-                <button style="width: 100%" type="submit" class="save btn btn-primary">Añadir</button>
+            <strong>Añadir Artículo</strong>
+            <form class="post-form text-left" id="buscar_articulo">
+                <div class="input-group">
+                    <div id="borrar_codigo" class="input-group-addon clear-btn btn btn-danger"><i class="fi-x"></i></div>
+                    <input type="text" id="codigo_articulo" class="form-control" placeholder="Buscar por código o nombre">
+                </div>
             </form>
+            <ul id="lista-articulos" class="list-group" style="padding-top: 1.5%;"></ul>
+            <hr>
+            <div class="box gray box-form">
+                <form id="form_agregar_articulo" method="POST" class="hidden" action="{% url 'agregar_articulo_factura' factura.id %}" token="{{ csrf_token }}">
+                    <p>
+                        <input type="number" class="hidden" id="id_articulo">
+                        <strong>Art: </strong> <span id="nombre_articulo"></span> |
+                        <strong>Precio: $</strong> <span id="precio_articulo"></span>
+                    </p>
+
+                    <p>
+                        <label for="id_cantidad_articulo">Cantidad</label>
+                        <input type="number" class="form-control" id="id_cantidad_articulo">
+                    </p>
+                    <button type="submint" class="btn btn-block btn-primary">Añadir</button>
+                </form>
+            </div>
         </div>
         <hr>
         <div class="box mdl-shadow--2dp" style="padding: 3%; background-color: white">
-            <h4>Añadir Servicios</h4>
-            <form method="POST" action="{% url 'agregar_servicio_factura' factura.id %}" class="post-form text-left" id="agregar_servicio">{% csrf_token %} {{ form_servicio.as_p }}
-                <button style="width: 100%" type="submit" class="save btn btn-primary">Añadir</button>
+            <strong>Añadir Servicios</strong>
+            <form class="post-form text-left" id="agregar_servicio">
+                <div class="input-group">
+                    <div id="borrar_codigo_p" class="input-group-addon clear-btn btn btn-danger"><i class="fi-x"></i></div>                    
+                    <input type="text" id="codigo_producto" class="form-control" placeholder="Buscar por código o nombre">
+                </div>
             </form>
+            <ul id="lista-serivicios" class="list-group"></ul>
+            <hr>
+            <div class="box gray box-form">
+                <form class="post-form text-left" id="agregar_servicio" action="{% url 'agregar_servicio_factura' factura.id %}" token="{{ csrf_token }}">
+                    <input class="hidden" required="true" id="id_tipo_servicio">
+                    <label for="cantidad_servicio">Cantidad:</label>
+                    <input type="number" name="cantidad" value="1" class="form-control" id="cantidad_servicio" required="">
+                </form>
+            </div>
         </div>
     </div>
     <div class="col-xs-8">
@@ -64,49 +96,84 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eModalLabel">Ocurrió un Error</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-            </div>
-            <div class="modal-body">
-                <div id="descripcion_msg"></div>
-                <em id="error_msg"></em>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Entiendo</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-    $("#agregar_articulo").submit(function (event) {
+    $('#codigo_articulo').on('input', function () {
+        var cod = $(this).val();
+        var url = $(this).attr('action')
+        //Si el texto introducido supera los 3 caracteres realizar la búsqueda
+        if (cod.length >= 4) {
+            busqueda_articulos('../buscar_articulo/', cod)
+        } else {
+            // Si no hay texto introducido limpiar los resultados y cerrar el form
+            limpiarBusquedas();
+        }
+    });
+
+    // Búsqueda mediante ajax
+    function busqueda_articulos(url, codigo) {
+        $.ajax({
+            url: url + codigo,
+            dataType: "json",
+            type: "GET",
+
+            success: function (json) {
+                $("#lista-articulos").html('');
+                $.each(json, function (i, obj) {
+                    $("#lista-articulos").append(`
+                        <button id="`+obj.id+`
+                        " class="list-group-item list-art" precio="`+obj.precio_venta+`">
+                            <span class="float-right">`+obj.nombre+` </span> <strong>&emsp;|&emsp;</strong> `+obj.codigo+`
+                        </button>`)
+                });
+                console.log(json)
+            },
+            error: function (json) {
+                console.log(json)
+            }
+        })
+    };
+
+    $("#lista-articulos").on("click", ".list-group-item", function () {
+        // Obtener del item de resultado los valores el articulo
+        var id = $(this).attr('id')
+        var nombre = $(this).children("span").text()
+        var precio = $(this).attr('precio')
+
+        //Mandar los datos al formulario
+        $("#id_articulo").val(id)
+        $("#nombre_articulo").html(nombre)
+        $("#precio_articulo").html(precio)
+        $("#form_agregar_articulo").fadeIn()
+    });
+
+    //Limpia el input de busqueda
+    $("#borrar_codigo").click(function () {
+        $("#codigo_articulo").val('');
+        limpiarBusquedas();
+    });
+
+    // Limpia los resultados y el formulario de artículos
+    function limpiarBusquedas() {
+        $("#lista-articulos").html("");
+        $("#form_agregar_articulo").fadeOut();
+    }
+
+    // Agregar un artículo mediante ajax 
+    $("#form_agregar_articulo").on('submit', function (event) {
         event.preventDefault();
         $.ajax({
-            url: "{% url 'agregar_articulo_factura' factura.id %}",
+            url: $(this).attr('action'),
             data: {
-                articulo: $('#id_articulo').val(),
-                cantidad: $('#id_cantidad').val(),
-                csrfmiddlewaretoken: '{{ csrf_token }}'
+                articulo: $("#id_articulo").val(),
+                cantidad: $('#id_cantidad_articulo').val(),
+                csrfmiddlewaretoken: $(this).attr('token')
             },
             dataType: "json",
             type: "POST",
             // handle a successful response
             error: function (json) {
-                $('#id_articulo').val(''); // remove the value from the input
-                console.log(json); // log the returned json to the console
-                console.log("success"); // another sanity check
-
-                document.getElementById("descripcion_msg").innerHTML = json.responseJSON.result;
-                document.getElementById("error_msg").innerHTML = json.responseJSON.reason;
-                $('#errorModal').modal('show');
-                //alert(json.responseJSON.result + " " + json.responseJSON.reason);
+                $('#id_articulo').val().replace('');
+                console.log(json);
             },
 
             success: function (json) {
@@ -123,6 +190,8 @@
         });
     });
 
+    // SERIVICIOS //
+
     $("#agregar_servicio").submit(function (event) {
         event.preventDefault();
         $.ajax({
@@ -130,14 +199,12 @@
             data: {
                 tipo_servicio: $('#id_tipo_servicio').val(),
                 cantidad: $('#cantidad_servicio').val(),
-                csrfmiddlewaretoken: '{{ csrf_token }}'
+                csrfmiddlewaretoken: $(this).attr('token')
             },
             dataType: "json",
             type: "POST",
             // Si hay un error enviar un mensaje 
             error: function (json) {
-                $('#id_tipo_servicio').val('');
-                $('#cantidad_servicio').val(1);
                 console.log(json); // ver en la consola el json enviado
                 alert(json.responseJSON.result);
             },
