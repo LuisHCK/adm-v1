@@ -25,8 +25,9 @@ class TipoServicioForm(forms.ModelForm):
     class Meta:
         model = TipoServicio
 
-        fields = ['nombre', 'costo']
+        fields = ['nombre', 'codigo', 'costo']
         widgets = {
             'nombre': TextInput(attrs={'class': 'form-control'}),
+            'codigo': TextInput(attrs={'class': 'form-control'}),
             'costo': NumberInput(attrs={'class': 'form-control'}),
         }

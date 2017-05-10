@@ -9,6 +9,7 @@ class TipoServicio(models.Model):
     """Establece un tipo de servicio"""
     nombre = models.CharField(max_length=150)
     costo = models.DecimalField(max_digits=6, decimal_places=2)
+    codigo = models.CharField(max_length=20)
     activo = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(default=timezone.now)
     def __str__(self):
