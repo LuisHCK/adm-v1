@@ -137,6 +137,11 @@ a.list-group-item-success:hover{
 a.list-group-item-warning:hover{
   background-color: #FFCC80 !important;  
 }
+.list-prod, .list-art{
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  font-size: 14px !important;
+}
 
 /* Reducir el tamaño de la fuente en las tablas */
 th, td, tr{

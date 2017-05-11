@@ -15,6 +15,12 @@ class TipoServicio(models.Model):
     def __str__(self):
         return self.nombre
 
+    def as_dict(self):
+        return dict(
+            id=self.id,
+            nombre=self.nombre,
+            costo=str(self.costo),
+            codigo=self.codigo)
 
 class Servicio(models.Model):
     """Registra los servicios realizados"""

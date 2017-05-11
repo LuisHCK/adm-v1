@@ -287,3 +287,15 @@ def buscar_articulo(request, codigo=None):
     return HttpResponse(
         json.dumps(arts),
         content_type="application/json",)
+
+    # SERVICIOS
+def buscar_servicio(request, codigo):
+    '''Busca servicios por su codigo o nombre'''
+    tipos_servicios = TipoServicio.objects.annotate(
+        search=SearchVector('codigo', 'nombre')).filter(search__icontains=codigo)
+
+    serv = [obj.as_dict() for obj in tipos_servicios]
+
+    return HttpResponse(
+        json.dumps(serv),
+        content_type="application/json")

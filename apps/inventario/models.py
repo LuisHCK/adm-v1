@@ -21,7 +21,7 @@ class Articulos(models.Model):
     def as_dict(self):
         '''Retorna un diccionario serializable'''
         return dict(
-            id=self.id,
+            id=str(self.id),
             nombre=self.nombre,
             codigo=self.codigo,
             precio_venta=str(self.precio_venta)

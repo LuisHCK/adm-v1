@@ -1,14 +1,12 @@
 <div class="btn-group" role="group" aria-label="Basic example">
 </div>
-<div class="row text-center box mdl-shadow--2dp" style="padding: 1%; background-color: white">
-    <div class="col-xs-4">
-        <h5><b>Cliente: </b> {{factura.cliente}}</h5>
+<div class="row" style="padding-top:3%;">
+    <div class="col-xs-6">
+        <h5>Factura</h5>
     </div>
-    <div class="col-xs-4">
-        <h5><b>Total: </b> <em id="total_factura">{{ factura.total }}</em> </h5>
-    </div>
-    <div class="col-xs-4">
-        <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-success btn-block">Cobrar</a>
+    <div class="col-xs-6">
+        <b class="">Cliente: </b> {{factura.cliente}} -
+        <b class="">Total: </b> <em id="total_factura">{{ factura.total }}</em> 
     </div>
 </div>
 <hr>
@@ -26,11 +24,10 @@
             <hr>
             <div class="box gray box-form">
                 <form id="form_agregar_articulo" method="POST" class="hidden" action="{% url 'agregar_articulo_factura' factura.id %}" token="{{ csrf_token }}">
-                    <p>
-                        <input type="number" class="hidden" id="id_articulo">
-                        <strong>Art: </strong> <span id="nombre_articulo"></span> |
-                        <strong>Precio: $</strong> <span id="precio_articulo"></span>
-                    </p>
+                    <input type="number" class="hidden" id="id_articulo">
+                    <strong>Art: </strong> <span id="nombre_articulo"></span> |
+                    <strong>Precio: $</strong> <span id="precio_articulo"></span>
+                    <hr>
 
                     <p>
                         <label for="id_cantidad_articulo">Cantidad</label>
@@ -43,22 +40,30 @@
         <hr>
         <div class="box mdl-shadow--2dp" style="padding: 3%; background-color: white">
             <strong>Añadir Servicios</strong>
-            <form class="post-form text-left" id="agregar_servicio">
+            <form class="post-form text-left" id="buscar_servicio">
                 <div class="input-group">
-                    <div id="borrar_codigo_p" class="input-group-addon clear-btn btn btn-danger"><i class="fi-x"></i></div>                    
+                    <div id="borrar_codigo_p" class="input-group-addon clear-btn btn btn-danger"><i class="fi-x"></i></div>
                     <input type="text" id="codigo_producto" class="form-control" placeholder="Buscar por código o nombre">
                 </div>
             </form>
-            <ul id="lista-serivicios" class="list-group"></ul>
+            <ul id="lista-servicios" class="list-group"></ul>
             <hr>
             <div class="box gray box-form">
-                <form class="post-form text-left" id="agregar_servicio" action="{% url 'agregar_servicio_factura' factura.id %}" token="{{ csrf_token }}">
+                <form id="agregar_servicio" class="post-form text-left hidden" action="{% url 'agregar_servicio_factura' factura.id %}" token="{{ csrf_token }}">
                     <input class="hidden" required="true" id="id_tipo_servicio">
-                    <label for="cantidad_servicio">Cantidad:</label>
-                    <input type="number" name="cantidad" value="1" class="form-control" id="cantidad_servicio" required="">
+                    <strong>Prod: </strong> <span id="nombre_producto"></span> |
+                    <strong>Precio: $</strong> <span id="precio_producto"></span>
+                    <hr>
+                    <p>
+                        <label for="cantidad_servicio">Cantidad:</label>
+                        <input type="number" name="cantidad" value="1" class="form-control" id="cantidad_servicio" required="">
+                    </p>
+                    <button type="submit" class="btn btn-success">Agregar</button>
                 </form>
             </div>
         </div>
+        <hr>    
+        <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-success btn-block">Cobrar Factura</a>
     </div>
     <div class="col-xs-8">
         <table class="table table-striped mdl-shadow--2dp box">
@@ -95,132 +100,3 @@
         </table>
     </div>
 </div>
-
-<script>
-    $('#codigo_articulo').on('input', function () {
-        var cod = $(this).val();
-        var url = $(this).attr('action')
-        //Si el texto introducido supera los 3 caracteres realizar la búsqueda
-        if (cod.length >= 4) {
-            busqueda_articulos('../buscar_articulo/', cod)
-        } else {
-            // Si no hay texto introducido limpiar los resultados y cerrar el form
-            limpiarBusquedas();
-        }
-    });
-
-    // Búsqueda mediante ajax
-    function busqueda_articulos(url, codigo) {
-        $.ajax({
-            url: url + codigo,
-            dataType: "json",
-            type: "GET",
-
-            success: function (json) {
-                $("#lista-articulos").html('');
-                $.each(json, function (i, obj) {
-                    $("#lista-articulos").append(`
-                        <button id="`+obj.id+`
-                        " class="list-group-item list-art" precio="`+obj.precio_venta+`">
-                            <span class="float-right">`+obj.nombre+` </span> <strong>&emsp;|&emsp;</strong> `+obj.codigo+`
-                        </button>`)
-                });
-                console.log(json)
-            },
-            error: function (json) {
-                console.log(json)
-            }
-        })
-    };
-
-    $("#lista-articulos").on("click", ".list-group-item", function () {
-        // Obtener del item de resultado los valores el articulo
-        var id = $(this).attr('id')
-        var nombre = $(this).children("span").text()
-        var precio = $(this).attr('precio')
-
-        //Mandar los datos al formulario
-        $("#id_articulo").val(id)
-        $("#nombre_articulo").html(nombre)
-        $("#precio_articulo").html(precio)
-        $("#form_agregar_articulo").fadeIn()
-    });
-
-    //Limpia el input de busqueda
-    $("#borrar_codigo").click(function () {
-        $("#codigo_articulo").val('');
-        limpiarBusquedas();
-    });
-
-    // Limpia los resultados y el formulario de artículos
-    function limpiarBusquedas() {
-        $("#lista-articulos").html("");
-        $("#form_agregar_articulo").fadeOut();
-    }
-
-    // Agregar un artículo mediante ajax 
-    $("#form_agregar_articulo").on('submit', function (event) {
-        event.preventDefault();
-        $.ajax({
-            url: $(this).attr('action'),
-            data: {
-                articulo: $("#id_articulo").val(),
-                cantidad: $('#id_cantidad_articulo').val(),
-                csrfmiddlewaretoken: $(this).attr('token')
-            },
-            dataType: "json",
-            type: "POST",
-            // handle a successful response
-            error: function (json) {
-                $('#id_articulo').val().replace('');
-                console.log(json);
-            },
-
-            success: function (json) {
-                $('#id_articulo').val(''); // remove the value from the input
-                console.log(json); // log the returned json to the console
-                console.log("success"); // another sanity check
-                $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>" + json.articulo +
-                    "</td><td>" + json.precio + "</td><td>" + json.cantidad +
-                    "</td><td><a class='btn btn-danger' href='/facturas/articulos/" + json.item_id +
-                    "/eliminar/'>Eliminar</a></td></tr>");
-                $('#hide_item').fadeIn('slow');
-                document.getElementById("total_factura").innerHTML = json.total_factura;
-            },
-        });
-    });
-
-    // SERIVICIOS //
-
-    $("#agregar_servicio").submit(function (event) {
-        event.preventDefault();
-        $.ajax({
-            url: "{% url 'agregar_servicio_factura' factura.id %}",
-            data: {
-                tipo_servicio: $('#id_tipo_servicio').val(),
-                cantidad: $('#cantidad_servicio').val(),
-                csrfmiddlewaretoken: $(this).attr('token')
-            },
-            dataType: "json",
-            type: "POST",
-            // Si hay un error enviar un mensaje 
-            error: function (json) {
-                console.log(json); // ver en la consola el json enviado
-                alert(json.responseJSON.result);
-            },
-
-            success: function (json) {
-                $('#id_tipo_servicio').val('');
-                $('#cantidad_servicio').val(1);
-                console.log(json); // ver en la consola el json enviado
-                console.log("success"); // Exito GG
-                $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>" + json.servicio +
-                    "</td><td>" + json.costo + "</td><td>" + json.cantidad +
-                    "</td><td><a class='btn btn-danger' href='/facturas/servicios/" + json.item_id +
-                    "/eliminar/'>Eliminar</a></td></tr>");
-                $('#hide_item').fadeIn('slow');
-                document.getElementById("total_factura").innerHTML = json.total_factura;
-            },
-        });
-    });
-</script>

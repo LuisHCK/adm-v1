@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/$', views.detalles_factura, name='detalles_factura'),
     url(r'^cobrar/(?P<pk>[0-9]+)$', views.cobrar_factura, name='cobrar_factura'),
     url(r'^buscar_articulo/(?P<codigo>[\w\-]+)/$', views.buscar_articulo, name="buscar_articulo"),
+    url(r'^buscar_servicio/(?P<codigo>[\w\-]+)/$', views.buscar_servicio, name="buscar_servicio"),
 ]
