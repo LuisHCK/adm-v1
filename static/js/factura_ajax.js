@@ -75,7 +75,7 @@ $("form").submit(function(event) {
         var precio = $(this).attr('precio')
 
         //Mandar los datos al formulario
-        $("#id_articulo").val(id.toString())
+        $("#id_articulo").val(parseInt(id))
         $("#nombre_articulo").html(nombre)
         $("#precio_articulo").html(precio)
         $("#form_agregar_articulo").fadeIn()
@@ -173,7 +173,7 @@ $("form").submit(function(event) {
 
         $("#nombre_producto").text(nombre)
         $("#precio_producto").text(precio)
-        $("#id_tipo_servicio").val(codigo)
+        $("#id_tipo_servicio").val(parseInt(codigo))
         $("#agregar_servicio").fadeIn()
     })
 

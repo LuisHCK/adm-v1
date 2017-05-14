@@ -19,7 +19,7 @@
                 <strong class="white-text">Crédito</strong> {% endif %}</td>
             <td>{{ factura.total }}</td>
             <td>
-                {% if factura.cerrada %} Cobrado {% else %} Pendiente {% endif %}
+                {% if factura.cerrada and factura.pagada and factura.contado %} Cobrado {% else %} Pendiente {% endif %}
             </td>
             <td class="white-text">
 

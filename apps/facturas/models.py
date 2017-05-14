@@ -9,21 +9,20 @@ from apps.servicios.models import TipoServicio
 
 class Factura(models.Model):
     '''Factura una venta realizada a un cliente'''
+    ESTADOS = (
+        ('cerrado', 'Cerrado'),
+        ('abierto', 'Abierto'))
+    TIPOS = (
+        ('contado', 'Contado'),
+        ('credito', 'Credito'))
     usuario = models.ForeignKey('auth.User')
     cliente = models.CharField(max_length=100)
     total = models.DecimalField(max_digits=6, decimal_places=2, default=0, blank=True)
-    cerrada = models.BooleanField(default=False) # La factura un está siendo creada
-    contado = models.BooleanField(default=True) # La factura es al crédito o de contado
-    pagada = models.BooleanField(default=False) # la factura al crédito fue pagada por el cliente
+    estado = models.CharField(max_length=15, choices=ESTADOS, default='abierto')
+    pago = models.CharField(max_length=15, choices=TIPOS, default='contado')
     fecha_limite = models.DateTimeField(blank=True, null=True)
     fecha_factura = models.DateTimeField(default=timezone.now)
     fecha_cobro = models.DateTimeField(blank=True, null=True)
-
-    def cobrar(self):
-        '''Si la factura es pagada se guarda'''
-        self.cerrada = True
-        self.fecha_cobro = timezone.now()
-        self.save()
 
     def __str__(self):
         return self.cliente
@@ -38,25 +37,13 @@ class Factura(models.Model):
         item_servicios = FacturaServicios.objects.filter(factura=self).count()
         return item_servicios
 
-    def estado(self):
-        '''Devuelve el estado en que se encuentra una factura'''
-        estado = object
-        if self.contado:
-            estado = {'class': 'success', 'mensaje': 'Factura de Contado'}
 
-        elif self.pagada is True:
-            estado = {'class': 'success', 'mensaje': 'Factura pagada'}
+class Abono(models.Model):
+    '''Almacena los los abonos realizados a una factura pendiente'''
+    factura = models.ForeignKey('facturas.Abono', on_delete=models.CASCADE)
+    cantidad = models.DecimalField(max_digits=8, decimal_places=2)
+    fecha_abono = models.DateField(default=timezone.now)
 
-        elif self.contado is False and timezone.now() < self.fecha_limite:
-            estado = {'class': 'warning', 'mensaje': 'Factura de pendiente de cobro'}
-
-        elif self.contado is False and timezone.now() >= self.fecha_limite:
-            estado = {'class': 'danger', 'mensaje': 'Se venció la fecha limite de pago'}
-
-        else:
-            estado = {'class': 'warning', 'mensaje': 'La factura no es válida'}
-
-        return estado
 
 class FacturaItems(models.Model):
     '''Almacena individualmente los items de una Factura'''

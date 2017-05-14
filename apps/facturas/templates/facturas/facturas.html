@@ -1,56 +1,69 @@
  {% extends 'base.html' %} {% load staticfiles %} {% block content %}
- <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-{% include 'messages.html' %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}"> {% include 'messages.html' %}
 <div class="row">
-    {% include 'facturas/navbar.html' with form_factura=form_factura %}
+  {% include 'facturas/navbar.html' with form_factura=form_factura %}
   <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
-<h3>Facturas</h3>
+    <h3>Facturas</h3>
 
-<!-- Nav tabs -->
-<ul class="nav nav-tabs" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" data-toggle="tab" href="#todas" role="tab">Todas</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#abiertas" role="tab">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#todas" role="tab">Cobradas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#pendientes" role="tab">Pendientes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#abiertas" role="tab">
         Facturas Abiertas
         {% if pendientes %}
-        <span class="badge badge-pill badge-default">{{ pendientes }}</span>
+        <span class="badge badge-pill badge-default">{{ abiertas }}</span>
         {% endif %}
         </a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#messages" role="tab">Pendientes</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#settings" role="tab">Informes</a>
-  </li>
-</ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#informes" role="tab">Informes</a>
+      </li>
+    </ul>
 
-<!-- Tab panes -->
-<div class="tab-content">
-  <div class="tab-pane active" id="todas" role="tabpanel">
-      {% include 'facturas/parciales/tabla.html' with id="tabla_lista" %}
-  </div>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div class="tab-pane active" id="todas" role="tabpanel">
+        {% include 'facturas/parciales/tabla.html' with id="tabla_lista" %}
+      </div>
 
-  <div class="tab-pane" id="abiertas" role="tabpanel">
-      {% include 'facturas/parciales/pendientes.html' %}
-  </div>
+      <div class="tab-pane" id="pendientes" role="tabpanel">
+        <div class="alert alert-info" role="alert">
+          <strong>Dinero por Cobrar:</strong> {{total_sin_pagar}}
+        </div>
+        {% for factura in lista_sin_pagar %} {{factura}}
 
-  <div class="tab-pane" id="messages" role="tabpanel">...</div>
+        <script>
+          var total = +$("#por-cobrar")
+          total = +{
+            {
+              facura.total
+            }
+          }
+          $("#por-cobrar").text(total)
+        </script>
+        {% endfor %}
+      </div>
+      <div class="tab-pane" id="abiertas" role="tabpanel">
+        {% include 'facturas/parciales/pendientes.html' %}
+      </div>
 
-  <div class="tab-pane" id="settings" role="tabpanel">...</div>
-</div>
+      <div class="tab-pane" id="informes" role="tabpanel">...</div>
+    </div>
 
-{% endblock content %}
+    {% endblock content %}
 
-<script>
-$(document).ready(function(){
-    $('.delete').click(function(e){
-        e.preventDefault();
-        var a = confirm('Sure?');
-        if(a){}
-        else if(!a){}
-    });
-});
-</script>
+    <script>
+      $(document).ready(function () {
+        $('.delete').click(function (e) {
+          e.preventDefault();
+          var a = confirm('Sure?');
+          if (a) {} else if (!a) {}
+        });
+      });
+    </script>

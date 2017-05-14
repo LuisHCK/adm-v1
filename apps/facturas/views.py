@@ -25,14 +25,23 @@ def facturas(request):
     """Ver todas las facturas"""
     lista_facturas = Factura.objects.filter(cerrada=True)
     lista_pendientes = Factura.objects.filter(cerrada=False)
-    pendientes = Factura.objects.filter(cerrada=False).count
+    abiertas = Factura.objects.filter(cerrada=False).count
+    sin_pagar = Factura.objects.filter(contado=False, pagada=False, cerrada=True)
+    total_sin_pagar = total_facturas(sin_pagar)
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
-        'pendientes': pendientes,
+        'abiertas': abiertas,
         'lista_pendientes': lista_pendientes,
+        'lista_sin_pagar': sin_pagar,
+        'total_sin_pagar': total_sin_pagar,
         'form_factura': FacturaForm,
     })
 
+def total_facturas(facturas):
+    total = 0
+    for factura in facturas:
+        total += factura.total
+    return total
 
 def facturas_pagadas(request):
     """Muestra las facturas que ya fueron pagadas"""
@@ -94,44 +103,51 @@ def cobrar_factura(request, pk):
     servicios_count = FacturaArticulos.objects.filter(factura=factura).count()
     articulos_count = FacturaServicios.objects.filter(factura=factura).count()
     items_count = (servicios_count + articulos_count)
-    
-    if (Caja.objects.count() > 0):
+
+    if Caja.objects.count() > 0:
         if items_count < 1:
             messages.error(request, "No se puede cobrar una factura sin items")
             return redirect('facturas_pagadas')
         else:
-            # Obtener todos los items articulos y servicios de la factura
-            articulos = FacturaArticulos.objects.filter(factura=factura)
-            servicios = FacturaServicios.objects.filter(factura=factura)
+            if request.method == "POST":
+                # Obtener todos los items articulos y servicios de la factura
+                articulos = FacturaArticulos.objects.filter(factura=factura)
+                servicios = FacturaServicios.objects.filter(factura=factura)
 
-            # Realizar la venta de cada articulo
-            for articulo in articulos:
-                Venta.objects.create(
-                    usuario=request.user,
-                    articulo=articulo.articulo,
-                    cantidad=articulo.cantidad,
-                    total=(articulo.cantidad * articulo.articulo.precio_venta)
-                )
+                if factura.contado:
+                    # Realizar la venta de cada articulo
+                    for articulo in articulos:
+                        Venta.objects.create(
+                            usuario=request.user,
+                            articulo=articulo.articulo,
+                            cantidad=articulo.cantidad,
+                            factura=factura,
+                            total=(articulo.cantidad * articulo.articulo.precio_venta)
+                        )
 
-            # Realizar la venta de cada servicio
-            for servicio in servicios:
-                Servicio.objects.create(
-                    usuario=request.user,
-                    descripcion=servicio.tipo_servicio.nombre,
-                    cantidad=servicio.cantidad,
-                    tipo_servicio=servicio.tipo_servicio,
-                    precio=(servicio.tipo_servicio.costo * servicio.cantidad),
-                )
+                    # Realizar la venta de cada servicio
+                    for servicio in servicios:
+                        Servicio.objects.create(
+                            usuario=request.user,
+                            descripcion=servicio.tipo_servicio.nombre,
+                            cantidad=servicio.cantidad,
+                            tipo_servicio=servicio.tipo_servicio,
+                            factura=factura,
+                            precio=(servicio.tipo_servicio.costo * servicio.cantidad),
+                        )
 
-            factura.cobrar()
 
-            # Guardar el monto en caja
-            caja = Caja.objects.last()
-            caja.saldo += factura.total
-            caja.save()
+                    # Guardar el monto en caja
+                    caja = Caja.objects.last()
+                    caja.saldo += factura.total
+                    caja.save()
 
-            messages.success(request, "Se cobró la factura")
-            return redirect('detalles_factura', factura.id)
+                factura.cerrar()
+                factura.fecha_limite = request.POST.get('fecha_limite')
+                factura.save()
+
+                messages.success(request, "Se cerró la factura")
+                return redirect('detalles_factura', factura.id)
     else:
         messages.error(request, "Aun no se ha realizado la apertura de caja")
         return redirect('detalles_factura', factura.id)

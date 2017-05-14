@@ -59,9 +59,25 @@
 				<tr>
 					<th><span><b>Total</b></span></th>
 					<td><span data-prefix>$</span><span>{{factura.total}}</span></td>
+				<tr>
+					<th><span><b>M. Pago</b></span></th>
+					<td><span>
+						{% if factura.contado %}
+							<b>Contado</b>
+						{% else %}
+							<b>Crédito</b>
+						{% endif %}
+					</span></td>
+				</tr>
 				</tr>
 			</table>
 		</article>
+		{% if factura.contado is False %}
+		<table>
+			<th style="width: 150px;">Fecha de Vencimiento</th>
+			<th>{{factura.fecha_limite}}</th>
+		</table>
+		{% endif %}
 		<hr>
 		<div class="center-xs"> <small>Usuario: <em>{{factura.usuario.username}} | Administra {{project_ver}}</small>
 		</div>

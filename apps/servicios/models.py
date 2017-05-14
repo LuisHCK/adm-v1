@@ -1,7 +1,6 @@
 
 from django.db import models
 from django.utils import timezone
-
 # Create your models here.
 
 
@@ -29,6 +28,7 @@ class Servicio(models.Model):
     precio = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     tipo_servicio = models.ForeignKey(TipoServicio, null=True)
     cantidad = models.IntegerField(default=1)
+    factura = models.ForeignKey('facturas.Factura', on_delete=models.CASCADE, null=True, blank=True)
     fecha_servicio = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return self.descripcion

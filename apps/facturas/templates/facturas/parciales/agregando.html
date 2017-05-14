@@ -1,12 +1,12 @@
 <div class="btn-group" role="group" aria-label="Basic example">
 </div>
-<div class="row" style="padding-top:3%;">
+<div class="row" style="padding-top:2%;">
     <div class="col-xs-6">
         <h5>Factura</h5>
     </div>
     <div class="col-xs-6">
         <b class="">Cliente: </b> {{factura.cliente}} -
-        <b class="">Total: </b> <em id="total_factura">{{ factura.total }}</em> 
+        <b class="">Total: </b> <em id="total_factura">{{ factura.total }}</em>
     </div>
 </div>
 <hr>
@@ -62,11 +62,20 @@
                 </form>
             </div>
         </div>
-        <hr>    
-        <a href="{% url 'cobrar_factura' factura.id %}" class="btn btn-success btn-block">Cobrar Factura</a>
+        <hr> {% if factura.contado is False %}
+        <div class="box mdl-shadow--2dp box-form">
+            <div>
+                <strong>Fecha Límite</strong>
+                <input class="form-control" type="date" value="" id="fecha-limite">
+            </div>
+        </div>
+        <hr> {% endif %}
+        <form id="cerrar-factura" action="{% url 'cobrar_factura' factura.id %}" method="POST" token="{{csrf_token}}">
+            <button type="submit" class="btn btn-primary btn-block">Cerrar Factura</button>
+        </form>
     </div>
     <div class="col-xs-8">
-        <table class="table table-striped mdl-shadow--2dp box">
+        <table class="table table-striped">
             <thead class="thead-inverse">
                 <tr>
                     <th>Concepto</th>
@@ -83,7 +92,7 @@
                     <td>{{ item_servicio.tipo_servicio.costo }}</td>
                     <td>{{ item_servicio.cantidad }}</td>
                     <td>
-                        <a class="btn btn-danger" href="{% url 'eliminar_servicios_factura' item_servicio.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
+                        <a class="btn btn-danger btn-sm" href="{% url 'eliminar_servicios_factura' item_servicio.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %} {% for item_articulo in item_articulos.all %}
@@ -92,7 +101,7 @@
                     <td>{{ item_articulo.articulo.precio_venta }}</td>
                     <td>{{ item_articulo.cantidad }}</td>
                     <td>
-                        <a class="btn btn-danger" href="{% url 'eliminar_articulos_factura' item_articulo.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
+                        <a class="btn btn-danger btn-sm" href="{% url 'eliminar_articulos_factura' item_articulo.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -100,3 +109,24 @@
         </table>
     </div>
 </div>
+
+<script>
+    $("#cerrar-factura").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            data: {
+                fecha_limite: $('#fecha-limite').val(),
+                csrfmiddlewaretoken: $(this).attr('token')
+            },
+            dataType: "json",
+            type: "POST",
+            // Si hay un error enviar un mensaje 
+            error: function (json) {
+            },
+
+            success: function (json) {
+            },
+        });
+    });
+</script>
