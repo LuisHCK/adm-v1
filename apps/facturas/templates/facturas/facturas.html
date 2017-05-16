@@ -8,7 +8,7 @@
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active" data-toggle="tab" href="#todas" role="tab">Cobradas</a>
+        <a class="nav-link active" data-toggle="tab" href="#todas" role="tab">Todas</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#pendientes" role="tab">Pendientes</a>
@@ -36,7 +36,21 @@
         <div class="alert alert-info" role="alert">
           <strong>Dinero por Cobrar:</strong> {{total_sin_pagar}}
         </div>
-        {% for factura in lista_pendientes %} {{factura}}
+        {% for factura in lista_pendientes %}
+
+        <ul class="list-group">
+          <a href="{% url 'detalles_factura' factura.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1"> <b>Cliente: </b> {{factura}}</h5>
+              <h5 class="mb-1"><b>Total: </b> {{factura.total}}</h5>
+              <small>{{factura.fecha_factura|timesince}}</small>
+            </div>
+            <p class="mb-1">
+              <strong>Artículos: </strong> {{factura.productos_count}} | <strong>Servicios: </strong> {{factura.servicios_count}}
+            </p>
+            <small>Fecha Vencimiento: {{factura.fecha_limite}}</small> 
+          </a>
+        </ul>
 
         <script>
           var total = +$("#por-cobrar")
@@ -44,6 +58,8 @@
           $("#por-cobrar").text(total)
         </script>
         {% endfor %}
+
+
       </div>
       <div class="tab-pane" id="abiertas" role="tabpanel">
         {% include 'facturas/parciales/pendientes.html' %}
