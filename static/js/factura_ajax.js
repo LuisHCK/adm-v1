@@ -117,7 +117,7 @@ $("form").submit(function(event) {
                 console.log("success"); // another sanity check
                 $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>" + json.articulo +
                     "</td><td>" + json.precio + "</td><td>" + json.cantidad +
-                    "</td><td><a class='btn btn-danger' href='/facturas/articulos/" + json.item_id +
+                    "</td> <td>"+ parseFloat(json.precio)*parseFloat(json.cantidad) +"</td> <td><a class='btn btn-danger' href='/facturas/articulos/" + json.item_id +
                     "/eliminar/'>Eliminar</a></td></tr>");
                 $('#hide_item').fadeIn('slow');
                 document.getElementById("total_factura").innerHTML = json.total_factura;
@@ -208,7 +208,7 @@ $("form").submit(function(event) {
                 console.log("success"); // Exito GG
                 $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>" + json.servicio +
                     "</td><td>" + json.costo + "</td><td>" + json.cantidad +
-                    "</td><td><a class='btn btn-danger' href='/facturas/servicios/" + json.item_id +
+                    "</td> <td>"+ parseFloat(json.costo)*parseFloat(json.cantidad) +"</td> <td><a class='btn btn-sm btn-danger' href='/facturas/servicios/" + json.item_id +
                     "/eliminar/'>Eliminar</a></td></tr>");
                 $('#hide_item').fadeIn('slow');
                 document.getElementById("total_factura").innerHTML = json.total_factura;
