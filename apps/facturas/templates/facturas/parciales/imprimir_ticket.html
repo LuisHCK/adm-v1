@@ -1,0 +1,67 @@
+<style>
+    .ticket{
+        font-family: 'Free Mono'
+    }
+    hr{
+        border-top:2px dotted black;
+    }
+    .ticket {
+        max-width: 250px;
+        background-color: #FAFAFA;
+    }
+
+    .center {
+        text-align: center;
+    }
+    .firma{
+        padding-top: 30px;
+    }
+</style>
+
+
+<div class="ticket">
+
+    <div class="center">
+        <b>Impresiones La Fe<br> Del Juzgado 1c 1/2 al este</b> <br>
+        <small>Tel: 86014017</small>
+    </div>
+<hr>
+<div class="center">
+    <strong>FACT # {{factura.id}}</strong>
+</div>
+CLIENT: {{factura}}
+{% if item_articulos.count > 0 %}
+    <div class="center">
+        ======== ARTICULOS ========
+    </div>
+    {% for item_articulo in item_articulos %}
+        CONCEP: {{item_articulo.articulo}} <br>
+        PREC: {{item_articulo.articulo.precio_venta}} <br>
+        CANT: {{item_articulo.cantidad}} <br>
+        <div class="center">-----</dic>
+    {% endfor%}
+{% endif %}
+
+{% if item_servicios.count > 0 %}
+    <div class="center">
+        ======== SERVICIOS ========
+    </div>
+    {% for item_servicio in item_servicios %}
+        CONCEP: {{item_servicio.tipo_servicio}} <br>
+        PREC: {{item_servicio.tipo_servicio.costo}} <br>
+        CANT: {{item_servicio.cantidad}} <br>
+        <div class="center">-----</div>
+    {% endfor%}
+{% endif %}
+TOTAL: {{factura.total}}<br>
+PAGO: {{factura.pago}}
+<div class="center">===========================</div>
+{% if factura.pago == 'credito' %} <br>
+FECH. LIMITE:  {{factura.fecha_limite}}
+{% endif %}
+<div class="center">
+    CAJERO: {{request.user}}
+</div>
+<hr>
+<small>Administra v0.1.3A</small>
+</div>

@@ -30,22 +30,21 @@
             url: "{% url 'nueva_factura' %}",
             data: {
                 cliente: $('#id_cliente').val(),
-                contado: $('input[name="contado"]:checked').val(),
+                pago: $('#id_pago').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
             type: "POST",
             // handle a successful response
             error: function (json) {
-                $('#id_articulo').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
-                toastr["error"]("No se pudo realizar la venta")
+                toastr["error"](json.responseJSON.result)
             },
 
             success: function (json) {
                 $('#id_articulo').val('');
                 console.log(json);
-                toastr["success"]("Se realizó la venta")
+                toastr["success"](json.result)
 
                 // Quitar las la ultima fila de la tabla
                 var color;

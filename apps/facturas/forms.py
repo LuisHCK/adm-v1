@@ -9,11 +9,10 @@ class FacturaForm(forms.ModelForm):
     """Formulario de existencias en inventario"""
     class Meta:
         model = Factura
-        fields = ('cliente', 'contado')
+        fields = ('cliente', 'pago')
         widgets = {
             'cliente': TextInput(attrs={'class': 'form-control'}),
-            'contado': RadioSelect(choices={(True, 'Contado'), (False, 'Crédito')},
-                                   attrs={type:'radio'}),
+            'pago': Select(attrs={'class': 'form-control'}),
         }
 
 

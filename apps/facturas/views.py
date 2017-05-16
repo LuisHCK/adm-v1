@@ -1,35 +1,47 @@
 
+import json
+
+from django.contrib.postgres.search import SearchVector
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import get_object_or_404, redirect, render
+from django.core import serializers
 from django.http import HttpResponse
-import json
+from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.inventario.models import Articulos
-from apps.servicios.models import TipoServicio
-from apps.ventas.models import Venta
-from apps.servicios.models import Servicio
 from apps.caja.models import Caja
-from apps.inventario.models import Inventario
 from apps.common import validaciones
+from apps.inventario.models import Articulos, Inventario
+from apps.servicios.models import Servicio, TipoServicio
+from apps.ventas.models import Venta
 
 from .forms import FacturaArticuloForm, FacturaForm, ServicioRapidoForm
 from .models import Factura, FacturaArticulos, FacturaServicios
 
-@login_required(login_url='login')  # redirect when user is not logged in
 
+@login_required(login_url='login')  # redirect when user is not logged in
 def facturas(request):
     """Ver todas las facturas"""
-    lista_facturas = Factura.objects.filter(cerrada=True)
-    lista_pendientes = Factura.objects.filter(cerrada=False)
-    pendientes = Factura.objects.filter(cerrada=False).count
+    lista_facturas = Factura.objects.filter(abierto=False)
+    lista_pendientes = Factura.objects.filter(abierto=False, pago='credito')
+    abiertas = Factura.objects.filter(abierto=True).count
+    lista_abiertas = Factura.objects.filter(abierto=True)
+    total_sin_pagar = total_facturas(lista_pendientes)
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
-        'pendientes': pendientes,
+        'abiertas': abiertas,
+        'lista_abiertas': lista_abiertas,
         'lista_pendientes': lista_pendientes,
+        'total_sin_pagar': total_sin_pagar,
         'form_factura': FacturaForm,
     })
+
+
+def total_facturas(facturas):
+    total = 0
+    for factura in facturas:
+        total += factura.total
+    return total
 
 
 def facturas_pagadas(request):
@@ -39,7 +51,7 @@ def facturas_pagadas(request):
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'pendientes': pendientes,
-        })
+    })
 
 
 def facturas_pendientes(request):
@@ -49,16 +61,17 @@ def facturas_pendientes(request):
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'pendientes': pendientes,
-        })
+    })
 
 
 def nueva_factura(request):
     """Crear un nuevo factura"""
     response_data = {}
-    if (Caja.objects.count() > 0):    
+    if Caja.objects.count() > 0:
         if request.method == "POST":
             form = FacturaForm(request.POST)
             if form.is_valid():
+                print('form is valid :D')
                 factura = form.save(commit=False)
                 factura.usuario = request.user
                 factura.save()
@@ -66,16 +79,22 @@ def nueva_factura(request):
                 response_data['result'] = 'Se creó la factura.'
                 response_data['id'] = str(factura.pk)
                 response_data['cliente'] = str(factura.cliente)
-                response_data['contado'] = str(factura.contado) 
-            
-            return HttpResponse(
-                json.dumps(response_data),
-                content_type="application/json"
-                )
+                response_data['pago'] = str(factura.pago)
+
+                return HttpResponse(
+                    json.dumps(response_data),
+                    content_type="application/json")
+            else:
+                return HttpResponse(
+                    json.dumps({'result': 'Los datos no son válidos'}),
+                    content_type="application/json",
+                    status=500,)
+
         else:
             return HttpResponse(
                 json.dumps({"nothing to see": "this isn't happening"}),
-                content_type="application/json" 
+                content_type="application/json",
+                status=500,
             )
     else:
         response_data['result'] = 'Aún no se rea realizado la apertura de caja.'
@@ -92,59 +111,89 @@ def cobrar_factura(request, pk):
     servicios_count = FacturaArticulos.objects.filter(factura=factura).count()
     articulos_count = FacturaServicios.objects.filter(factura=factura).count()
     items_count = (servicios_count + articulos_count)
-    
-    if (Caja.objects.count() > 0):
+
+    if Caja.objects.count() > 0:
         if items_count < 1:
             messages.error(request, "No se puede cobrar una factura sin items")
             return redirect('facturas_pagadas')
         else:
-            # Obtener todos los items articulos y servicios de la factura
-            articulos = FacturaArticulos.objects.filter(factura=factura)
-            servicios = FacturaServicios.objects.filter(factura=factura)
+            if request.method == "POST":
+                # Obtener todos los items articulos y servicios de la factura
+                articulos = FacturaArticulos.objects.filter(factura=factura)
+                servicios = FacturaServicios.objects.filter(factura=factura)
 
-            # Realizar la venta de cada articulo
-            for articulo in articulos:
-                Venta.objects.create(
-                    usuario=request.user,
-                    articulo=articulo.articulo,
-                    cantidad=articulo.cantidad,
-                    total=(articulo.cantidad * articulo.articulo.precio_venta)
-                )
+                # Realizar la venta de cada articulo
+                for articulo in articulos:
+                    Venta.objects.create(
+                        usuario=request.user,
+                        articulo=articulo.articulo,
+                        cantidad=articulo.cantidad,
+                        factura=factura,
+                        total=(articulo.cantidad * articulo.articulo.precio_venta))
+                    inventario = Inventario.objects.get(
+                        articulo=articulo.articulo)
+                    inventario.existencias -= articulo.cantidad
+                    inventario.save()
 
-            # Realizar la venta de cada servicio
-            for servicio in servicios:
-                Servicio.objects.create(
-                    usuario=request.user,
-                    descripcion=servicio.tipo_servicio.nombre,
-                    cantidad=servicio.cantidad,
-                    tipo_servicio=servicio.tipo_servicio,
-                    precio=(servicio.tipo_servicio.costo * servicio.cantidad),
-                )
+                # Realizar la venta de cada servicio
+                for servicio in servicios:
+                    Servicio.objects.create(
+                        usuario=request.user,
+                        descripcion=servicio.tipo_servicio.nombre,
+                        cantidad=servicio.cantidad,
+                        tipo_servicio=servicio.tipo_servicio,
+                        factura=factura,
+                        precio=(servicio.tipo_servicio.costo * servicio.cantidad))
 
-            factura.cobrar()
+                if factura.pago == 'contado':
+                    # Guardar el monto en caja
+                    caja = Caja.objects.last()
+                    caja.saldo += factura.total
+                    caja.save()
+                    factura.estado = 'pagado'
+                    factura.save()
 
-            # Guardar el monto en caja
-            caja = Caja.objects.last()
-            caja.saldo += factura.total
-            caja.save()
+                factura.abierto = False
+                factura.fecha_limite = request.POST.get('fecha_limite')
+                factura.save()
 
-            messages.success(request, "Se cobró la factura")
-            return redirect('detalles_factura', factura.id)
+                return HttpResponse(
+                    json.dumps({'result': 'Se cerró la factura', 'id': str(factura.id)}),
+                    content_type="application/json")
     else:
-        messages.error(request, "Aun no se ha realizado la apertura de caja")
-        return redirect('detalles_factura', factura.id)
+        return HttpResponse(
+            json.dumps({'result': 'No se puede cerrar la factura'}),
+            content_type="application/json",
+            status=500)
 
 
 def eliminar_factura(request, pk):
     """Elimina una factura, solo si no ha sido cerrada"""
-    factura = get_object_or_404(Factura, pk=pk)
-    if (validaciones.es_administrador(request.user) and factura.cerrada == False):
-        factura.delete()
-        messages.success(request, "Se borró la factura")
-        return redirect('facturas')
-    else:
-        messages.error(request, "No se puede eliminar la factura")
-        return redirect('facturas')
+    if request.method == 'POST':
+        factura = get_object_or_404(Factura, pk=pk)
+
+        if validaciones.es_administrador(request.user) and factura.cerrada is False:
+            factura.delete()
+            messages.success(request, "Se borró la factura")
+
+            return HttpResponse(
+                json.dumps({'result': 'Se eliminó la factura'}),
+                content_type="application/json")
+
+        elif factura.usuario == request.user:
+            factura.delete()
+            messages.success(request, "Se borró la factura")
+
+            return HttpResponse(
+                json.dumps({'result': 'Se eliminó la factura'}),
+                content_type="application/json")
+
+        else:
+            return HttpResponse(
+                json.dumps({'result': 'No se puede eliminar la factura'}),
+                content_type="application/json",
+                status=500)
+
 
 
 def agregar_articulo(request, pk):
@@ -157,13 +206,15 @@ def agregar_articulo(request, pk):
             item_articulos = form.save(commit=False)
             item_articulos.factura = factura
 
-            inventario = get_object_or_404(Inventario, articulo=item_articulos.articulo)
+            inventario = get_object_or_404(
+                Inventario, articulo=item_articulos.articulo)
             if item_articulos.cantidad < inventario.existencias:
                 item_articulos.save()
 
                 # Suma al total de la factura
                 articulo = Articulos.objects.get(id=item_articulos.articulo.id)
-                factura.total += (articulo.precio_venta * item_articulos.cantidad)
+                factura.total += (articulo.precio_venta *
+                                  item_articulos.cantidad)
                 factura.save()
 
                 # Devolver un json con los datos del articulo
@@ -171,18 +222,20 @@ def agregar_articulo(request, pk):
                 response_data['item_id'] = item_articulos.pk
                 response_data['articulo'] = str(item_articulos.articulo)
                 response_data['articulo_id'] = str(item_articulos.articulo.id)
-                response_data['precio'] = str(item_articulos.articulo.precio_venta)
+                response_data['precio'] = str(
+                    item_articulos.articulo.precio_venta)
                 response_data['cantidad'] = str(item_articulos.cantidad)
                 response_data['total_factura'] = str(factura.total)
             else:
                 # Devolver una excepcion por que o hay suficientes articulos
                 response_data['result'] = 'No hay suficientes articulos para vender'
-                response_data['reason'] = 'Existencias disponibles: ' + str(inventario.existencias)
+                response_data['reason'] = 'Existencias disponibles: ' + \
+                    str(inventario.existencias)
                 return HttpResponse(
                     json.dumps(response_data),
                     content_type="application/json",
                     status=410,
-                    )
+                )
 
         return HttpResponse(
             json.dumps(response_data),
@@ -273,3 +326,30 @@ def detalles_factura(request, pk):
         'form_servicio': ServicioRapidoForm,
         'project_ver': project_ver,
     })
+
+
+def buscar_articulo(request, codigo=None):
+    '''Busca los articulos en la base de datos'''
+    articulos = Articulos.objects.annotate(
+        search=SearchVector('codigo', 'nombre')).filter(search=codigo)
+
+    # Serializar el objeto que contiene los resultados la busqueda
+    arts = [obj.as_dict() for obj in articulos]
+
+    return HttpResponse(
+        json.dumps(arts),
+        content_type="application/json",)
+
+    # SERVICIOS
+
+
+def buscar_servicio(request, codigo):
+    '''Busca servicios por su codigo o nombre'''
+    tipos_servicios = TipoServicio.objects.annotate(
+        search=SearchVector('codigo', 'nombre')).filter(search__icontains=codigo)
+
+    serv = [obj.as_dict() for obj in tipos_servicios]
+
+    return HttpResponse(
+        json.dumps(serv),
+        content_type="application/json")

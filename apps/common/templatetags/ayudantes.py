@@ -39,3 +39,11 @@ def estado_lista(estado):
 
     else:
         return 'danger'
+
+@register.filter(name='servicio_subtotal')
+def servicio_subtotal(item_servicio):
+    return item_servicio.cantidad * item_servicio.tipo_servicio.costo
+
+@register.filter(name='articulo_subtotal')
+def articulo_subtotal(item_articulo):
+    return item_articulo.cantidad * item_articulo.articulo.precio_venta

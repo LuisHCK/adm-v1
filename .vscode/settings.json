@@ -4,5 +4,5 @@
         "${env.SPARK_HOME}/python",
         "${env.SPARK_HOME}/python/pyspark"
     ],
-    "python.formatting.provider": "yapf"
+    "python.formatting.provider": "autopep8"
 }
