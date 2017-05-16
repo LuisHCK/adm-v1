@@ -1,0 +1,28 @@
+ {% include 'navbar.html' %}
+<ul class="nav nav-pills flex-column div_hover">
+    <a onclick="printDiv('ticket')" class="nav-item nav-link nav-link-styled">
+        <i class="nav-icon fi-print"></i>
+        <p class="nav-item-text float-left">Imprimir Factura</p>
+    </a>
+</ul>
+<ul class="nav nav-pills flex-column div_hover">
+    {% if user.is_authenticated %}
+    <a class="nav-item nav-link nav-link-styled" href="{% url 'logout' %}" onclick="return confirm('¿Estas seguro de cerrar la sesión?')">
+        <i class="nav-icon fi-lock"></i>
+        <p class="nav-item-text float-left">Cerrar Sesión</p>
+    </a>
+    {% else %}
+    <a class="nav-item nav-link nav-link-styled" href="{% url 'login' %}">Iniciar Sesión</a> {% endif %}
+
+</ul>
+</nav>
+
+<script>
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+</script>
