@@ -20,10 +20,9 @@ from .models import Factura, FacturaArticulos, FacturaServicios
 
 
 @login_required(login_url='login')  # redirect when user is not logged in
-
 def facturas(request):
     """Ver todas las facturas"""
-    lista_facturas = Factura.objects.filter(abierto=False, pago='contado')
+    lista_facturas = Factura.objects.filter(abierto=False)
     lista_pendientes = Factura.objects.filter(abierto=False, pago='credito')
     abiertas = Factura.objects.filter(abierto=True).count
     lista_abiertas = Factura.objects.filter(abierto=True)
@@ -37,11 +36,13 @@ def facturas(request):
         'form_factura': FacturaForm,
     })
 
+
 def total_facturas(facturas):
     total = 0
     for factura in facturas:
         total += factura.total
     return total
+
 
 def facturas_pagadas(request):
     """Muestra las facturas que ya fueron pagadas"""
@@ -50,7 +51,7 @@ def facturas_pagadas(request):
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'pendientes': pendientes,
-        })
+    })
 
 
 def facturas_pendientes(request):
@@ -60,7 +61,7 @@ def facturas_pendientes(request):
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'pendientes': pendientes,
-        })
+    })
 
 
 def nueva_factura(request):
@@ -129,8 +130,9 @@ def cobrar_factura(request, pk):
                         cantidad=articulo.cantidad,
                         factura=factura,
                         total=(articulo.cantidad * articulo.articulo.precio_venta))
-                    inventario = Inventario.objects.get(articulo=articulo.articulo)
-                    inventario.existencias -= 1
+                    inventario = Inventario.objects.get(
+                        articulo=articulo.articulo)
+                    inventario.existencias -= articulo.cantidad
                     inventario.save()
 
                 # Realizar la venta de cada servicio
@@ -155,23 +157,43 @@ def cobrar_factura(request, pk):
                 factura.fecha_limite = request.POST.get('fecha_limite')
                 factura.save()
 
-                messages.success(request, "Se cerró la factura")
-                return redirect('detalles_factura', factura.id)
+                return HttpResponse(
+                    json.dumps({'result': 'Se cerró la factura', 'id': str(factura.id)}),
+                    content_type="application/json")
     else:
-        messages.error(request, "Aun no se ha realizado la apertura de caja")
-        return redirect('detalles_factura', factura.id)
+        return HttpResponse(
+            json.dumps({'result': 'No se puede cerrar la factura'}),
+            content_type="application/json",
+            status=500)
 
 
 def eliminar_factura(request, pk):
     """Elimina una factura, solo si no ha sido cerrada"""
-    factura = get_object_or_404(Factura, pk=pk)
-    if validaciones.es_administrador(request.user) and factura.cerrada == False:
-        factura.delete()
-        messages.success(request, "Se borró la factura")
-        return redirect('facturas')
-    else:
-        messages.error(request, "No se puede eliminar la factura")
-        return redirect('facturas')
+    if request.method == 'POST':
+        factura = get_object_or_404(Factura, pk=pk)
+
+        if validaciones.es_administrador(request.user) and factura.cerrada is False:
+            factura.delete()
+            messages.success(request, "Se borró la factura")
+
+            return HttpResponse(
+                json.dumps({'result': 'Se eliminó la factura'}),
+                content_type="application/json")
+
+        elif factura.usuario == request.user:
+            factura.delete()
+            messages.success(request, "Se borró la factura")
+
+            return HttpResponse(
+                json.dumps({'result': 'Se eliminó la factura'}),
+                content_type="application/json")
+
+        else:
+            return HttpResponse(
+                json.dumps({'result': 'No se puede eliminar la factura'}),
+                content_type="application/json",
+                status=500)
+
 
 
 def agregar_articulo(request, pk):
@@ -184,13 +206,15 @@ def agregar_articulo(request, pk):
             item_articulos = form.save(commit=False)
             item_articulos.factura = factura
 
-            inventario = get_object_or_404(Inventario, articulo=item_articulos.articulo)
+            inventario = get_object_or_404(
+                Inventario, articulo=item_articulos.articulo)
             if item_articulos.cantidad < inventario.existencias:
                 item_articulos.save()
 
                 # Suma al total de la factura
                 articulo = Articulos.objects.get(id=item_articulos.articulo.id)
-                factura.total += (articulo.precio_venta * item_articulos.cantidad)
+                factura.total += (articulo.precio_venta *
+                                  item_articulos.cantidad)
                 factura.save()
 
                 # Devolver un json con los datos del articulo
@@ -198,18 +222,20 @@ def agregar_articulo(request, pk):
                 response_data['item_id'] = item_articulos.pk
                 response_data['articulo'] = str(item_articulos.articulo)
                 response_data['articulo_id'] = str(item_articulos.articulo.id)
-                response_data['precio'] = str(item_articulos.articulo.precio_venta)
+                response_data['precio'] = str(
+                    item_articulos.articulo.precio_venta)
                 response_data['cantidad'] = str(item_articulos.cantidad)
                 response_data['total_factura'] = str(factura.total)
             else:
                 # Devolver una excepcion por que o hay suficientes articulos
                 response_data['result'] = 'No hay suficientes articulos para vender'
-                response_data['reason'] = 'Existencias disponibles: ' + str(inventario.existencias)
+                response_data['reason'] = 'Existencias disponibles: ' + \
+                    str(inventario.existencias)
                 return HttpResponse(
                     json.dumps(response_data),
                     content_type="application/json",
                     status=410,
-                    )
+                )
 
         return HttpResponse(
             json.dumps(response_data),
@@ -301,6 +327,7 @@ def detalles_factura(request, pk):
         'project_ver': project_ver,
     })
 
+
 def buscar_articulo(request, codigo=None):
     '''Busca los articulos en la base de datos'''
     articulos = Articulos.objects.annotate(
@@ -314,6 +341,8 @@ def buscar_articulo(request, codigo=None):
         content_type="application/json",)
 
     # SERVICIOS
+
+
 def buscar_servicio(request, codigo):
     '''Busca servicios por su codigo o nombre'''
     tipos_servicios = TipoServicio.objects.annotate(
