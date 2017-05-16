@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'apps.perfiles',
     'apps.common',
     'apps.notificaciones',
+    'apps.ajustes',
 ]
 
 MIDDLEWARE = [

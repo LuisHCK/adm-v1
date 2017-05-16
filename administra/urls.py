@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^servicios/', include('apps.servicios.urls')),
     url(r'^facturas/', include('apps.facturas.urls')),
     url(r'^perfiles/', include('apps.perfiles.urls')),
+    url(r'^ajustes/', include('apps.ajustes.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
