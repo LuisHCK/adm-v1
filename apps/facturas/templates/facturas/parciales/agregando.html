@@ -62,7 +62,7 @@
                 </form>
             </div>
         </div>
-        <hr> {% if factura.contado is False %}
+        <hr> {% if factura.pago == 'credito' %}
         <div class="box mdl-shadow--2dp box-form">
             <div>
                 <strong>Fecha Límite</strong>
@@ -126,6 +126,7 @@
             },
 
             success: function (json) {
+                
             },
         });
     });

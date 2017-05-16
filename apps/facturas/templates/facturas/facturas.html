@@ -36,15 +36,11 @@
         <div class="alert alert-info" role="alert">
           <strong>Dinero por Cobrar:</strong> {{total_sin_pagar}}
         </div>
-        {% for factura in lista_sin_pagar %} {{factura}}
+        {% for factura in lista_pendientes %} {{factura}}
 
         <script>
           var total = +$("#por-cobrar")
-          total = +{
-            {
-              facura.total
-            }
-          }
+          total = +'{{facura.total}}'
           $("#por-cobrar").text(total)
         </script>
         {% endfor %}

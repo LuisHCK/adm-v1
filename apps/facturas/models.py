@@ -9,17 +9,19 @@ from apps.servicios.models import TipoServicio
 
 class Factura(models.Model):
     '''Factura una venta realizada a un cliente'''
-    ESTADOS = (
-        ('cerrado', 'Cerrado'),
-        ('abierto', 'Abierto'))
     TIPOS = (
         ('contado', 'Contado'),
         ('credito', 'Credito'))
+    ESTADOS = (
+        ('pendiente', 'Pendiente'),
+        ('pagado', 'Pagado'))
+
     usuario = models.ForeignKey('auth.User')
     cliente = models.CharField(max_length=100)
     total = models.DecimalField(max_digits=6, decimal_places=2, default=0, blank=True)
-    estado = models.CharField(max_length=15, choices=ESTADOS, default='abierto')
+    abierto = models.BooleanField(default=True)
     pago = models.CharField(max_length=15, choices=TIPOS, default='contado')
+    estado = models.CharField(max_length=15, choices=ESTADOS, default='pendiente')
     fecha_limite = models.DateTimeField(blank=True, null=True)
     fecha_factura = models.DateTimeField(default=timezone.now)
     fecha_cobro = models.DateTimeField(blank=True, null=True)
@@ -36,6 +38,16 @@ class Factura(models.Model):
         '''Devuelve la cantidad de serivicios adquiridos'''
         item_servicios = FacturaServicios.objects.filter(factura=self).count()
         return item_servicios
+
+    def clase(self):
+        if self.estado == 'pagado':
+            return 'success'
+        elif self.pago == 'credito' and timezone.now() < self.fecha_limite:
+            return 'warning'
+        elif self.pago == 'credito' and timezone.now() > self.fecha_limite:
+            return 'danger'
+        else:
+            return 'faded'
 
 
 class Abono(models.Model):

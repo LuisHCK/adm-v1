@@ -1,10 +1,10 @@
  {% extends 'base.html' %} {% load staticfiles %} {% block content %}
 <br> {% include 'messages.html' %}
 
-{% if factura.cerrada is False %}
+{% if factura.abierto is True %}
     {% include 'facturas/parciales/agregando.html' %}
       <script src="{% static 'js/factura_ajax.js' %}"></script>
 {% else %}
-    {% include 'facturas/parciales/imprimir.html' %}
+    {% include 'facturas/parciales/imprimir_ticket.html' %}
 {% endif %}
 {% endblock content %}

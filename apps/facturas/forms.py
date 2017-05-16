@@ -12,7 +12,7 @@ class FacturaForm(forms.ModelForm):
         fields = ('cliente', 'pago')
         widgets = {
             'cliente': TextInput(attrs={'class': 'form-control'}),
-            'contado': Select(attrs={'class': 'form-control'}),
+            'pago': Select(attrs={'class': 'form-control'}),
         }
 
 

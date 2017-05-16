@@ -23,16 +23,16 @@ from .models import Factura, FacturaArticulos, FacturaServicios
 
 def facturas(request):
     """Ver todas las facturas"""
-    lista_facturas = Factura.objects.filter(cerrada=True)
-    lista_pendientes = Factura.objects.filter(cerrada=False)
-    abiertas = Factura.objects.filter(cerrada=False).count
-    sin_pagar = Factura.objects.filter(contado=False, pagada=False, cerrada=True)
-    total_sin_pagar = total_facturas(sin_pagar)
+    lista_facturas = Factura.objects.filter(abierto=False, pago='contado')
+    lista_pendientes = Factura.objects.filter(abierto=False, pago='credito')
+    abiertas = Factura.objects.filter(abierto=True).count
+    lista_abiertas = Factura.objects.filter(abierto=True)
+    total_sin_pagar = total_facturas(lista_pendientes)
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'abiertas': abiertas,
+        'lista_abiertas': lista_abiertas,
         'lista_pendientes': lista_pendientes,
-        'lista_sin_pagar': sin_pagar,
         'total_sin_pagar': total_sin_pagar,
         'form_factura': FacturaForm,
     })
@@ -66,10 +66,11 @@ def facturas_pendientes(request):
 def nueva_factura(request):
     """Crear un nuevo factura"""
     response_data = {}
-    if (Caja.objects.count() > 0):    
+    if Caja.objects.count() > 0:
         if request.method == "POST":
             form = FacturaForm(request.POST)
             if form.is_valid():
+                print('form is valid :D')
                 factura = form.save(commit=False)
                 factura.usuario = request.user
                 factura.save()
@@ -77,16 +78,22 @@ def nueva_factura(request):
                 response_data['result'] = 'Se creó la factura.'
                 response_data['id'] = str(factura.pk)
                 response_data['cliente'] = str(factura.cliente)
-                response_data['contado'] = str(factura.contado)
+                response_data['pago'] = str(factura.pago)
 
-            return HttpResponse(
-                json.dumps(response_data),
-                content_type="application/json"
-                )
+                return HttpResponse(
+                    json.dumps(response_data),
+                    content_type="application/json")
+            else:
+                return HttpResponse(
+                    json.dumps({'result': 'Los datos no son válidos'}),
+                    content_type="application/json",
+                    status=500,)
+
         else:
             return HttpResponse(
                 json.dumps({"nothing to see": "this isn't happening"}),
-                content_type="application/json"
+                content_type="application/json",
+                status=500,
             )
     else:
         response_data['result'] = 'Aún no se rea realizado la apertura de caja.'
@@ -114,35 +121,37 @@ def cobrar_factura(request, pk):
                 articulos = FacturaArticulos.objects.filter(factura=factura)
                 servicios = FacturaServicios.objects.filter(factura=factura)
 
-                if factura.contado:
-                    # Realizar la venta de cada articulo
-                    for articulo in articulos:
-                        Venta.objects.create(
-                            usuario=request.user,
-                            articulo=articulo.articulo,
-                            cantidad=articulo.cantidad,
-                            factura=factura,
-                            total=(articulo.cantidad * articulo.articulo.precio_venta)
-                        )
+                # Realizar la venta de cada articulo
+                for articulo in articulos:
+                    Venta.objects.create(
+                        usuario=request.user,
+                        articulo=articulo.articulo,
+                        cantidad=articulo.cantidad,
+                        factura=factura,
+                        total=(articulo.cantidad * articulo.articulo.precio_venta))
+                    inventario = Inventario.objects.get(articulo=articulo.articulo)
+                    inventario.existencias -= 1
+                    inventario.save()
 
-                    # Realizar la venta de cada servicio
-                    for servicio in servicios:
-                        Servicio.objects.create(
-                            usuario=request.user,
-                            descripcion=servicio.tipo_servicio.nombre,
-                            cantidad=servicio.cantidad,
-                            tipo_servicio=servicio.tipo_servicio,
-                            factura=factura,
-                            precio=(servicio.tipo_servicio.costo * servicio.cantidad),
-                        )
+                # Realizar la venta de cada servicio
+                for servicio in servicios:
+                    Servicio.objects.create(
+                        usuario=request.user,
+                        descripcion=servicio.tipo_servicio.nombre,
+                        cantidad=servicio.cantidad,
+                        tipo_servicio=servicio.tipo_servicio,
+                        factura=factura,
+                        precio=(servicio.tipo_servicio.costo * servicio.cantidad))
 
-
+                if factura.pago == 'contado':
                     # Guardar el monto en caja
                     caja = Caja.objects.last()
                     caja.saldo += factura.total
                     caja.save()
+                    factura.estado = 'pagado'
+                    factura.save()
 
-                factura.cerrar()
+                factura.abierto = False
                 factura.fecha_limite = request.POST.get('fecha_limite')
                 factura.save()
 
@@ -156,7 +165,7 @@ def cobrar_factura(request, pk):
 def eliminar_factura(request, pk):
     """Elimina una factura, solo si no ha sido cerrada"""
     factura = get_object_or_404(Factura, pk=pk)
-    if (validaciones.es_administrador(request.user) and factura.cerrada == False):
+    if validaciones.es_administrador(request.user) and factura.cerrada == False:
         factura.delete()
         messages.success(request, "Se borró la factura")
         return redirect('facturas')

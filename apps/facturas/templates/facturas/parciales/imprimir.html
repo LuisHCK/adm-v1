@@ -72,7 +72,7 @@
 				</tr>
 			</table>
 		</article>
-		{% if factura.contado is False %}
+		{% if factura.pago == 'credito' %}
 		<table>
 			<th style="width: 150px;">Fecha de Vencimiento</th>
 			<th>{{factura.fecha_limite}}</th>

@@ -17,7 +17,7 @@ from .forms import ServicioForm, TipoServicioForm
 def inicio(request):
     """Devuelve los servicios realizados"""
     servicios = Servicio.objects.all().order_by('-fecha_servicio')
-    facturas = Factura.objects.filter(cerrada=False)
+    facturas = Factura.objects.filter(estado='cerrado')
     tipos_sericios = TipoServicio.objects.all()
     return render(request, 'servicios/servicios.html',
                   {

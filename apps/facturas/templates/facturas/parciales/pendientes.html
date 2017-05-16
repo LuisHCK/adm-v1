@@ -1,9 +1,9 @@
 <div id="list_fact_abiertas" class="list-group">
-    {% for factura in lista_pendientes.all %}
+    {% for factura in lista_abiertas %}
 
     <a href="{% url 'detalles_factura' factura.pk %}" class="list-group-item list-group-item-action flex-column align-items-start">
         <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{factura}} {% if factura.contado == False %}
+            <h5 class="mb-1">{{factura}} {% if factura.pago == 'credito' %}
                 <span class="badge badge-danger">Crédito</span> {% else %}
                 <span class="badge badge-success">Contado</span>
                 {% endif %}

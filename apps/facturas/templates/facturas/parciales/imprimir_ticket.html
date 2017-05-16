@@ -1,0 +1,58 @@
+<style>
+    hr{
+        border-top:2px dotted black;
+    }
+    .ticket {
+        max-width: 250px;
+        background-color: #FAFAFA;
+    }
+
+    .center {
+        text-align: center;
+    }
+    .firma{
+        padding-top: 30px;
+    }
+</style>
+
+
+<div class="ticket">
+
+    <div class="center">
+        <b>Nombre del Negocio <br> Lugar del Negocio</b> <br>
+        <small>Tel: 5555-5555</small>
+    </div>
+<hr>
+{% if item_articulos.count > 0 %}
+    <div class="center">
+        ======== ARTICULOS ========
+    </div>
+    {% for item_articulo in item_articulos %}
+        {{item_articulo.articulo}} <br>
+        PREC: {{item_articulo.articulo.precio_venta}} <br>
+        CANT: {{item_articulo.cantidad}}
+    {% endfor%}
+{% endif %}
+
+{% if item_servicios.count > 0 %}
+    <div class="center">
+        ======== SERVICIOS ========
+    </div>
+    {% for item_servicio in item_servicios %}
+        {{item_servicio.tipo_servicio}} <br>
+        PREC: {{item_servicio.tipo_servicio.costo}} <br>
+        CANT: {{item_servicio.cantidad}}
+        <hr>
+    {% endfor%}
+{% endif %}
+TOTAL: {{factura.total}}<br>
+PAGO: {{factura.pago}}
+{% if factura.pago == 'credito' %} <br>
+FECH. LIMITE:  {{factura.fecha_limite}}
+{% endif %}
+<div class="center firma">
+    CAJERO: {{request.user}}
+</div>
+<hr>
+<small>Administra v0.1.3A</small>
+</div>
