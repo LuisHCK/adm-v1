@@ -1,17 +1,43 @@
+
 from django import forms
-from .models import *
+from django.utils.translation import ugettext_lazy as _
+from .models import Ajuste
+
 
 class AjustesForm(forms.ModelForm):
     '''Form para realizar ajustes'''
     class Meta:
         model = Ajuste
-        fields = ('nombre', 'direccion', 'telefono', 'email', 'simbolo_moneda', 'ruc')
+        fields = ('nombre',
+                  'direccion',
+                  'telefono',
+                  'email',
+                  'simbolo_moneda',
+                  'ruc',
+                  'tipo_factura')
         widgets = {
-            'nombre':forms.TextInput(attrs={'class': 'form-control'}),
-            'direccion':forms.TextInput(attrs={'class': 'form-control'}),
-            'telefono':forms.TextInput(attrs={'class': 'form-control'}),
-            'email':forms.TextInput(attrs={'class': 'form-control'}),
-            'simbolo_moneda':forms.TextInput(attrs={'class': 'form-control'}),
-            'ruc':forms.TextInput(attrs={'class': 'form-control'})
-            }
-        
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teléfono'}),
+            'email': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+            'simbolo_moneda': forms.TextInput(attrs={'class': 'form-control',
+                                                     'placeholder': 'Simbolo Moneda'}),
+            'ruc': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Codigo RUC'}),
+            'tipo_factura': forms.Select(attrs={'class': 'form-control'})
+        }
+
+
+class CloudForm(forms.ModelForm):
+    class Meta:
+        model = Ajuste
+        fields = ('api_url', 'api_key')
+        widgets = {
+            'api_url': forms.TextInput(attrs={'class': 'form-control',
+                                              'placeholder': 'Servidor de Sincronización'}),
+            'api_key': forms.TextInput(attrs={'class': 'form-control',
+                                              'placeholder': 'Llave de Acceso'}),
+        }
+        labels = {
+            'api_url': _('Servidor'),
+            'api_key': _('Llave de Acceso')
+        }

@@ -1,17 +1,83 @@
  {% extends 'base.html' %} {% load staticfiles %} {% block content %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}"> {% include 'messages.html' %}
 <div class="row">
-  {% include 'ajustes/navbar.html' %}
-  <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
-      <h4>Ajustes</h4>
-      <hr>
-      <strong>Ajustes Generales</strong>
-    <form id="form" method="POST">{% csrf_token %}
-        <div class="form-group" style="padding: 5%">
-            {{ form.as_p }}
-            <button type="submit" class="save btn btn-success btn-block">Listo</button>
+    {% include 'ajustes/navbar.html' %}
+    <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+        <h4>Ajustes</h4>
+        <hr>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#datos" role="tab">Datos de la Empresa</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#cloud" role="tab">Datos en la Nube</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="datos" role="tabpanel">
+                <form id="form" class="white box box-form" method="POST" action="{% url 'guardar_ajustes' %}">{% csrf_token %}
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="form-group">{{ form.nombre.label_tag}} {{ form.nombre }}</div>
+                            <div class="form-group">{{ form.telefono.label_tag}} {{ form.telefono }}</div>
+                            <div class="form-group">{{ form.tipo_factura.label_tag}} {{ form.tipo_factura }}</div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="form-group">{{ form.direccion.label_tag}} {{ form.direccion }}</div>
+                            <div class="form-group">{{ form.email.label_tag}} {{ form.email }}</div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="form-group">{{ form.ruc.label_tag}} {{ form.ruc }}</div>
+                            <div class="form-group">{{ form.simbolo_moneda.label_tag}} {{ form.simbolo_moneda }}</div>
+                        </div>
+
+                        <button type="submit" class="save btn btn-success ">Guardar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane" id="cloud" role="tabpanel">
+                <form class="white box box-form" action="{% url 'guardar_ajustes_cloud' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group has-warning row">
+                        <div class="col-xs-8">
+                            <label class="form-control-label" for="id_api_url">Servidor de Sincronización</label>
+                            {{ cloud_form.api_url }}
+                            <small class="form-text text-muted">
+                            Por favor no cambie este campo, a menos que el proveedor de ADM o un representante
+                            se lo comunique por email o teléfono. <a href="#">Saber más</a></small>
+                        </div>
+                        <div class="col-xs-4">
+                            <label class="form-check-label" style="padding-top: 10%;">
+                                <input class="form-check-input" id="check_api" type="checkbox">Cambiar Servidor
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{cloud_form.api_key.label_tag}} {{cloud_form.api_key}}
+                        <small class="form-text text-muted">
+                            Introduzca la clave que recibió por email. <a href="#">Saber más</a>
+                        </small>
+                    </div>
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </form>
+            </div>
         </div>
-    </form>
-  </main>
+    </main>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#id_api_url").prop('readonly', true);
+    })
+    $("#check_api").change(function () {
+        if ($(this).is(':checked')) {
+            $("#id_api_url").prop('readonly', false);
+        } else {
+            $("#id_api_url").prop('readonly', true);
+        }
+    })
+</script>
 {% endblock %}
