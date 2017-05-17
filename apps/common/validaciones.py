@@ -1,5 +1,5 @@
 def es_administrador(user):
-    if user.groups.filter(name__in=['Administrador']):
+    if user.groups.filter(name__in=['Administrador']) or user.is_staff:
         return True
     else:
         return False
