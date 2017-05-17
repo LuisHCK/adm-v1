@@ -1,1 +1,17 @@
-hola
+ {% extends 'base.html' %} {% load staticfiles %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}"> {% include 'messages.html' %}
+<div class="row">
+  {% include 'ajustes/navbar.html' %}
+  <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+      <h4>Ajustes</h4>
+      <hr>
+      <strong>Ajustes Generales</strong>
+    <form id="form" method="POST">{% csrf_token %}
+        <div class="form-group" style="padding: 5%">
+            {{ form.as_p }}
+            <button type="submit" class="save btn btn-success btn-block">Listo</button>
+        </div>
+    </form>
+  </main>
+</div>
+{% endblock %}
