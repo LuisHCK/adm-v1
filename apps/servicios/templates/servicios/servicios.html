@@ -53,12 +53,15 @@
             <div class="tab-pane fade" id="profile" role="tabpanel">
                 <div class="box box-form">
                     <p><strong>Agregar un nuevo tipo de Servicio</strong></p>
-                    <form class="form-inline" id="form_tiposervicio" method="POST" action="{% url 'realizar_servicio' %}" class="post-form white-text">
+                    <form class="form-inline" id="form_tiposervicio" method="POST" action="{% url 'nuevo_tipo_servicio' %}" class="post-form white-text">
                         {% csrf_token %} {% if next %}
                         <input type="hidden" name="next" value="{{ next }}" /> {% endif %}
 
                         <label class="sr-only" for="id_nombre">Nombre del Servicio</label>
                         <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_nombre" placeholder="Nombre del Servicio">
+
+                        <label class="sr-only" for="id_nombre">Código</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_codigo" placeholder="Código">
 
                         <label class="sr-only" for="id_costo">Costo del servicio</label>
                         <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_costo" placeholder="Costo del Servicio">
@@ -122,10 +125,11 @@
     $("#form_tiposervicio").submit(function (event) {
         event.preventDefault();
         $.ajax({
-            url: "{% url 'nuevo_tipo_servicio' %}",
+            url: $(this).attr('action'),
             data: {
                 nombre: $('#id_nombre').val(),
                 costo: $('#id_costo').val(),
+                codigo: $('#id_codigo').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
@@ -135,7 +139,7 @@
                 $('#form_tiposervicio').trigger("reset"); // remove the value from the input
                 console.log(json); // log the returned json to the console
                 console.log(json.responseText);
-                toastr["error"](json.result)
+                toastr["error"](json.responseJSON.result)
             },
 
             success: function (json) {

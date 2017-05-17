@@ -74,8 +74,8 @@ def realizar_servicio(request):
 def tipo_servicio_ajax(request):
     """Realiza un registro del servicio realizado"""
     response_data = {}
-
-    if request.method == "POST":
+    from apps.common.validaciones import es_administrador
+    if request.method == "POST" and es_administrador(request.user):
         form = TipoServicioForm(request.POST)
         if form.is_valid():
             tipo_servicio = form.save(commit=False)
@@ -85,16 +85,19 @@ def tipo_servicio_ajax(request):
             response_data['id'] = str(tipo_servicio.id)
             response_data['nombre'] = str(tipo_servicio.nombre)
             response_data['costo'] = str(tipo_servicio.costo)
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type="application/json"
-        )
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json")
+        else:
+            return HttpResponse(
+                json.dumps({"result": "Ocurrió un error al guardar el tipo de servicio"}),
+                content_type="application/json",
+                status=500)
     else:
-        form = TipoServicioForm()
         return HttpResponse(
-            json.dumps({"nothing to see": "this isn't happening"}),
-            content_type="application/json"
-        )
+            json.dumps({"result": "No estas autorizado para esta acción"}),
+            content_type="application/json",
+            status=500)
 
 def agregar_a_factura(request, pk, fact):
     """Agrega un servicio como item de factura"""
