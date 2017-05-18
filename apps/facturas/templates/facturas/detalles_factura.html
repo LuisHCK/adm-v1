@@ -9,6 +9,7 @@
 <div class="row">
     {% include 'facturas/parciales/navbar-detalles.html' %}
     <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+        {% if var|ticket %}
 <h5>Detalles de Factura - Cliente: {{factura}}</h5>
         <div class="row">
             <div class="col-xs-9">
@@ -37,7 +38,6 @@
                             <td>{{ item_articulo.articulo.precio_venta }}</td>
                             <td>{{ item_articulo.cantidad }}</td>
                             <td>{{ item_articulo|articulo_subtotal }}</td>                            
-                            <td></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -45,9 +45,11 @@
             </div>
             <div class="col-xs-3" id="ticket">
                 {% include 'facturas/parciales/imprimir_ticket.html' %}
-            </div>
+            </div>                    
         </div>
-
+                {% else %}
+                    {% include 'facturas/parciales/imprimir.html' %}
+                {% endif %}
     </main>
 </div>
 

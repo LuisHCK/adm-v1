@@ -318,6 +318,9 @@ def detalles_factura(request, pk):
     item_articulos = FacturaArticulos.objects.filter(factura=factura).all()
     item_servicios = FacturaServicios.objects.filter(factura=factura).all()
     project_ver = settings.PROJECT_VERSION
+
+    from apps.ajustes.models import Ajuste
+
     return render(request, 'facturas/detalles_factura.html', {
         'factura': factura,
         'item_articulos': item_articulos,
@@ -325,6 +328,7 @@ def detalles_factura(request, pk):
         'form_articulo': FacturaArticuloForm,
         'form_servicio': ServicioRapidoForm,
         'project_ver': project_ver,
+        'empresa': Ajuste.objects.get(pk=1) # PENDIENTE DE LIMITAR LOS CAMPOS RETORNADOS
     })
 
 

@@ -1,6 +1,7 @@
 from django import template
 from django.contrib.auth.models import Group
-from django.shortcuts import get_object_or_404
+
+from apps.ajustes.models import Ajuste
 
 register = template.Library()
 
@@ -47,3 +48,12 @@ def servicio_subtotal(item_servicio):
 @register.filter(name='articulo_subtotal')
 def articulo_subtotal(item_articulo):
     return item_articulo.cantidad * item_articulo.articulo.precio_venta
+
+@register.filter(name='ticket')
+def ticket(var):
+    '''Verifica que tipo de factura se usa'''
+    ajustes = Ajuste.objects.get(pk=1)
+    if ajustes.tipo_factura == 'ticket':
+        return True
+    else:
+        return False
