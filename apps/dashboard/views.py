@@ -1,15 +1,20 @@
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.utils.formats import localize
 import json
-from apps.ventas.models import Venta
-from apps.inventario.models import Inventario
+
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.utils.formats import localize
+
 from apps.caja.models import Caja
-from apps.servicios.models import Servicio
+from apps.cloud.views import send_to_api
+from apps.inventario.models import Inventario
 from apps.servicios.forms import ServicioForm, TipoServicio
+from apps.servicios.models import Servicio
+from apps.ventas.models import Venta
+
 from .forms import VentaForm
+
 
 @login_required(login_url='login') #redirect when user is not logged in
 
@@ -99,6 +104,21 @@ def venta_ajax(request):
         response_data['vendedor'] = str(venta.usuario.username)
         response_data['fecha_venta'] = str(localize(venta.fecha_venta))
 
+        # Enviar los datos a la api
+        data_caja = {
+            'total': str(caja.saldo),
+            'date_open': str(caja.fecha_apertura),
+            'date_close': str(caja.fecha_cierre)
+        }
+        send_to_api(data_caja, 'cashes')
+
+        # Guardar datos de venta en la API
+        data = {"product": str(venta.articulo),
+                "price": str(venta.articulo.precio_venta),
+                "quantity": str(venta.cantidad),
+                "seller": str(venta.usuario)}
+        send_to_api(data, 'sales')
+
         return HttpResponse(
             json.dumps(response_data),
             content_type="application/json"
@@ -151,6 +171,22 @@ def servicio_ajax(request):
             response_data['total'] = str(servicio.precio)
             response_data['vendedor'] = str(servicio.usuario.username)
             response_data['fecha_servicio'] = str(localize(servicio.fecha_servicio))
+
+            # Enviar los datos a la api
+            data_caja = {
+                'total': str(caja.saldo),
+                'date_open': str(caja.fecha_apertura),
+                'date_close': str(caja.fecha_cierre)
+            }
+            send_to_api(data_caja, 'cashes')
+
+            # Guardar datos de venta en la API
+            data = {"name": str(servicio),
+                    "price": str(servicio.tipo_servicio.costo),
+                    "quantity": str(servicio.cantidad),
+                    "seller": str(servicio.usuario)}
+            send_to_api(data, 'services')
+
             return HttpResponse(
                 json.dumps(response_data),
                 content_type="application/json"
@@ -168,4 +204,3 @@ def servicio_ajax(request):
             json.dumps({"nothing to see": "this isn't happening"}),
             content_type="application/json"
         )
-

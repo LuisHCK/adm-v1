@@ -1,7 +1,10 @@
 import json
+import threading
+
 import requests
 
 from apps.ajustes.models import Ajuste
+from apps.caja.models import Caja
 
 
 def send_to_api(dictionary, model):
@@ -19,5 +22,12 @@ def send_to_api(dictionary, model):
     headers = {'Authorization': 'Token token=' + api_token,
                'Content-Type': 'application/json'}
 
+    send_task = threading.Thread(target=sender, args=(api_url, api_token, params, headers))
+    send_task.setDaemon(False)
+    send_task.start()
+
+
+def sender(api_url, api_token, params, headers):
     response = requests.post(api_url, data=params, headers=headers)
-    #print(str(response) + "- api_url: " + api_url + "- api_token: " + api_token)
+    print(str(response.status_code) + "- api_url: " +
+          api_url + "- api_token: " + api_token)

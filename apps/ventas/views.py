@@ -1,14 +1,19 @@
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from apps.ventas.models import Venta
-from apps.inventario.models import Inventario
+from django.shortcuts import redirect, render
+
 from apps.caja.models import Caja
+from apps.inventario.models import Inventario
+from apps.ventas.models import Venta
+from apps.cloud.views import send_to_api
+
 from .forms import VentaForm
 
-# Create your views here.
-@login_required(login_url='login') #redirect when user is not logged in
 
+# Create your views here.
+
+
+@login_required(login_url='login')  # redirect when user is not logged in
 def ventas(request):
     """Retorna la pagina de inicio"""
     venta = Venta.objects.all().order_by('-fecha_venta')
@@ -18,6 +23,7 @@ def ventas(request):
 def realizar_venta(request):
     """Realiza la venta de un artículo"""
     # Obtener las existencias actuales del producto
+    venta = object
     if request.method == "POST":
         form = VentaForm(request.POST)
         if form.is_valid():
@@ -46,7 +52,23 @@ def realizar_venta(request):
         else:
             Caja.objects.create(saldo=venta.total, usuario=request.user)
 
+        # Enviar los datos a la api
+        data_caja = {
+            'total': str(caja.saldo),
+            'date_open': str(caja.fecha_apertura),
+            'date_close': str(caja.fecha_cierre)
+        }
+        send_to_api(data_caja, 'cashes')
+
+        # Guardar datos de venta en la API
+        data = {"product": str(venta.articulo),
+                "price": str(venta.articulo.precio_venta),
+                "quantity": str(venta.cantidad),
+                "seller": str(venta.usuario)}
+        send_to_api(data, 'sales')
+
         return redirect('ventas')
+
     else:
         form = VentaForm()
     return render(request, 'ventas/nueva.html', {'form': form})

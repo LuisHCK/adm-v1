@@ -14,6 +14,7 @@ from apps.common import validaciones
 from apps.inventario.models import Articulos, Inventario
 from apps.servicios.models import Servicio, TipoServicio
 from apps.ventas.models import Venta
+from apps.cloud.views import send_to_api
 
 from .forms import FacturaArticuloForm, FacturaForm, ServicioRapidoForm
 from .models import Factura, FacturaArticulos, FacturaServicios
@@ -153,9 +154,35 @@ def cobrar_factura(request, pk):
                     factura.estado = 'pagado'
                     factura.save()
 
+                    # Enviar los datos a la api
+                    data = {
+                        'total': str(caja.saldo),
+                        'date_open': str(caja.fecha_apertura),
+                        'date_close': str(caja.fecha_cierre)
+                    }
+                    send_to_api(data, 'cashes')
+
                 factura.abierto = False
                 factura.fecha_limite = request.POST.get('fecha_limite')
                 factura.save()
+
+                # Enviar los datos a la api
+                credito = None
+                if factura.pago == 'credito':
+                    credito = True
+                else:
+                    credito = False
+
+                data = {"client": str(factura),
+                        "products": articulos_count,
+                        "services": servicios_count,
+                        "total": str(factura.total),
+                        "credit": credito,
+                        "code": factura.id,
+                        "seller": str(factura.usuario),
+                        "date_open": str(factura.fecha_factura),
+                        "date_charged": str(factura.fecha_cobro)}
+                send_to_api(data, 'invoices')
 
                 return HttpResponse(
                     json.dumps({'result': 'Se cerró la factura', 'id': str(factura.id)}),
