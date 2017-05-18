@@ -147,3 +147,9 @@ a.list-group-item-warning:hover{
 th, td, tr{
     font-size: 14px !important;
 }
+
+.ajustes-icon{
+  color: white;
+  padding-left: 10px;
+  font-size: 24px;
+}
