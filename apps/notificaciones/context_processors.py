@@ -11,6 +11,8 @@ def lista_notificaciones(request):
         mensajes_caja['texto'] = "Aún no se ha realizado la apertura de caja."
         total_notif += 1
 
+    # Notificaciones de facturas
+
     notif = Notificacion.objects.all()
     total_notif += notif.count()
     return{

@@ -180,7 +180,7 @@ def estado_capital(request):
     """Mostar el capital con el que se cuenta"""
     capital = Capital.objects.first()
     ultima_caja = Caja.objects.last()
-    caja = Caja.objects.exclude(id=ultima_caja.id).order_by('fecha_apertura')[:6]
+    caja = Caja.objects.exclude(id=ultima_caja.id).order_by('fecha_apertura')[:10]
     return render(request, 'capital/capital.html', {'capital': capital, 'caja': caja})
 
 

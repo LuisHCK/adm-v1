@@ -11,7 +11,7 @@ from .forms import ArticuloForm, InventarioForm
 @login_required(login_url='login')  # redirect when user is not logged in
 def lista_inventario(request):
     """"Retorna la lista de los articulos en el inventario"""
-    inventario = Inventario.objects.select_related().all().order_by('-id')
+    inventario = Inventario.objects.select_related().all().order_by('-id').filter(activo=True)
     # calcular el total de dinero invertido en el Inventario
     total_inversion = 0
     for inv in inventario:

@@ -48,6 +48,8 @@ class Factura(models.Model):
             return 'danger'
         else:
             return 'faded'
+    def _vencimiento(self):
+        return self.fecha_limite
 
 
 class Abono(models.Model):

@@ -10,6 +10,8 @@ class Caja(models.Model):
     fecha_apertura = models.DateTimeField(null=True, blank=True)
     fecha_cierre = models.DateTimeField(null=True, blank=True)
     estado = models.BooleanField(default=False)
+    def __str__(self):
+        return str(self.saldo)
 
 class Capital(models.Model):
     """Registra el capital total"""

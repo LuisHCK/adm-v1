@@ -23,7 +23,10 @@
 
     <div class="center">
         <b>{{empresa.nombre}}<br>{{empresa.direccion}}</b> <br>
-        <small>{{empresa.telefono}}</small>
+        <small>Tel: {{empresa.telefono}}</small>
+        {% if empresa.ruc != None %}
+            RUC: {{empresa.ruc}}
+        {% endif %}
     </div>
 <hr>
 <div class="center">
