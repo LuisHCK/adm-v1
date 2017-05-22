@@ -27,6 +27,7 @@ def detalles_articulo(request, pk):
     """Ver detalles de un articulo"""
     articulo = get_object_or_404(Articulos, pk=pk)
     existencias = Inventario.objects.only('existencias').get(articulo=articulo)
+    form_art = ArticuloForm()
     return render(request, 'inventario/detalles_articulo.html',
                   {
                       'articulo': articulo,
@@ -95,6 +96,7 @@ def actualizar_existencias(request, pk):
     if request.method == "POST":
         inventario.existencias = request.POST['existencias']
         inventario.minimo_existencias = request.POST['minimo_existencias']
+        inventario.activo = request.POST['activo']
         inventario.save()
 
         response_data['result'] = str('El inventario se actualizó con éxito')

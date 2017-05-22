@@ -1,6 +1,6 @@
 
 from django import forms
-from django.forms import TextInput, NumberInput, Select
+from django.forms import TextInput, NumberInput, Select, CheckboxInput
 from apps.inventario.models import Articulos, Inventario
 
 
@@ -40,9 +40,10 @@ class InventarioForm(forms.ModelForm):
     """Formulario de existencias en inventario"""
     class Meta:
         model = Inventario
-        fields = ('articulo', 'existencias', 'minimo_existencias')
+        fields = ('articulo', 'existencias', 'minimo_existencias', 'activo')
         widgets = {
             'articulo': Select(attrs={'class': 'form-control'}),
             'minimo_existencias': NumberInput(attrs={'class': 'form-control'}),
             'existencias': NumberInput(attrs={'class': 'form-control'}),
+            'activo': CheckboxInput(attrs={'class': 'form-control'}),
         }

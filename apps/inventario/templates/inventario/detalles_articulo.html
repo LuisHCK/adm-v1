@@ -33,7 +33,7 @@
                 <div class="box" style="padding:5%;">
                 <h4>Editar existencias</h4>
                 <hr>
-                <form id="form_articulo" method="POST" class="post-form white-text mdl-shadow--2dp" style="background-color: whitesmoke; border-radius: 6px; color:gray">
+                <form id="form_articulo" method="POST" class="white-text mdl-shadow--2dp" style="background-color: whitesmoke; border-radius: 6px; color:gray">
                     {% csrf_token %}{% if next %}
                     <input type="hidden" name="next" value="{{ next }}" /> {% endif %}
 
@@ -53,7 +53,10 @@
                             </div>
                             <div class="col-xs-8">
                                 <input class="form-control" id="id_minimo_existencias" name="minimo_existencias" type="number" value="1" required="true">
-                            </div>
+                            </div>    
+                        </div>
+                        <div class="form-group">
+                            {{form.activo.label_tag}} {{form.activo}}
                         </div>
                         <button type="submit" class="save btn btn-success btn-block">Listo</button>
                     </div>
@@ -61,6 +64,7 @@
                 </div>
             </div>
         </div>
+        {% include 'inventario/parciales/_form.1.html' %}
 </div>
 </main>
 <script>
@@ -71,6 +75,7 @@
             data: {
                 existencias: $('#id_existencias').val(),
                 minimo_existencias: $('#id_minimo_existencias').val(),
+                activo: $("#id_activo").is(':checked'),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
