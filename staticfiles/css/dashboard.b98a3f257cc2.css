@@ -1,0 +1,178 @@
+/*
+ * Base structure
+ */
+
+
+/* Move down content because we have a fixed navbar that is 3.5rem tall */
+
+body {
+  padding-top: 3.5rem;
+}
+
+
+/*
+ * Typography
+ */
+
+h1 {
+  margin-bottom: 20px;
+  padding-bottom: 9px;
+}
+
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+  position: fixed;
+  top: 51px;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Scrollable contents if viewport is shorter than content. */
+  border-right: 1px solid #eee;
+}
+
+
+/* Sidebar navigation */
+
+.sidebar {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.sidebar .nav {
+  margin-bottom: 20px;
+}
+
+.sidebar .nav-item {
+  width: 100%;
+}
+
+.sidebar .nav-item+.nav-item {
+  margin-left: 0;
+}
+
+.sidebar .nav-link {
+  border-radius: 0;
+}
+
+
+/*
+ * Dashboard
+ */
+
+
+/* Placeholders */
+
+.placeholders {
+  padding-bottom: 3rem;
+}
+
+.placeholder img {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.div_hover {
+  color: white;
+  /* First we need to help some browsers along for this to work.
+     Just because a vendor prefix is there, doesn't mean it will
+     work in a browser made by that vendor either, it's just for
+     future-proofing purposes I guess. */
+  -o-transition: .5s;
+  -ms-transition: .5s;
+  -moz-transition: .5s;
+  -webkit-transition: .5s;
+  /* ...and now for the proper property */
+  transition: .5s;
+}
+
+.div_hover:hover {
+  background-color: #424242 !important;
+  color: white;
+}
+
+
+/* unvisited link */
+
+.nav-link-styled:link {
+  color: #CFD8DC !important;
+}
+
+
+/* visited link */
+
+.nav-link-styled:visited {
+  color: #90A4AE !important;
+}
+
+
+/* mouse over link */
+
+.nav-link-styled:hover {
+  color: white !important;
+}
+
+
+/* selected link */
+
+.nav-link-styled:active {
+  color: lightgrey !important;
+}
+
+.nav-icon {
+  font-size: 34px;
+  float: left;
+  margin-right: 15px;
+  line-height: 30px;
+  width: 30px;
+  text-align: center;
+}
+
+.nav-item-text {
+  margin: 0;
+  line-height: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  position: relative;
+  left: 0;
+  opacity: 1;
+  white-space: nowrap;
+}
+
+.user {
+  border-bottom: solid lightslategrey 1px;
+}
+
+.photo {
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 50%;
+  border-width: 5px;
+  margin: 0 auto;
+}
+
+.photo img {
+  width: 80px;
+  height: 80px;
+}
+
+.white-ammount {
+  font-size: 3rem;
+  color: white;
+}
+
+.darker-nav {
+  background-color: #66615b;
+}
+
+.white-text {
+  color: white;
+}
