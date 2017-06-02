@@ -6,8 +6,8 @@
 
 @font-face {
   font-family: "foundation-icons";
-       url("foundation-icons.woff") format("woff"),
-       url("foundation-icons.ttf") format("truetype"),
+      src:  url("foundation-icons.woff") format("woff");
+      src: url("foundation-icons.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
