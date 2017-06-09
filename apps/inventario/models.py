@@ -3,41 +3,42 @@ from django.db import models
 from django.utils import timezone
 
 # Create your models here.
-class Articulos(models.Model):
-    """Almacenar los detalles de los Articulos"""
-    nombre = models.CharField(max_length=200)
-    codigo = models.CharField(max_length=20)
-    descripcion = models.TextField(blank=True)
-    precio_compra = models.DecimalField(max_digits=7, decimal_places=2)
-    precio_venta = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
-    precio_venta2 = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
-    precio_venta3 = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+class Product(models.Model):
+    """Almacenar los detalles de los Product"""
+    name = models.CharField(max_length=200)
+    code = models.CharField(max_length=20)
+    description = models.TextField(blank=True)
+    purchase_price = models.DecimalField(max_digits=7, decimal_places=2)
+    sale_price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    sale_price2 = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    sale_price3 = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     iva = models.DecimalField(max_digits=5, decimal_places=2)
-    cantidad_inicial = models.DecimalField(max_digits=7, decimal_places=2)
-    fecha_creacion = models.DateTimeField(default=timezone.now)
+    initial_ammount = models.DecimalField(max_digits=7, decimal_places=2)
+    expires_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
-        return self.nombre
+        return self.name
 
     def as_dict(self):
         '''Retorna un diccionario serializable'''
         return dict(
             id=str(self.id),
-            nombre=self.nombre,
-            codigo=self.codigo,
-            precio_venta=str(self.precio_venta)
+            name=self.name,
+            code=self.code,
+            sale_price=str(self.sale_price)
         )
 
-class Inventario(models.Model):
-    """Controlar la disponibilidad de los Articulos"""
-    articulo = models.ForeignKey('Articulos', on_delete=models.CASCADE,)
-    existencias = models.IntegerField()
-    minimo_existencias = models.IntegerField(default=1)
-    activo = models.BooleanField(default=True)
-    fecha_creacion = models.DateTimeField(default=timezone.now)
+class Inventory(models.Model):
+    """Controlar la disponibilidad de los Product"""
+    product = models.ForeignKey('Product', on_delete=models.CASCADE,)
+    stocks = models.IntegerField()
+    min_stocks = models.IntegerField(default=1)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
     def __int__(self):
-        return self.existencias
+        return self.stocks
 
-class Proveedor(models.Model):
+class Provider(models.Model):
     '''Proveedores de articulos'''
     VALORACIONES = (
         ('Excelente', 'excelente'),
@@ -50,14 +51,14 @@ class Proveedor(models.Model):
         )
 
     '''Datos del provedor de articulos'''
-    nombre = models.CharField(max_length=100)
-    codigo = models.CharField(max_length=20)
-    descripcion = models.TextField()
-    direccion = models.TextField()
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=20)
+    description = models.TextField()
+    direction = models.TextField()
     email = models.EmailField()
-    telefono = models.CharField(max_length=30)
-    telefono2 = models.CharField(max_length=30)
-    valoracion = models.CharField(max_length=50, choices=VALORACIONES,
+    phone = models.CharField(max_length=30)
+    phone2 = models.CharField(max_length=30)
+    assessment = models.CharField(max_length=50, choices=VALORACIONES,
                                   default='',
                                   blank=True, null=True)
 

@@ -2,32 +2,32 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms import NumberInput, TextInput, Select
-from apps.servicios.models import Servicio, TipoServicio
+from apps.servicios.models import Service, TypeService
 
 
 class ServicioForm(forms.ModelForm):
     """Formulario para los articulos"""
     class Meta:
-        model = Servicio
+        model = Service
 
-        fields = ['tipo_servicio', 'cantidad']
+        fields = ['type_service', 'quantity']
         widgets = {
-            'tipo_servicio': Select(attrs={'class': 'form-control'}),
-            'cantidad': NumberInput(attrs={'class': 'form-control', 'id': 'cantidad_servicio'}),
+            'type_service': Select(attrs={'class': 'form-control'}),
+            'quantity': NumberInput(attrs={'class': 'form-control', 'id': 'cantidad_servicio'}),
         }
         labels = {
-            'articulo': _('Articulo (Opcional)'),
-            'tipo_servicio': _('Tipo de Servicio realizado'),
+            'product': _('Articulo (Opcional)'),
+            'type_service': _('Tipo de Service realizado'),
         }
 
 class TipoServicioForm(forms.ModelForm):
     '''Formulario para crear tipos de serivicio'''
     class Meta:
-        model = TipoServicio
+        model = TypeService
 
-        fields = ['nombre', 'codigo', 'costo']
+        fields = ['name', 'code', 'price']
         widgets = {
-            'nombre': TextInput(attrs={'class': 'form-control'}),
-            'codigo': TextInput(attrs={'class': 'form-control'}),
-            'costo': NumberInput(attrs={'class': 'form-control'}),
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'code': TextInput(attrs={'class': 'form-control'}),
+            'price': NumberInput(attrs={'class': 'form-control'}),
         }

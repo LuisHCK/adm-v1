@@ -5,7 +5,7 @@
             url: "{% url 'venta_ajax' %}",
             data: {
                 articulo: $('#id_articulo').val(),
-                cantidad: $('#cantidad_articulo').val(),
+                quantity: $('#cantidad_articulo').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
@@ -31,7 +31,7 @@
                     `</th>
                     <td>` + json.articulo +
                     `</td>
-                    <td>` + json.cantidad +
+                    <td>` + json.quantity +
                     `</td>
                     <td>` + json.precio_venta +
                     `</td>
@@ -39,7 +39,7 @@
                     `</td>
                     <td>` + json.vendedor +
                     `</td>
-                    <td>` + json.fecha_venta +
+                    <td>` + json.created_at +
                     `</td>
                 </tr>`
                 );
@@ -54,8 +54,8 @@
         $.ajax({
             url: "{% url 'servicio_ajax' %}",
             data: {
-                tipo_servicio: $('#id_tipo_servicio').val(),
-                cantidad: $('#cantidad_servicio').val(),
+                type_service: $('#id_tipo_servicio').val(),
+                quantity: $('#cantidad_servicio').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
@@ -79,11 +79,11 @@
                     `<tr>
                         <th scope="row">`+ json.servicio_id +`</th>
                         <td>`+ json.servicio +`</td>
-                        <td>`+ json.cantidad +`</td>
+                        <td>`+ json.quantity +`</td>
                         <td>`+ json.precio_servicio +`</td>
                         <td>`+ json.total +`</td>
                         <td>`+ json.vendedor +`</td>
-                        <td>`+ json.fecha_servicio +`</td>
+                        <td>`+ json.created_at +`</td>
                         <td><a href="#" class="btn btn-outline-primary">Detalles</a></td>
                         
                     </tr>`

@@ -2,7 +2,7 @@
 <br>
 <h3>facturas Realizados</h3>
 <div class="btn-group" role="group" aria-label="Basic example">
-  <a href="{% url 'realizar_factura' %}" class="btn btn-secondary">Registra un factura</a>
+  <a href="{% url 'realizar_factura' %}" class="btn btn-secondary">Registra un invoice</a>
 </div>
 <table class="table table-striped">
     <thead class="thead-inverse">
@@ -16,14 +16,14 @@
         </tr>
     </thead>
     <tbody>
-        {% for factura in facturas.all %}
+        {% for invoice in facturas.all %}
         <tr>
-            <th scope="row">{{ factura.id }}</th>
-            <td>{{ factura.servicio.descripcion }}</td>
-            <td>{{ factura.servicio.precio }}</td>
-            <td>{{ factura.usuario.username }}</td>            
-            <td>{{ factura.fecha_factura }}</td>
-            <td><a href="">acciones factura</a></td>
+            <th scope="row">{{ invoice.id }}</th>
+            <td>{{ invoice.servicio.descripcion }}</td>
+            <td>{{ invoice.servicio.price }}</td>
+            <td>{{ invoice.usuario.username }}</td>            
+            <td>{{ invoice.fecha_factura }}</td>
+            <td><a href="">acciones invoice</a></td>
         </tr>
         {% endfor %}
     </tbody>

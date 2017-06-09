@@ -1,17 +1,17 @@
 
 from django.db import models
 from django.utils import timezone
-from apps.inventario.models import Articulos
-from apps.facturas.models import Factura
+from apps.inventario.models import Product
+from apps.facturas.models import Invoice
 
 # Create your models here.
 
-class Venta(models.Model):
+class Sale(models.Model):
     """Realiza la venta de un producto"""
-    usuario = models.ForeignKey('auth.User')
-    articulo = models.ForeignKey(Articulos, on_delete=models.CASCADE)
-    cantidad = models.IntegerField()
+    user = models.ForeignKey('auth.User')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
     total = models.DecimalField(max_digits=6, decimal_places=2)
-    descuento = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-    factura = models.ForeignKey(Factura, on_delete=models.CASCADE, null=True, blank=True)
-    fecha_venta = models.DateTimeField(default=timezone.now)
+    discount = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)

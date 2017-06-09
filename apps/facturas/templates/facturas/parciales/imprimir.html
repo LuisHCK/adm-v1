@@ -280,16 +280,16 @@
 			</address>
 			<address>
 				Cliente:
-				<p>{{factura.cliente}}</p>
+				<p>{{invoice.cliente}}</p>
 			</address>
 			<table class="meta" style="max-height: 32px !important;">
 				<tr>
 					<th>Factura #</th>
-					<td>{{factura.id}}</td>
+					<td>{{invoice.id}}</td>
 				</tr>
 				<tr>
 					<th>Fecha</th>
-					<td>{{factura.fecha_factura|date:"D d M Y"}} {{factura.fecha_factura|time:"g:iA"}}</td>
+					<td>{{invoice.fecha_factura|date:"D d M Y"}} {{invoice.fecha_factura|time:"g:iA"}}</td>
 				</tr>
 			</table>
 		</header>
@@ -307,14 +307,14 @@
 					{% for item_articulo in item_articulos.all %}
 					<tr>
 						<td><span>{{item_articulo.articulo}}</span></td>
-						<td><span>{{item_articulo.cantidad}}</span></td>
+						<td><span>{{item_articulo.quantity}}</span></td>
 						<td class="center-xs"><span data-prefix>$</span><span>{{item_articulo.articulo.precio_venta}}</span></td>
 					</tr>
 					{% endfor %} {% for item_servicio in item_servicios.all %}
 					<tr>
-						<td><span>{{item_servicio.tipo_servicio}}</span></td>
-						<td><span>{{item_servicio.cantidad}}</span></td>
-						<td class="center-xs"><span data-prefix>$</span><span>{{item_servicio.tipo_servicio.costo}}</span></td>
+						<td><span>{{item_servicio.type_service}}</span></td>
+						<td><span>{{item_servicio.quantity}}</span></td>
+						<td class="center-xs"><span data-prefix>$</span><span>{{item_servicio.type_service.price}}</span></td>
 					</tr>
 					{% endfor %}
 				</tbody>
@@ -322,11 +322,11 @@
 			<table class="balance">
 				<tr>
 					<th><span><b>Total</b></span></th>
-					<td><span data-prefix>$</span><span>{{factura.total}}</span></td>
+					<td><span data-prefix>$</span><span>{{invoice.total}}</span></td>
 					<tr>
 						<th><span><b>M. Pago</b></span></th>
 						<td><span>
-						{% if factura.contado %}
+						{% if invoice.contado %}
 							<b>Contado</b>
 						{% else %}
 							<b>Crédito</b>
@@ -336,14 +336,14 @@
 				</tr>
 			</table>
 		</article>
-		{% if factura.pago == 'credito' %}
+		{% if invoice.pago == 'credito' %}
 		<table>
 			<th style="width: 150px;">Fecha de Vencimiento</th>
-			<th>{{factura.fecha_limite}}</th>
+			<th>{{invoice.fecha_limite}}</th>
 		</table>
 		{% endif %}
 		<hr>
-		<div class="center-xs"> <small>Usuario: <em>{{factura.usuario.username}} | Administra {{project_ver}}</small>
+		<div class="center-xs"> <small>Usuario: <em>{{invoice.usuario.username}} | Administra {{project_ver}}</small>
 		</div>
 	</body>
 

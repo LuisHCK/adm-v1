@@ -13,14 +13,14 @@ def avatar(user):
 
 
 @register.filter(name='estado_solicitud_egreso')
-def estado_solicitud_egreso(estado):
-    if estado == 'estado_pendiente':
+def estado_solicitud_egreso(status):
+    if status == 'estado_pendiente':
         return 'Pendiente'
 
-    elif estado == 'estado_aprovado':
+    elif status == 'estado_aprovado':
         return 'Aprovado'
 
-    elif estado == 'estado_denegado':
+    elif status == 'estado_denegado':
         return 'Denegado'
 
     else:
@@ -28,14 +28,14 @@ def estado_solicitud_egreso(estado):
 
 
 @register.filter(name='estado_lista')
-def estado_lista(estado):
-    if estado == 'estado_pendiente':
+def estado_lista(status):
+    if status == 'estado_pendiente':
         return None
 
-    elif estado == 'estado_aprovado':
+    elif status == 'estado_aprovado':
         return 'success'
 
-    elif estado == 'estado_denegado':
+    elif status == 'estado_denegado':
         return 'warning'
 
     else:
@@ -43,15 +43,15 @@ def estado_lista(estado):
 
 @register.filter(name='servicio_subtotal')
 def servicio_subtotal(item_servicio):
-    return item_servicio.cantidad * item_servicio.tipo_servicio.costo
+    return item_servicio.quantity * item_servicio.type_service.price
 
 @register.filter(name='articulo_subtotal')
 def articulo_subtotal(item_articulo):
-    return item_articulo.cantidad * item_articulo.articulo.precio_venta
+    return item_articulo.quantity * item_articulo.product.sale_price
 
 @register.filter(name='ticket')
 def ticket(var):
-    '''Verifica que tipo de factura se usa'''
+    '''Verifica que tipo de invoice se usa'''
     ajustes = Ajuste.objects.get(pk=1)
     if ajustes.tipo_factura == 'ticket':
         return True

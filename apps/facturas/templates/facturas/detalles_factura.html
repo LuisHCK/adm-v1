@@ -1,16 +1,16 @@
  {% extends 'base.html' %} {% load staticfiles %} {% block content %}
  {% load ayudantes %}
-<br> {% include 'messages.html' %} {% if factura.abierto is True %} {% include 'facturas/parciales/agregando.html' %}
+<br> {% include 'messages.html' %} {% if invoice.abierto is True %} {% include 'facturas/parciales/agregando.html' %}
 <script src="{% static 'js/factura_ajax.js' %}"></script>
 {% else %}
-<!--Pantalla para factura cerrada-->
+<!--Pantalla para invoice cerrada-->
 
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}"> {% include 'messages.html' %}
 <div class="row">
     {% include 'facturas/parciales/navbar-detalles.html' %}
     <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
         {% if var|ticket %}
-<h5>Detalles de Factura - Cliente: {{factura}}</h5>
+<h5>Detalles de Factura - Cliente: {{invoice}}</h5>
         <div class="row">
             <div class="col-xs-9">
                 <table class="table table-striped">
@@ -26,9 +26,9 @@
 
                         {% for item_servicio in item_servicios.all %}
                         <tr>
-                            <td>{{ item_servicio.tipo_servicio }}</td>
-                            <td>{{ item_servicio.tipo_servicio.costo }}</td>
-                            <td>{{ item_servicio.cantidad }}</td>
+                            <td>{{ item_servicio.type_service }}</td>
+                            <td>{{ item_servicio.type_service.price }}</td>
+                            <td>{{ item_servicio.quantity }}</td>
                             <td>{{ item_servicio|servicio_subtotal }}</td>
 
                         </tr>
@@ -36,7 +36,7 @@
                         <tr>
                             <td>{{ item_articulo.articulo}}</td>
                             <td>{{ item_articulo.articulo.precio_venta }}</td>
-                            <td>{{ item_articulo.cantidad }}</td>
+                            <td>{{ item_articulo.quantity }}</td>
                             <td>{{ item_articulo|articulo_subtotal }}</td>                            
                         </tr>
                         {% endfor %}

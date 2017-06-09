@@ -36,19 +36,19 @@
         <div class="alert alert-info" role="alert">
           <strong>Dinero por Cobrar:</strong> {{total_sin_pagar}}
         </div>
-        {% for factura in lista_pendientes %}
+        {% for invoice in lista_pendientes %}
 
         <ul class="list-group">
-          <a href="{% url 'detalles_factura' factura.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
+          <a href="{% url 'detalles_factura' invoice.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1"> <b>Cliente: </b> {{factura}}</h5>
-              <h5 class="mb-1"><b>Total: </b> {{factura.total}}</h5>
-              <small>{{factura.fecha_factura|timesince}}</small>
+              <h5 class="mb-1"> <b>Cliente: </b> {{invoice}}</h5>
+              <h5 class="mb-1"><b>Total: </b> {{invoice.total}}</h5>
+              <small>{{invoice.fecha_factura|timesince}}</small>
             </div>
             <p class="mb-1">
-              <strong>Artículos: </strong> {{factura.productos_count}} | <strong>Servicios: </strong> {{factura.servicios_count}}
+              <strong>Artículos: </strong> {{invoice.product_count}} | <strong>Servicios: </strong> {{invoice.service_count}}
             </p>
-            <small>Fecha Vencimiento: {{factura.fecha_limite}}</small> 
+            <small>Fecha Vencimiento: {{invoice.fecha_limite}}</small> 
           </a>
         </ul>
 

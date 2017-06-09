@@ -2,7 +2,7 @@
     <ul class="nav nav-pills flex-column div_hover">
         <a id="vender" class="nav-item nav-link nav-link-styled">
             <i class="nav-icon fi-shopping-cart"></i>
-            <p class="nav-item-text float-left">Venta Rápida</p>
+            <p class="nav-item-text float-left">Sale Rápida</p>
         </a>
         <form id="form_vender" style="display: none;" method="POST" class="post-form white-text">{% csrf_token %}
             <div class="form-group" style="padding: 5%">
@@ -42,7 +42,7 @@
             url: "{% url 'venta_ajax' %}",
             data: {
                 articulo: $('#id_articulo').val(),
-                cantidad: $('#id_cantidad').val(),
+                quantity: $('#id_cantidad').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
@@ -66,7 +66,7 @@
                     `</th>
                     <td>` + json.articulo +
                     `</td>
-                    <td>` + json.cantidad +
+                    <td>` + json.quantity +
                     `</td>
                     <td>` + json.precio_venta +
                     `</td>
@@ -74,7 +74,7 @@
                     `</td>
                     <td>` + json.vendedor +
                     `</td>
-                    <td>` + json.fecha_venta +
+                    <td>` + json.created_at +
                     `</td>
                 </tr>`
                 );

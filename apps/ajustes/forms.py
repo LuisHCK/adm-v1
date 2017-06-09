@@ -8,17 +8,17 @@ class AjustesForm(forms.ModelForm):
     '''Form para realizar ajustes'''
     class Meta:
         model = Ajuste
-        fields = ('nombre',
-                  'direccion',
-                  'telefono',
+        fields = ('name',
+                  'direction',
+                  'phone',
                   'email',
                   'simbolo_moneda',
                   'ruc',
                   'tipo_factura')
         widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
-            'direccion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
-            'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teléfono'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            'direction': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teléfono'}),
             'email': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
             'simbolo_moneda': forms.TextInput(attrs={'class': 'form-control',
                                                      'placeholder': 'Simbolo Moneda'}),

@@ -58,11 +58,11 @@
         <tr>
           <th>#</th>
           <th>Nombre</th>
-          <th>cantidad</th>
-          <th>Precio de Venta</th>
+          <th>quantity</th>
+          <th>Precio de Sale</th>
           <th>Total</th>
           <th>Vendedor</th>
-          <th>Fecha de Venta</th>
+          <th>Fecha de Sale</th>
         </tr>
       </thead>
       <tbody>
@@ -70,11 +70,11 @@
         <tr>
           <th scope="row">{{ venta.id }}</th>
           <td>{{ venta.articulo.nombre }}</td>
-          <td>{{ venta.cantidad }}</td>
+          <td>{{ venta.quantity }}</td>
           <td>{{ venta.articulo.precio_venta }}</td>
           <td>{{ venta.total }}</td>
           <td>{{ venta.usuario.username }}</td>
-          <td>{{ venta.fecha_venta }}</td>
+          <td>{{ venta.created_at }}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -99,11 +99,11 @@
         <tr>
           <th scope="row">{{ servicio.id }}</th>
           <td>{{ servicio.descripcion }}</td>
-          <td>{{ servicio.cantidad }}</td>
-          <td>{{ servicio.tipo_servicio.costo }}</td>
-          <td>{{ servicio.precio }}</td>
+          <td>{{ servicio.quantity }}</td>
+          <td>{{ servicio.type_service.price }}</td>
+          <td>{{ servicio.price }}</td>
           <td>{{ servicio.usuario.username }}</td>
-          <td>{{ servicio.fecha_servicio }}</td>
+          <td>{{ servicio.created_at }}</td>
           <td><a href="">acciones servicio</a></td>
         </tr>
         {% endfor %}

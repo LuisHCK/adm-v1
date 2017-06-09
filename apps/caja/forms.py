@@ -21,8 +21,8 @@ class EgresoForm(forms.ModelForm):
     """Formulario para el retiro de dinero de la caja abierta"""
     class Meta:
         model = Egresos
-        fields = ('cantidad', 'concepto',)
+        fields = ('quantity', 'details',)
         widgets = {
-            'cantidad': NumberInput(attrs={'class': 'form-control'}),
-            'concepto': TextInput(attrs={'class': 'form-control'})
+            'quantity': NumberInput(attrs={'class': 'form-control'}),
+            'details': TextInput(attrs={'class': 'form-control'})
         }

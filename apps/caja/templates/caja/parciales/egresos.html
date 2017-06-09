@@ -4,11 +4,11 @@
         <form action="{% url 'nuevo_egreso' %}" id="form_egreso" style="display: none;" method="POST" class="form-inline form-egreso">{% csrf_token %}
 
             <label class="sr-only" for="id_cantidad">Cantidad:</label>
-            <input type="number" name="cantidad" id="id_cantidad" step="0.1" required="true" class="form-control mb-2 mr-sm-2 mb-sm-0"
+            <input type="number" name="quantity" id="id_cantidad" step="0.1" required="true" class="form-control mb-2 mr-sm-2 mb-sm-0"
                 placeholder="Cantidad">
 
             <label class="sr-only" for="id_concepto">Concepto:</label>
-            <input type="text" name="concepto" required="true" id="id_concepto" maxlength="200" class="form-control mb-2 mr-sm-2 mb-sm-0"
+            <input type="text" name="details" required="true" id="id_concepto" maxlength="200" class="form-control mb-2 mr-sm-2 mb-sm-0"
                 placeholder="Concepto">
 
             <button type="submit" class="btn btn-success">Listo</button>
@@ -26,10 +26,10 @@
         {% for egreso in egresos %}
         <a id="list_egreso_{{egreso.id}}" egreso="{{egreso.id}}" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-{{ egreso.estado|estado_lista }}">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1"><b>#{{egreso.id}}-</b> {{ egreso.concepto }}</h5>
+                <h5 class="mb-1"><b>#{{egreso.id}}-</b> {{ egreso.details }}</h5>
                 <small><b>Estado:</b> <span id="estado_{{egreso.id}}">{{ egreso.estado|estado_solicitud_egreso }}</span></small>
             </div>
-            <p class="mb-1"><b>Monto: </b>${{egreso.cantidad}}</p>
+            <p class="mb-1"><b>Monto: </b>${{egreso.quantity}}</p>
             <small><b>Solicitante: </b> {{ egreso.usuario }}</small>
         </a>
         <div id="egreso_{{egreso.id}}" style="display: none;" class="btn-group" role="group">

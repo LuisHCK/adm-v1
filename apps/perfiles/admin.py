@@ -8,7 +8,7 @@ class PerfilInLine(admin.StackedInline):
     model = Perfil
     can_delete = False
     verbose_name_plural = 'Perfil'
-    fk_name = 'usuario'
+    fk_name = 'user'
 
 class CustomUsuarioAdmin(UserAdmin):
     inlines = (PerfilInLine, )

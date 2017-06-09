@@ -3,9 +3,9 @@ from django.db import models
 class Ajuste(models.Model):
     '''Guarda los ajustes del sistema'''
     # Datos de la empresa
-    nombre = models.CharField(max_length=25)
-    direccion = models.TextField(max_length=100)
-    telefono = models.CharField(max_length=25)
+    name = models.CharField(max_length=25)
+    direction = models.TextField(max_length=100)
+    phone = models.CharField(max_length=25)
     email = models.EmailField(null=True, blank=True)
     # Datos de ventas
     TIPOS = (

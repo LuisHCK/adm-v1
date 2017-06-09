@@ -14,8 +14,8 @@
         <tr>
             <th>#</th>
             <th>Nombre</th>
-            <th>cantidad</th>
-            <th>Precio de Venta</th>
+            <th>quantity</th>
+            <th>Precio de Sale</th>
             <th>Total</th>
             <th>Fecha</th>
             <th>Vendedor</th>
@@ -27,10 +27,10 @@
         <tr>
             <th scope="row">{{ venta.id}}</th>
             <td>{{ venta.articulo.nombre }}</td>
-            <td>{{ venta.cantidad }}</td>
+            <td>{{ venta.quantity }}</td>
             <td>{{ venta.articulo.precio_venta }}</td>
             <td>{{ venta.total }}</td>
-            <td>{{ venta.fecha_venta }}</td>
+            <td>{{ venta.created_at }}</td>
             <td>{{ venta.usuario.username }}</td>
             <td>
                 <div class="btn-group" role="group" aria-label="acciones">

@@ -1,49 +1,49 @@
 
 from django import forms
 from django.forms import TextInput, NumberInput, Select, CheckboxInput
-from apps.inventario.models import Articulos, Inventario
+from apps.inventario.models import Product, Inventory
 
 
 class ArticuloForm(forms.ModelForm):
     """Formulario para los articulos"""
     class Meta:
-        model = Articulos
-        fields = ('codigo',
-                  'nombre',
-                  'descripcion',
-                  'precio_compra',
-                  'precio_venta',
-                  'precio_venta2',
-                  'precio_venta3',
+        model = Product
+        fields = ('code',
+                  'name',
+                  'description',
+                  'purchase_price',
+                  'sale_price',
+                  'sale_price2',
+                  'sale_price3',
                   'iva',
-                  'cantidad_inicial')
+                  'initial_ammount')
         widgets = {
-            'codigo': TextInput(attrs={'class': 'form-control'}),
-            'nombre': TextInput(attrs={'class': 'form-control'}),
-            'descripcion': TextInput(attrs={'class': 'form-control'}),
-            'precio_compra': NumberInput(attrs={'class': 'form-control'}),
-            'precio_venta': NumberInput(attrs={'class': 'form-control'}),
-            'precio_venta2': NumberInput(attrs={'class': 'form-control'}),
-            'precio_venta3': NumberInput(attrs={'class': 'form-control'}),
+            'code': TextInput(attrs={'class': 'form-control'}),
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'description': TextInput(attrs={'class': 'form-control'}),
+            'purchase_price': NumberInput(attrs={'class': 'form-control'}),
+            'sale_price': NumberInput(attrs={'class': 'form-control'}),
+            'sale_price2': NumberInput(attrs={'class': 'form-control'}),
+            'sale_price3': NumberInput(attrs={'class': 'form-control'}),
             'iva': NumberInput(attrs={'class': 'form-control'}),
-            'cantidad_inicial': NumberInput(attrs={'class': 'form-control'}),
+            'initial_ammount': NumberInput(attrs={'class': 'form-control'}),
 
         }
         labels = {
-            'precio_venta': "Precio 1",
-            'precio_venta2': "Precio 2",
-            'precio_venta3': "Precio 3",
+            'sale_price': "Precio 1",
+            'sale_price2': "Precio 2",
+            'sale_price3': "Precio 3",
         }
 
 
 class InventarioForm(forms.ModelForm):
-    """Formulario de existencias en inventario"""
+    """Formulario de stocks en inventario"""
     class Meta:
-        model = Inventario
-        fields = ('articulo', 'existencias', 'minimo_existencias', 'activo')
+        model = Inventory
+        fields = ('product', 'stocks', 'min_stocks', 'active')
         widgets = {
-            'articulo': Select(attrs={'class': 'form-control'}),
-            'minimo_existencias': NumberInput(attrs={'class': 'form-control'}),
-            'existencias': NumberInput(attrs={'class': 'form-control'}),
-            'activo': CheckboxInput(attrs={'class': 'form-control'}),
+            'product': Select(attrs={'class': 'form-control'}),
+            'min_stocks': NumberInput(attrs={'class': 'form-control'}),
+            'stocks': NumberInput(attrs={'class': 'form-control'}),
+            'active': CheckboxInput(attrs={'class': 'form-control'}),
         }

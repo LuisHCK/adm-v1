@@ -38,10 +38,10 @@
                         <tr>
                             <th scope="row">{{ servicio.id }}</th>
                             <td>{{ servicio.descripcion }}</td>
-                            <td>{{ servicio.cantidad }}</td>
-                            <td>{{ servicio.precio }}</td>
+                            <td>{{ servicio.quantity }}</td>
+                            <td>{{ servicio.price }}</td>
                             <td>{{ servicio.usuario.username }}</td>
-                            <td>{{ servicio.fecha_servicio }}</td>
+                            <td>{{ servicio.created_at }}</td>
                             <td>
                                 <a href="#" class="btn btn-outline-primary">Detalles</a>
                             </td>
@@ -52,19 +52,19 @@
             </div>
             <div class="tab-pane fade" id="profile" role="tabpanel">
                 <div class="box box-form">
-                    <p><strong>Agregar un nuevo tipo de Servicio</strong></p>
+                    <p><strong>Agregar un nuevo tipo de Service</strong></p>
                     <form class="form-inline" id="form_tiposervicio" method="POST" action="{% url 'nuevo_tipo_servicio' %}" class="post-form white-text">
                         {% csrf_token %} {% if next %}
                         <input type="hidden" name="next" value="{{ next }}" /> {% endif %}
 
-                        <label class="sr-only" for="id_nombre">Nombre del Servicio</label>
-                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_nombre" placeholder="Nombre del Servicio">
+                        <label class="sr-only" for="id_nombre">Nombre del Service</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_nombre" placeholder="Nombre del Service">
 
                         <label class="sr-only" for="id_nombre">Código</label>
                         <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_codigo" placeholder="Código">
 
                         <label class="sr-only" for="id_costo">Costo del servicio</label>
-                        <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_costo" placeholder="Costo del Servicio">
+                        <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_costo" placeholder="Costo del Service">
 
                         <button type="submit" class="save btn btn-success">Listo</button>
                     </form>
@@ -73,25 +73,25 @@
                 <br>
 
                 <div id="lista_tipos" class="row">
-                    {% for tipo_servicio in tipos_servicio %}
+                    {% for type_service in tipos_servicio %}
                     <div class="col-md-4" style="margin-top: 1%;">
                         <div class="card mdl-shadow--2dp">
                             <div class="card-block">
-                                <h5 class="card-title">{{tipo_servicio.nombre}}</h5>
+                                <h5 class="card-title">{{type_service.nombre}}</h5>
 
                                 <div class="card-text" style="margin-left: 5%;">
-                                    <h6 class="card-subtitle mb-2 text-muted">Precio del Servicio: </h6>
-                                    <strong>{{tipo_servicio.costo}}</strong>
+                                    <h6 class="card-subtitle mb-2 text-muted">Precio del Service: </h6>
+                                    <strong>{{type_service.price}}</strong>
                                 </div>
-                                {% if tipo_servicio.activo and request.user|has_group:"Administrador" %}
-                                    <a href="{% url 'servicio_activacion' tipo_servicio.pk %}" class="card-link servicio_activacion" activar="False">Desactivar Servicio</a> 
-                                {% elif tipo_servicio.activo %}
+                                {% if type_service.activo and request.user|has_group:"Administrador" %}
+                                    <a href="{% url 'servicio_activacion' type_service.pk %}" class="card-link servicio_activacion" activar="False">Desactivar Service</a> 
+                                {% elif type_service.activo %}
                                     <div class="alert alert-success" role="alert" style="margin-bottom: 0px">
-                                        El Servicio está disponible.
+                                        El Service está disponible.
                                     </div>
 
-                                {% elif tipo_servicio.activo == False and request.user|has_group:"Administrador" %}
-                                    <a href="{% url 'servicio_activacion' tipo_servicio.pk %}" class="card-link servicio_activacion" activar="True">Activar Servicio</a> 
+                                {% elif type_service.activo == False and request.user|has_group:"Administrador" %}
+                                    <a href="{% url 'servicio_activacion' type_service.pk %}" class="card-link servicio_activacion" activar="True">Activar Service</a> 
                                 {% else %}
                                     <div class="alert alert-danger" role="alert" style="margin-bottom: 0px">
                                         No está disponible el servicio.
@@ -128,7 +128,7 @@
             url: $(this).attr('action'),
             data: {
                 nombre: $('#id_nombre').val(),
-                costo: $('#id_costo').val(),
+                price: $('#id_costo').val(),
                 codigo: $('#id_codigo').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
@@ -155,11 +155,11 @@
                             <h4 class="card-title">`+ json.nombre + `</h4>
 
                             <div class="card-text" style="margin-left: 5%;">
-                                <h6 class="card-subtitle mb-2 text-muted">Precio del Servicio: </h6>
-                                <strong>`+ json.costo + `</strong>
+                                <h6 class="card-subtitle mb-2 text-muted">Precio del Service: </h6>
+                                <strong>`+ json.price + `</strong>
                             </div>                            
                             <div class="alert alert-success" role="alert" style="margin-bottom: 0px">
-                                El Servicio está disponible.
+                                El Service está disponible.
                             </div>                                
                         </div>
                     </div>`

@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
 from apps.caja.models import Caja
-from apps.inventario.models import Inventario
-from apps.ventas.models import Venta
+from apps.inventario.models import Inventory
+from apps.ventas.models import Sale
 from apps.cloud.views import send_to_api
 
 from .forms import VentaForm
@@ -16,32 +16,32 @@ from .forms import VentaForm
 @login_required(login_url='login')  # redirect when user is not logged in
 def ventas(request):
     """Retorna la pagina de inicio"""
-    venta = Venta.objects.all().order_by('-fecha_venta')
+    venta = Sale.objects.all().order_by('-created_at')
     return render(request, 'ventas/venta.html', {'venta': venta, 'form_venta': VentaForm})
 
 
 def realizar_venta(request):
     """Realiza la venta de un artículo"""
-    # Obtener las existencias actuales del producto
+    # Obtener las stocks actuales del producto
     venta = object
     if request.method == "POST":
         form = VentaForm(request.POST)
         if form.is_valid():
             venta = form.save(commit=False)
-            # Registra el usuario que realiza la venta
-            venta.usuario = request.user
+            # Registra el user que realiza la venta
+            venta.user = request.user
             # Calcula el total de la venta
-            venta.total = (venta.articulo.precio_venta * venta.cantidad)
+            venta.total = (venta.product.sale_price * venta.quantity)
             venta.save()
 
         # Restar producto del inventario
-        inventario = Inventario.objects.get(articulo=venta.articulo)
+        inventario = Inventory.objects.get(product=venta.product)
 
-        # Si la cantidad es nula o menor a uno se le asigna un 1
-        if venta.cantidad < 1:
-            venta.cantidad = 1
+        # Si la quantity es nula o menor a uno se le asigna un 1
+        if venta.quantity < 1:
+            venta.quantity = 1
 
-        inventario.existencias = (inventario.existencias - venta.cantidad)
+        inventario.stocks = (inventario.stocks - venta.quantity)
         inventario.save()
 
         # Guardar en Caja
@@ -50,7 +50,7 @@ def realizar_venta(request):
             caja.saldo = (caja.saldo + venta.total)
             caja.save()
         else:
-            Caja.objects.create(saldo=venta.total, usuario=request.user)
+            Caja.objects.create(saldo=venta.total, user=request.user)
 
         # Enviar los datos a la api
         data_caja = {
@@ -61,10 +61,10 @@ def realizar_venta(request):
         send_to_api(data_caja, 'cashes')
 
         # Guardar datos de venta en la API
-        data = {"product": str(venta.articulo),
-                "price": str(venta.articulo.precio_venta),
-                "quantity": str(venta.cantidad),
-                "seller": str(venta.usuario)}
+        data = {"product": str(venta.product),
+                "price": str(venta.product.sale_price),
+                "quantity": str(venta.quantity),
+                "seller": str(venta.user)}
         send_to_api(data, 'sales')
 
         return redirect('ventas')

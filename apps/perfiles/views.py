@@ -33,11 +33,11 @@ def ver_perfil(request, pk):
     if admin_required(request.user):
         perfil = get_object_or_404(Perfil, pk=pk)
         form = FormPerfil(request.POST or None, instance=perfil)
-        form_usr = UserForm(request.POST or None, instance=perfil.usuario)
+        form_usr = UserForm(request.POST or None, instance=perfil.user)
 
         puesto = None
         try:
-            puesto = str(perfil.usuario.groups.all()[0])
+            puesto = str(perfil.user.groups.all()[0])
         except IndexError:
             puesto = "No definido"
             messages.error(request, "No se ha defindo el cargo para "+ str(perfil) +". Error 0x01")
@@ -53,13 +53,13 @@ def ver_perfil(request, pk):
         return redirect('inicio')
 
 def editar_perfil(request, pk):
-    '''Edita el perfil de un usuario'''
+    '''Edita el perfil de un user'''
     puesto = "No definido"
     if admin_required(request.user):
         perfil = get_object_or_404(Perfil, pk=pk)
 
         try:
-            puesto = str(perfil.usuario.groups.all()[0])
+            puesto = str(perfil.user.groups.all()[0])
         except IndexError:
             print("Index Error")
 

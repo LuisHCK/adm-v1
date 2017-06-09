@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import Venta
+from .models import Sale
 # Register your models here.
-admin.site.register(Venta)
+admin.site.register(Sale)

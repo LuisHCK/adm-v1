@@ -8,10 +8,10 @@ from django.utils.formats import localize
 
 from apps.caja.models import Caja
 from apps.cloud.views import send_to_api
-from apps.inventario.models import Inventario
-from apps.servicios.forms import ServicioForm, TipoServicio
-from apps.servicios.models import Servicio
-from apps.ventas.models import Venta
+from apps.inventario.models import Inventory
+from apps.servicios.forms import ServicioForm, TypeService
+from apps.servicios.models import Service
+from apps.ventas.models import Sale
 
 from .forms import VentaForm
 
@@ -22,28 +22,28 @@ from .forms import VentaForm
 # Create your views here.
 def inicio(request):
     """Retorna la pagina de inicio"""
-    venta = Venta.objects.all().order_by('-fecha_venta')[:5]
-    servicios = Servicio.objects.all().order_by('-fecha_servicio')[:5]
+    venta = Sale.objects.all().order_by('-created_at')[:5]
+    servicios = Service.objects.all().order_by('-created_at')[:5]
     caja = Caja.objects.last()
-    count_servicios = Servicio.objects.count()
+    count_servicios = Service.objects.count()
     # Realiza la venta de un artículo
     if request.method == "POST":
         form = VentaForm(request.POST)
         if form.is_valid():
             venta = form.save(commit=False)
 
-            # Registra el usuario que realiza la venta
-            venta.usuario = request.user
+            # Registra el user que realiza la venta
+            venta.user = request.user
 
             # Calcula el total de la venta
-            venta.total = venta.articulo.precio_venta * venta.cantidad
+            venta.total = venta.product.sale_price * venta.quantity
 
             # Guardar la venta realizada
             venta.save()
 
             # Restar producto del inventario
-            inventario = Inventario.objects.get(articulo=venta.articulo)
-            inventario.existencias = (inventario.existencias - venta.cantidad)
+            inventario = Inventory.objects.get(product=venta.product)
+            inventario.stocks = (inventario.stocks - venta.quantity)
             inventario.save()
 
             # Guardar en Caja
@@ -52,7 +52,7 @@ def inicio(request):
                 caja.saldo += venta.total
                 caja.save()
             else:
-                Caja.objects.create(saldo=venta.total, usuario=request.user)
+                Caja.objects.create(saldo=venta.total, user=request.user)
 
         return redirect('inicio')
     else:
@@ -64,26 +64,26 @@ def inicio(request):
 
 def venta_ajax(request):
     """Realiza la venta de un artículo"""
-    # Obtener las existencias actuales del producto
+    # Obtener las stocks actuales del producto
     response_data = {}
     if request.method == "POST":
         form = VentaForm(request.POST)
         if form.is_valid():
             venta = form.save(commit=False)
-            # Registra el usuario que realiza la venta
-            venta.usuario = request.user
+            # Registra el user que realiza la venta
+            venta.user = request.user
             # Calcula el total de la venta
-            venta.total = (venta.articulo.precio_venta * venta.cantidad)
+            venta.total = (venta.product.sale_price * venta.quantity)
             venta.save()
 
         # Restar producto del inventario
-        inventario = Inventario.objects.get(articulo=venta.articulo)
+        inventario = Inventory.objects.get(product=venta.product)
 
-        # Si la cantidad es nula o menor a uno se le asigna un 1
-        if venta.cantidad < 1:
-            venta.cantidad = 1
+        # Si la quantity es nula o menor a uno se le asigna un 1
+        if venta.quantity < 1:
+            venta.quantity = 1
 
-        inventario.existencias = (inventario.existencias - venta.cantidad)
+        inventario.stocks = (inventario.stocks - venta.quantity)
         inventario.save()
 
         # Guardar en Caja
@@ -92,17 +92,17 @@ def venta_ajax(request):
             caja.saldo = (caja.saldo + venta.total)
             caja.save()
         else:
-            Caja.objects.create(saldo=venta.total, usuario=request.user)
+            Caja.objects.create(saldo=venta.total, user=request.user)
 
         response_data['result'] = "Se realizó la venta!"
         response_data['venta_id'] = str(venta.id)
-        response_data['articulo'] = str(venta.articulo)
-        response_data['cantidad'] = str(venta.cantidad)
-        response_data['precio_venta'] = str(venta.articulo.precio_venta)
-        response_data['precio_compra'] = str(venta.articulo.precio_compra)
+        response_data['product'] = str(venta.product)
+        response_data['quantity'] = str(venta.quantity)
+        response_data['sale_price'] = str(venta.product.sale_price)
+        response_data['purchase_price'] = str(venta.product.purchase_price)
         response_data['total'] = str(venta.total)
-        response_data['vendedor'] = str(venta.usuario.username)
-        response_data['fecha_venta'] = str(localize(venta.fecha_venta))
+        response_data['vendedor'] = str(venta.user.username)
+        response_data['created_at'] = str(localize(venta.created_at))
 
         # Enviar los datos a la api
         data_caja = {
@@ -113,10 +113,10 @@ def venta_ajax(request):
         send_to_api(data_caja, 'cashes')
 
         # Guardar datos de venta en la API
-        data = {"product": str(venta.articulo),
-                "price": str(venta.articulo.precio_venta),
-                "quantity": str(venta.cantidad),
-                "seller": str(venta.usuario)}
+        data = {"product": str(venta.product),
+                "price": str(venta.product.sale_price),
+                "quantity": str(venta.quantity),
+                "seller": str(venta.user)}
         send_to_api(data, 'sales')
 
         return HttpResponse(
@@ -140,37 +140,37 @@ def servicio_ajax(request):
         if Caja.objects.count() > 0:
             if form.is_valid():
                 servicio = form.save(commit=False)
-                servicio.usuario = request.user
+                servicio.user = request.user
 
-                # Asignar el precio del servicio segun el tipo de servicio
-                tiposervicio = TipoServicio.objects.get(
-                    id=servicio.tipo_servicio.id)
-                servicio.tipo_servicio = tiposervicio
+                # Asignar el price del servicio segun el tipo de servicio
+                tiposervicio = TypeService.objects.get(
+                    id=servicio.type_service.id)
+                servicio.type_service = tiposervicio
 
-                # Calcular el precio en base a la cantidad de producto
+                # Calcular el price en base a la quantity de producto
 
-                # Si no se escribe una cantidad se asiga un 1
-                if servicio.cantidad is None:
-                    servicio.cantidad = 1
+                # Si no se escribe una quantity se asiga un 1
+                if servicio.quantity is None:
+                    servicio.quantity = 1
 
-                servicio.precio = (tiposervicio.costo * servicio.cantidad)
-                servicio.descripcion = tiposervicio.nombre
+                servicio.price = (tiposervicio.price * servicio.quantity)
+                servicio.description = tiposervicio.name
 
                 servicio.save()
 
             # Guardar en caja el monto del servicio
             caja = Caja.objects.last()
-            caja.saldo = (caja.saldo + servicio.precio)
+            caja.saldo = (caja.saldo + servicio.price)
             caja.save()
 
             response_data['result'] = "Se realizó la venta!"
             response_data['servicio_id'] = str(servicio.id)
-            response_data['servicio'] = str(servicio.tipo_servicio)
-            response_data['cantidad'] = str(servicio.cantidad)
-            response_data['precio_servicio'] = str(servicio.tipo_servicio.costo)
-            response_data['total'] = str(servicio.precio)
-            response_data['vendedor'] = str(servicio.usuario.username)
-            response_data['fecha_servicio'] = str(localize(servicio.fecha_servicio))
+            response_data['servicio'] = str(servicio.type_service)
+            response_data['quantity'] = str(servicio.quantity)
+            response_data['precio_servicio'] = str(servicio.type_service.price)
+            response_data['total'] = str(servicio.price)
+            response_data['vendedor'] = str(servicio.user.username)
+            response_data['created_at'] = str(localize(servicio.created_at))
 
             # Enviar los datos a la api
             data_caja = {
@@ -182,9 +182,9 @@ def servicio_ajax(request):
 
             # Guardar datos de venta en la API
             data = {"name": str(servicio),
-                    "price": str(servicio.tipo_servicio.costo),
-                    "quantity": str(servicio.cantidad),
-                    "seller": str(servicio.usuario)}
+                    "price": str(servicio.type_service.price),
+                    "quantity": str(servicio.quantity),
+                    "seller": str(servicio.user)}
             send_to_api(data, 'services')
 
             return HttpResponse(

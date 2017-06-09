@@ -12,30 +12,30 @@
         </tr>
     </thead>
     <tbody>
-        {% for factura in facturas.all %}
-        <tr class="bg-{{ factura.clase }} white-text">
-            <th scope="row">{{ factura.id}}</th>
-            <td>{{ factura.cliente}}</td>
-            <td> {% if factura.pago == 'contado' %}
+        {% for invoice in facturas.all %}
+        <tr class="bg-{{ invoice.clase }} white-text">
+            <th scope="row">{{ invoice.id}}</th>
+            <td>{{ invoice.cliente}}</td>
+            <td> {% if invoice.pago == 'contado' %}
                 <strong class="white-text">Contado</strong> {% else %}
                 <strong class="white-text">Crédito</strong> {% endif %}</td>
-            <td>{{ factura.total }}</td>
+            <td>{{ invoice.total }}</td>
             <td>
-                {{factura.estado}}
+                {{invoice.estado}}
             </td>
             <td>
-                {{factura.fecha_factura}}
+                {{invoice.fecha_factura}}
             </td>
             <td>
-                {{factura.fecha_limite}}
+                {{invoice.fecha_limite}}
             </td>
             <td class="white-text">
 
-                {% if factura.cobrado == False %}
-                <a class="btn btn-primary btn-sm" href="{% url 'cobrar_factura' factura.id %}">Cobrar</a> {% endif %}
+                {% if invoice.cobrado == False %}
+                <a class="btn btn-primary btn-sm" href="{% url 'cobrar_factura' invoice.id %}">Cobrar</a> {% endif %}
 
-                <a href="{% url 'detalles_factura' factura.id %}" class="btn btn-info btn-sm" }>Detalles</a>
-                <a class="btn btn-danger btn-sm" href="{% url 'eliminar_factura' factura.id %}" onclick="return confirm('¿Estas seguro que de eliminar la factura?')">Eliminar</a>
+                <a href="{% url 'detalles_factura' invoice.id %}" class="btn btn-info btn-sm" }>Detalles</a>
+                <a class="btn btn-danger btn-sm" href="{% url 'eliminar_factura' invoice.id %}" onclick="return confirm('¿Estas seguro que de eliminar la invoice?')">Eliminar</a>
             </td>
         </tr>
         {% endfor %}

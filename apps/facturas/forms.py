@@ -6,42 +6,42 @@ from .models import *
 
 
 class FacturaForm(forms.ModelForm):
-    """Formulario de existencias en inventario"""
+    """Formulario de stocks en inventario"""
     class Meta:
-        model = Factura
-        fields = ('cliente', 'pago')
+        model = Invoice
+        fields = ('client', 'payment_type')
         widgets = {
-            'cliente': TextInput(attrs={'class': 'form-control'}),
-            'pago': Select(attrs={'class': 'form-control'}),
+            'client': TextInput(attrs={'class': 'form-control'}),
+            'payment_type': Select(attrs={'class': 'form-control'}),
         }
 
 
 class FacturaArticuloForm(forms.ModelForm):
-    """Añadir items a la factura"""
+    """Añadir items a la invoice"""
     class Meta:
-        model = FacturaArticulos
-        fields = ('articulo', 'cantidad')
+        model = InvoiceProducts
+        fields = ('product', 'quantity')
         widgets = {
-            'articulo': Select(attrs={'class': 'form-control'}),
-            'cantidad': NumberInput(attrs={'class': 'form-control',}),
+            'product': Select(attrs={'class': 'form-control'}),
+            'quantity': NumberInput(attrs={'class': 'form-control',}),
         }
 
 
 class ServicioRapidoForm(forms.ModelForm):
     """Formulario para los articulos"""
     class Meta:
-        model = FacturaServicios
+        model = InvoiceServices
 
-        fields = ['tipo_servicio', 'cantidad']
+        fields = ['type_service', 'quantity']
         widgets = {
-            'tipo_servicio': Select(attrs={'class': 'form-control',}),
-            'cantidad': NumberInput(attrs={
+            'type_service': Select(attrs={'class': 'form-control',}),
+            'quantity': NumberInput(attrs={
                 'class': 'form-control',
                 'id': 'cantidad_servicio'
                 }),
         }
         labels = {
-            'articulo': _('Articulo (Opcional)'),
-            'tipo_servicio': _('Tipo de Servicio realizado'),
+            'product': _('Articulo (Opcional)'),
+            'type_service': _('Tipo de Service realizado'),
         }
 

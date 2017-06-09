@@ -7,8 +7,8 @@ from django.utils.formats import localize
 
 import json
 from apps.caja.models import Caja
-from apps.facturas.models import Factura, FacturaItems
-from .models import Servicio, TipoServicio
+from apps.facturas.models import Invoice, InvoiceItems
+from .models import Service, TypeService
 from .forms import ServicioForm, TipoServicioForm
 
 
@@ -16,9 +16,9 @@ from .forms import ServicioForm, TipoServicioForm
 # Create your views here.
 def inicio(request):
     """Devuelve los servicios realizados"""
-    servicios = Servicio.objects.all().order_by('-fecha_servicio')
-    facturas = Factura.objects.filter(estado='cerrado')
-    tipos_sericios = TipoServicio.objects.all()
+    servicios = Service.objects.all().order_by('-created_at')
+    facturas = Invoice.objects.filter(status='cerrado')
+    tipos_sericios = TypeService.objects.all()
     return render(request, 'servicios/servicios.html',
                   {
                       'servicios': servicios,
@@ -38,26 +38,26 @@ def realizar_servicio(request):
         if hasattr(caja, 'saldo'):
             if form.is_valid():
                 servicio = form.save(commit=False)
-                servicio.usuario = request.user
+                servicio.user = request.user
 
-                # Asignar el precio del servicio segun el tipo de servicio
-                tiposervicio = TipoServicio.objects.get(
-                    id=servicio.tipo_servicio.id)
-                servicio.tipo_servicio = tiposervicio
+                # Asignar el price del servicio segun el tipo de servicio
+                tiposervicio = TypeService.objects.get(
+                    id=servicio.type_service.id)
+                servicio.type_service = tiposervicio
 
-                # Calcular el precio en base a la cantidad de producto
+                # Calcular el price en base a la quantity de producto
 
-                # Si no se escribe una cantidad se asiga un 1
-                if servicio.cantidad is None:
-                    servicio.cantidad = 1
+                # Si no se escribe una quantity se asiga un 1
+                if servicio.quantity is None:
+                    servicio.quantity = 1
 
-                servicio.precio = (tiposervicio.costo * servicio.cantidad)
-                servicio.descripcion = tiposervicio.nombre
+                servicio.price = (tiposervicio.price * servicio.quantity)
+                servicio.description = tiposervicio.name
 
                 servicio.save()
 
             # Guardar en caja el monto del servicio
-            caja.saldo = (caja.saldo + servicio.precio)
+            caja.saldo = (caja.saldo + servicio.price)
             caja.save()
 
             messages.success(request, "Se realizó el servicio")
@@ -78,13 +78,13 @@ def tipo_servicio_ajax(request):
     if request.method == "POST" and es_administrador(request.user):
         form = TipoServicioForm(request.POST)
         if form.is_valid():
-            tipo_servicio = form.save(commit=False)
-            tipo_servicio.save()
+            type_service = form.save(commit=False)
+            type_service.save()
 
-            response_data['result'] = "Se guardó el nuevo tipo de Servicio"
-            response_data['id'] = str(tipo_servicio.id)
-            response_data['nombre'] = str(tipo_servicio.nombre)
-            response_data['costo'] = str(tipo_servicio.costo)
+            response_data['result'] = "Se guardó el nuevo tipo de Service"
+            response_data['id'] = str(type_service.id)
+            response_data['name'] = str(type_service.name)
+            response_data['price'] = str(type_service.price)
             return HttpResponse(
                 json.dumps(response_data),
                 content_type="application/json")
@@ -100,34 +100,34 @@ def tipo_servicio_ajax(request):
             status=500)
 
 def agregar_a_factura(request, pk, fact):
-    """Agrega un servicio como item de factura"""
-    servicio = get_object_or_404(Servicio, id=pk)
-    factura = get_object_or_404(Factura, id=fact)
-    FacturaItems.objects.create(
-        factura=factura,
-        concepto=servicio.descripcion,
-        precio=servicio.precio
+    """Agrega un servicio como item de invoice"""
+    servicio = get_object_or_404(Service, id=pk)
+    invoice = get_object_or_404(Invoice, id=fact)
+    InvoiceItems.objects.create(
+        invoice=invoice,
+        details=servicio.description,
+        price=servicio.price
         )
-    factura.total += servicio.precio
-    factura.save()
+    invoice.total += servicio.price
+    invoice.save()
     return redirect('servicios_realizados')
 
 
 def servicio_activacion(request, pk):
-    tiposervicio = get_object_or_404(TipoServicio, pk=pk)
+    tiposervicio = get_object_or_404(TypeService, pk=pk)
     response_data = {}
     if request.method == "POST" and request.is_ajax():
-        tiposervicio.activo = True
+        tiposervicio.active = True
         tiposervicio.save()
-        response_data['result'] = "Se Activó el Servicio: " + tiposervicio.nombre
+        response_data['result'] = "Se Activó el Service: " + tiposervicio.name
         return HttpResponse(
             json.dumps(response_data),
             content_type="application/json"
         )
     elif request.method == "UPDATE" and request.is_ajax():
-        tiposervicio.activo = False
+        tiposervicio.active = False
         tiposervicio.save()
-        response_data['result'] = "Se desactivó el Servicio: " + tiposervicio.nombre
+        response_data['result'] = "Se desactivó el Service: " + tiposervicio.name
         return HttpResponse(
             json.dumps(response_data),
             content_type="application/json"

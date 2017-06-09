@@ -6,10 +6,10 @@
         <h5>Factura</h5>
     </div>
     <div class="col-xs-3">
-        <b class="">Cliente: </b> {{factura.cliente}}
+        <b class="">Cliente: </b> {{invoice.cliente}}
     </div>
     <div class="col-xs-3">
-        <b class="">Total: </b> <em id="total_factura">{{ factura.total }}</em>
+        <b class="">Total: </b> <em id="total_factura">{{ invoice.total }}</em>
     </div>
 </div>
 <hr>
@@ -26,7 +26,7 @@
             <ul id="lista-articulos" class="list-group" style="padding-top: 1.5%;"></ul>
             <hr>
             <div class="box gray box-form">
-                <form id="form_agregar_articulo" method="POST" class="hidden" action="{% url 'agregar_articulo_factura' factura.id %}" token="{{ csrf_token }}">
+                <form id="form_agregar_articulo" method="POST" class="hidden" action="{% url 'agregar_articulo_factura' invoice.id %}" token="{{ csrf_token }}">
                     <input type="number" class="hidden" id="id_articulo">
                     <strong>Art: </strong> <span id="nombre_articulo"></span> |
                     <strong>Precio: $</strong> <span id="precio_articulo"></span>
@@ -52,20 +52,20 @@
             <ul id="lista-servicios" class="list-group"></ul>
             <hr>
             <div class="box gray box-form">
-                <form id="agregar_servicio" class="post-form text-left hidden" action="{% url 'agregar_servicio_factura' factura.id %}" token="{{ csrf_token }}">
+                <form id="agregar_servicio" class="post-form text-left hidden" action="{% url 'agregar_servicio_factura' invoice.id %}" token="{{ csrf_token }}">
                     <input class="hidden" required="true" id="id_tipo_servicio">
                     <strong>Prod: </strong> <span id="nombre_producto"></span> |
                     <strong>Precio: $</strong> <span id="precio_producto"></span>
                     <hr>
                     <p>
                         <label for="cantidad_servicio">Cantidad:</label>
-                        <input type="number" name="cantidad" value="1" class="form-control" id="cantidad_servicio" required="">
+                        <input type="number" name="quantity" value="1" class="form-control" id="cantidad_servicio" required="">
                     </p>
                     <button type="submit" class="btn btn-success">Agregar</button>
                 </form>
             </div>
         </div>
-        <hr> {% if factura.pago == 'credito' %}
+        <hr> {% if invoice.pago == 'credito' %}
         <div class="box mdl-shadow--2dp box-form">
             <div>
                 <strong>Fecha Límite</strong>
@@ -73,11 +73,11 @@
             </div>
         </div>
         <hr> {% endif %}
-        <form id="cerrar-factura" action="{% url 'cobrar_factura' factura.id %}" method="POST" token="{{csrf_token}}">
+        <form id="cerrar-invoice" action="{% url 'cobrar_factura' invoice.id %}" method="POST" token="{{csrf_token}}">
             <button type="submit" class="btn btn-success btn-block">Cerrar Factura</button>
         </form>
         <br>
-        <form id="eliminar-factura" action="{% url 'eliminar_factura' factura.id %}" method="POST" token="{{csrf_token}}">
+        <form id="eliminar-invoice" action="{% url 'eliminar_factura' invoice.id %}" method="POST" token="{{csrf_token}}">
             <button type="submit" class="btn btn-warning btn-block">Eliminar Factura</button>
         </form>
     </div>
@@ -96,9 +96,9 @@
 
                 {% for item_servicio in item_servicios.all %}
                 <tr>
-                    <td>{{ item_servicio.tipo_servicio }}</td>
-                    <td>{{ item_servicio.tipo_servicio.costo }}</td>
-                    <td>{{ item_servicio.cantidad }}</td>
+                    <td>{{ item_servicio.type_service }}</td>
+                    <td>{{ item_servicio.type_service.price }}</td>
+                    <td>{{ item_servicio.quantity }}</td>
                     <td>{{ item_servicio|servicio_subtotal }}</td>
                     <td>
                         <a class="btn btn-danger btn-sm" href="{% url 'eliminar_servicios_factura' item_servicio.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>
@@ -108,7 +108,7 @@
                 <tr>
                     <td>{{ item_articulo.articulo}}</td>
                     <td>{{ item_articulo.articulo.precio_venta }}</td>
-                    <td>{{ item_articulo.cantidad }}</td>
+                    <td>{{ item_articulo.quantity }}</td>
                     <td>{{ item_articulo|articulo_subtotal }}</td>
                     <td>
                         <a class="btn btn-danger btn-sm" href="{% url 'eliminar_articulos_factura' item_articulo.id %}" onclick="return confirm('¿Estas seguro que de eliminar la item?')">Eliminar</a>

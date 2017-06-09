@@ -1,16 +1,16 @@
 
 from django import forms
 from django.forms import Select, NumberInput
-from apps.ventas.models import Venta
+from apps.ventas.models import Sale
 
 
 class VentaForm(forms.ModelForm):
     """Formulario para los articulos"""
     class Meta:
-        model = Venta
-        fields = ('articulo', 'cantidad', 'descuento')
+        model = Sale
+        fields = ('product', 'quantity', 'discount')
         widgets = {
-            'articulo': Select(attrs={'class': 'form-control'}),
-            'cantidad': NumberInput(attrs={'class': 'form-control'}),
-            'descuento': NumberInput(attrs={'class': 'form-control'}),
+            'product': Select(attrs={'class': 'form-control'}),
+            'quantity': NumberInput(attrs={'class': 'form-control'}),
+            'discount': NumberInput(attrs={'class': 'form-control'}),
         }

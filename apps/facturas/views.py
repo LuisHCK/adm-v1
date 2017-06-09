@@ -11,22 +11,22 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.caja.models import Caja
 from apps.common import validaciones
-from apps.inventario.models import Articulos, Inventario
-from apps.servicios.models import Servicio, TipoServicio
-from apps.ventas.models import Venta
+from apps.inventario.models import Product, Inventory
+from apps.servicios.models import Service, TypeService
+from apps.ventas.models import Sale
 from apps.cloud.views import send_to_api
 
 from .forms import FacturaArticuloForm, FacturaForm, ServicioRapidoForm
-from .models import Factura, FacturaArticulos, FacturaServicios
+from .models import Invoice, InvoiceProducts, InvoiceServices
 
 
 @login_required(login_url='login')  # redirect when user is not logged in
 def facturas(request):
     """Ver todas las facturas"""
-    lista_facturas = Factura.objects.filter(abierto=False)
-    lista_pendientes = Factura.objects.filter(abierto=False, pago='credito')
-    abiertas = Factura.objects.filter(abierto=True).count
-    lista_abiertas = Factura.objects.filter(abierto=True)
+    lista_facturas = Invoice.objects.filter(open=False)
+    lista_pendientes = Invoice.objects.filter(open=False, payment_type='credito')
+    abiertas = Invoice.objects.filter(open=True).count
+    lista_abiertas = Invoice.objects.filter(open=True)
     total_sin_pagar = total_facturas(lista_pendientes)
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
@@ -40,15 +40,15 @@ def facturas(request):
 
 def total_facturas(facturas):
     total = 0
-    for factura in facturas:
-        total += factura.total
+    for invoice in facturas:
+        total += invoice.total
     return total
 
 
 def facturas_pagadas(request):
     """Muestra las facturas que ya fueron pagadas"""
-    lista_facturas = Factura.objects.filter(cerrada=True)
-    pendientes = Factura.objects.filter(cerrada=False).count
+    lista_facturas = Invoice.objects.filter(cerrada=True)
+    pendientes = Invoice.objects.filter(cerrada=False).count
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'pendientes': pendientes,
@@ -57,8 +57,8 @@ def facturas_pagadas(request):
 
 def facturas_pendientes(request):
     """Muestra las facturas que ya fueron pagadas"""
-    lista_facturas = Factura.objects.filter(cerrada=False)
-    pendientes = Factura.objects.filter(cerrada=False).count
+    lista_facturas = Invoice.objects.filter(cerrada=False)
+    pendientes = Invoice.objects.filter(cerrada=False).count
     return render(request, 'facturas/facturas.html', {
         'facturas': lista_facturas,
         'pendientes': pendientes,
@@ -66,21 +66,21 @@ def facturas_pendientes(request):
 
 
 def nueva_factura(request):
-    """Crear un nuevo factura"""
+    """Crear un nuevo invoice"""
     response_data = {}
     if Caja.objects.count() > 0:
         if request.method == "POST":
             form = FacturaForm(request.POST)
             if form.is_valid():
                 print('form is valid :D')
-                factura = form.save(commit=False)
-                factura.usuario = request.user
-                factura.save()
+                invoice = form.save(commit=False)
+                invoice.user = request.user
+                invoice.save()
 
-                response_data['result'] = 'Se creó la factura.'
-                response_data['id'] = str(factura.pk)
-                response_data['cliente'] = str(factura.cliente)
-                response_data['pago'] = str(factura.pago)
+                response_data['result'] = 'Se creó la invoice.'
+                response_data['id'] = str(invoice.pk)
+                response_data['client'] = str(invoice.client)
+                response_data['payment_type'] = str(invoice.payment_type)
 
                 return HttpResponse(
                     json.dumps(response_data),
@@ -107,52 +107,52 @@ def nueva_factura(request):
 
 
 def cobrar_factura(request, pk):
-    """Realiza el cobro de la Factura"""
-    factura = get_object_or_404(Factura, pk=pk)
-    servicios_count = FacturaArticulos.objects.filter(factura=factura).count()
-    articulos_count = FacturaServicios.objects.filter(factura=factura).count()
-    items_count = (servicios_count + articulos_count)
+    """Realiza el cobro de la Invoice"""
+    invoice = get_object_or_404(Invoice, pk=pk)
+    service_count = InvoiceProducts.objects.filter(invoice=invoice).count()
+    articulos_count = InvoiceServices.objects.filter(invoice=invoice).count()
+    items_count = (service_count + articulos_count)
 
     if Caja.objects.count() > 0:
         if items_count < 1:
-            messages.error(request, "No se puede cobrar una factura sin items")
+            messages.error(request, "No se puede cobrar una invoice sin items")
             return redirect('facturas_pagadas')
         else:
             if request.method == "POST":
-                # Obtener todos los items articulos y servicios de la factura
-                articulos = FacturaArticulos.objects.filter(factura=factura)
-                servicios = FacturaServicios.objects.filter(factura=factura)
+                # Obtener todos los items articulos y servicios de la invoice
+                articulos = InvoiceProducts.objects.filter(invoice=invoice)
+                servicios = InvoiceServices.objects.filter(invoice=invoice)
 
-                # Realizar la venta de cada articulo
-                for articulo in articulos:
-                    Venta.objects.create(
-                        usuario=request.user,
-                        articulo=articulo.articulo,
-                        cantidad=articulo.cantidad,
-                        factura=factura,
-                        total=(articulo.cantidad * articulo.articulo.precio_venta))
-                    inventario = Inventario.objects.get(
-                        articulo=articulo.articulo)
-                    inventario.existencias -= articulo.cantidad
+                # Realizar la venta de cada product
+                for product in articulos:
+                    Sale.objects.create(
+                        user=request.user,
+                        product=product.product,
+                        quantity=product.quantity,
+                        invoice=invoice,
+                        total=(product.quantity * product.product.sale_price))
+                    inventario = Inventory.objects.get(
+                        product=product.product)
+                    inventario.stocks -= product.quantity
                     inventario.save()
 
                 # Realizar la venta de cada servicio
                 for servicio in servicios:
-                    Servicio.objects.create(
-                        usuario=request.user,
-                        descripcion=servicio.tipo_servicio.nombre,
-                        cantidad=servicio.cantidad,
-                        tipo_servicio=servicio.tipo_servicio,
-                        factura=factura,
-                        precio=(servicio.tipo_servicio.costo * servicio.cantidad))
+                    Service.objects.create(
+                        user=request.user,
+                        description=servicio.type_service.name,
+                        quantity=servicio.quantity,
+                        type_service=servicio.type_service,
+                        invoice=invoice,
+                        price=(servicio.type_service.price * servicio.quantity))
 
-                if factura.pago == 'contado':
+                if invoice.payment_type == 'contado':
                     # Guardar el monto en caja
                     caja = Caja.objects.last()
-                    caja.saldo += factura.total
+                    caja.saldo += invoice.total
                     caja.save()
-                    factura.estado = 'pagado'
-                    factura.save()
+                    invoice.status = 'pagado'
+                    invoice.save()
 
                     # Enviar los datos a la api
                     data = {
@@ -162,102 +162,102 @@ def cobrar_factura(request, pk):
                     }
                     send_to_api(data, 'cashes')
 
-                factura.abierto = False
-                factura.fecha_limite = request.POST.get('fecha_limite')
-                factura.save()
+                invoice.open = False
+                invoice.deadline = request.POST.get('deadline')
+                invoice.save()
 
                 # Enviar los datos a la api
                 credito = None
-                if factura.pago == 'credito':
+                if invoice.payment_type == 'credito':
                     credito = True
                 else:
                     credito = False
 
-                data = {"client": str(factura),
+                data = {"client": str(invoice),
                         "products": articulos_count,
-                        "services": servicios_count,
-                        "total": str(factura.total),
+                        "services": service_count,
+                        "total": str(invoice.total),
                         "credit": credito,
-                        "code": factura.id,
-                        "seller": str(factura.usuario),
-                        "date_open": str(factura.fecha_factura),
-                        "date_charged": str(factura.fecha_cobro)}
+                        "code": invoice.id,
+                        "seller": str(invoice.user),
+                        "date_open": str(invoice.created_at),
+                        "date_charged": str(invoice.pay_at)}
                 send_to_api(data, 'invoices')
 
                 return HttpResponse(
-                    json.dumps({'result': 'Se cerró la factura', 'id': str(factura.id)}),
+                    json.dumps({'result': 'Se cerró la invoice', 'id': str(invoice.id)}),
                     content_type="application/json")
     else:
         return HttpResponse(
-            json.dumps({'result': 'No se puede cerrar la factura'}),
+            json.dumps({'result': 'No se puede cerrar la invoice'}),
             content_type="application/json",
             status=500)
 
 
 def eliminar_factura(request, pk):
-    """Elimina una factura, solo si no ha sido cerrada"""
+    """Elimina una invoice, solo si no ha sido cerrada"""
     if request.method == 'POST':
-        factura = get_object_or_404(Factura, pk=pk)
+        invoice = get_object_or_404(Invoice, pk=pk)
 
-        if validaciones.es_administrador(request.user) and factura.cerrada is False:
-            factura.delete()
-            messages.success(request, "Se borró la factura")
+        if validaciones.es_administrador(request.user) and invoice.cerrada is False:
+            invoice.delete()
+            messages.success(request, "Se borró la invoice")
 
             return HttpResponse(
-                json.dumps({'result': 'Se eliminó la factura'}),
+                json.dumps({'result': 'Se eliminó la invoice'}),
                 content_type="application/json")
 
-        elif factura.usuario == request.user:
-            factura.delete()
-            messages.success(request, "Se borró la factura")
+        elif invoice.user == request.user:
+            invoice.delete()
+            messages.success(request, "Se borró la invoice")
 
             return HttpResponse(
-                json.dumps({'result': 'Se eliminó la factura'}),
+                json.dumps({'result': 'Se eliminó la invoice'}),
                 content_type="application/json")
 
         else:
             return HttpResponse(
-                json.dumps({'result': 'No se puede eliminar la factura'}),
+                json.dumps({'result': 'No se puede eliminar la invoice'}),
                 content_type="application/json",
                 status=500)
 
 
 
 def agregar_articulo(request, pk):
-    """Agrega items a la factura abierta"""
-    factura = get_object_or_404(Factura, pk=pk)
+    """Agrega items a la invoice abierta"""
+    invoice = get_object_or_404(Invoice, pk=pk)
     response_data = {}
     if request.method == "POST":
         form = FacturaArticuloForm(request.POST)
         if form.is_valid():
             item_articulos = form.save(commit=False)
-            item_articulos.factura = factura
+            item_articulos.invoice = invoice
 
             inventario = get_object_or_404(
-                Inventario, articulo=item_articulos.articulo)
-            if item_articulos.cantidad < inventario.existencias:
+                Inventory, product=item_articulos.product)
+            if item_articulos.quantity < inventario.stocks:
                 item_articulos.save()
 
-                # Suma al total de la factura
-                articulo = Articulos.objects.get(id=item_articulos.articulo.id)
-                factura.total += (articulo.precio_venta *
-                                  item_articulos.cantidad)
-                factura.save()
+                # Suma al total de la invoice
+                product = Product.objects.get(id=item_articulos.product.id)
+                invoice.total += (product.sale_price *
+                                  item_articulos.quantity)
+                invoice.save()
 
-                # Devolver un json con los datos del articulo
-                response_data['result'] = 'Se agregó el articulo'
+                # Devolver un json con los datos del product
+                response_data['result'] = 'Se agregó el product'
                 response_data['item_id'] = item_articulos.pk
-                response_data['articulo'] = str(item_articulos.articulo)
-                response_data['articulo_id'] = str(item_articulos.articulo.id)
-                response_data['precio'] = str(
-                    item_articulos.articulo.precio_venta)
-                response_data['cantidad'] = str(item_articulos.cantidad)
-                response_data['total_factura'] = str(factura.total)
+                response_data['product'] = str(item_articulos.product)
+                response_data['articulo_id'] = str(item_articulos.product.id)
+                response_data['price'] = str(
+                    item_articulos.product.sale_price)
+                response_data['quantity'] = str(item_articulos.quantity)
+                response_data['total_factura'] = str(invoice.total)
             else:
                 # Devolver una excepcion por que o hay suficientes articulos
                 response_data['result'] = 'No hay suficientes articulos para vender'
                 response_data['reason'] = 'Existencias disponibles: ' + \
-                    str(inventario.existencias)
+                    str(inventario.stocks)
                 return HttpResponse(
                     json.dumps(response_data),
                     content_type="application/json",
@@ -275,44 +275,44 @@ def agregar_articulo(request, pk):
         )
 
 
-def eliminar_articulos(request, articulo):
-    """Elimina un item de la factura"""
-    item = get_object_or_404(FacturaArticulos, pk=articulo)
+def eliminar_articulos(request, product):
+    """Elimina un item de la invoice"""
+    item = get_object_or_404(InvoiceProducts, pk=product)
     item.delete()
 
-    # Resta la cantidad del total
-    factura = Factura.objects.get(id=item.factura.id)
-    factura.total -= (item.articulo.precio_venta * item.cantidad)
-    factura.save()
+    # Resta la quantity del total
+    invoice = Invoice.objects.get(id=item.invoice.id)
+    invoice.total -= (item.product.sale_price * item.quantity)
+    invoice.save()
 
-    messages.success(request, "Se borró el item de la factura")
-    return redirect('detalles_factura', item.factura.id)
+    messages.success(request, "Se borró el item de la invoice")
+    return redirect('detalles_factura', item.invoice.id)
 
 
 def agregar_servicio(request, pk):
-    """Agrega items a la factura abierta"""
+    """Agrega items a la invoice abierta"""
     response_data = {}
-    factura = get_object_or_404(Factura, pk=pk)
+    invoice = get_object_or_404(Invoice, pk=pk)
     if request.method == "POST":
         form = ServicioRapidoForm(request.POST)
         if form.is_valid():
             item_servicio = form.save(commit=False)
-            item_servicio.factura = factura
+            item_servicio.invoice = invoice
             item_servicio.save()
 
-        # Suma al total de la factura
-        servicio = TipoServicio.objects.get(id=item_servicio.tipo_servicio.id)
-        factura.total += (servicio.costo * item_servicio.cantidad)
-        factura.save()
+        # Suma al total de la invoice
+        servicio = TypeService.objects.get(id=item_servicio.type_service.id)
+        invoice.total += (servicio.price * item_servicio.quantity)
+        invoice.save()
 
-        # Devolver un json con los datos del articulo
+        # Devolver un json con los datos del product
         response_data['result'] = 'Se agregó el '
         response_data['item_id'] = item_servicio.pk
-        response_data['servicio'] = str(item_servicio.tipo_servicio)
-        response_data['servicio_id'] = str(item_servicio.tipo_servicio.id)
-        response_data['costo'] = str(item_servicio.tipo_servicio.costo)
-        response_data['cantidad'] = str(item_servicio.cantidad)
-        response_data['total_factura'] = str(factura.total)
+        response_data['servicio'] = str(item_servicio.type_service)
+        response_data['servicio_id'] = str(item_servicio.type_service.id)
+        response_data['price'] = str(item_servicio.type_service.price)
+        response_data['quantity'] = str(item_servicio.quantity)
+        response_data['total_factura'] = str(invoice.total)
 
         return HttpResponse(
             json.dumps(response_data),
@@ -326,30 +326,30 @@ def agregar_servicio(request, pk):
 
 
 def eliminar_servicios(request, servicio):
-    """Elimina un item de la factura"""
-    item = get_object_or_404(FacturaServicios, pk=servicio)
+    """Elimina un item de la invoice"""
+    item = get_object_or_404(InvoiceServices, pk=servicio)
     item.delete()
 
-    # Resta la cantidad del total
-    factura = Factura.objects.get(id=item.factura.id)
-    factura.total -= (item.tipo_servicio.costo * item.cantidad)
-    factura.save()
+    # Resta la quantity del total
+    invoice = Invoice.objects.get(id=item.invoice.id)
+    invoice.total -= (item.type_service.price * item.quantity)
+    invoice.save()
 
-    messages.success(request, "Se borró el item de la factura")
-    return redirect('detalles_factura', item.factura.id)
+    messages.success(request, "Se borró el item de la invoice")
+    return redirect('detalles_factura', item.invoice.id)
 
 
 def detalles_factura(request, pk):
-    """Muestra los detalles de una factura"""
-    factura = get_object_or_404(Factura, pk=pk)
-    item_articulos = FacturaArticulos.objects.filter(factura=factura).all()
-    item_servicios = FacturaServicios.objects.filter(factura=factura).all()
+    """Muestra los detalles de una invoice"""
+    invoice = get_object_or_404(Invoice, pk=pk)
+    item_articulos = InvoiceProducts.objects.filter(invoice=invoice).all()
+    item_servicios = InvoiceServices.objects.filter(invoice=invoice).all()
     project_ver = settings.PROJECT_VERSION
 
     from apps.ajustes.models import Ajuste
 
     return render(request, 'facturas/detalles_factura.html', {
-        'factura': factura,
+        'invoice': invoice,
         'item_articulos': item_articulos,
         'item_servicios': item_servicios,
         'form_articulo': FacturaArticuloForm,
@@ -359,10 +359,10 @@ def detalles_factura(request, pk):
     })
 
 
-def buscar_articulo(request, codigo=None):
+def buscar_articulo(request, code=None):
     '''Busca los articulos en la base de datos'''
-    articulos = Articulos.objects.annotate(
-        search=SearchVector('codigo', 'nombre')).filter(search=codigo)
+    articulos = Product.objects.annotate(
+        search=SearchVector('code', 'name')).filter(search=code)
 
     # Serializar el objeto que contiene los resultados la busqueda
     arts = [obj.as_dict() for obj in articulos]
@@ -374,10 +374,10 @@ def buscar_articulo(request, codigo=None):
     # SERVICIOS
 
 
-def buscar_servicio(request, codigo):
-    '''Busca servicios por su codigo o nombre'''
-    tipos_servicios = TipoServicio.objects.annotate(
-        search=SearchVector('codigo', 'nombre')).filter(search__icontains=codigo)
+def buscar_servicio(request, code):
+    '''Busca servicios por su code o name'''
+    tipos_servicios = TypeService.objects.annotate(
+        search=SearchVector('code', 'name')).filter(search__icontains=code)
 
     serv = [obj.as_dict() for obj in tipos_servicios]
 
