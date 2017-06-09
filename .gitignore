@@ -44,3 +44,4 @@ assets/ # The directory set as STATIC_ROOT where Apache creates new static files
 media/*
 .vscode/*
 .directory
+staticfiles/*
