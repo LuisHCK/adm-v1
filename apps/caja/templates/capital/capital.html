@@ -2,7 +2,7 @@
 <script src="{% static 'js/charts.js' %}"></script>
 
 <br>
-<h3>Capital del negocio</h3><br>
+<h3>Money del negocio</h3><br>
 
 <div class="main-section center-xs">
     <br>
@@ -46,8 +46,8 @@ var myChart = new Chart(ctx, {
     type: 'line',
     data: {
         labels: [
-            {% for caja in caja %}
-                "{{caja.fecha_cierre | date:'l' }}",
+            {% for cash in cash %}
+                "{{cash.closing_date | date:'l' }}",
             {% endfor %}
         ],
         datasets: [{
@@ -68,8 +68,8 @@ var myChart = new Chart(ctx, {
             pointRadius: 5,
             pointHitRadius: 10,
             data: [
-            {% for caja in caja %}
-                "{{ caja.saldo }}",
+            {% for cash in cash %}
+                "{{ cash.balance }}",
             {% endfor %}
             ],
             backgroundColor: [

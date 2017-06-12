@@ -2,34 +2,34 @@
     <div class="card col-xs-6" style="width: 20rem;">
         <div style="background-color: #0097A7; padding: 10%" class="center-xs">
             <h5><b>SALDO</b></h5>
-            <h3 id="ultima_caja_saldo" style="color: white; font-size: 5rem"> ${{ ultima_caja.saldo }} </h3>
+            <h3 id="ultima_caja_saldo" style="color: white; font-size: 5rem"> ${{ ultima_caja.balance }} </h3>
         </div>
         <div class="card-block" id="botones">
 
         {% if ultima_caja.estado %}
-            <h4 class="card-title">Caja Activa</h4>
-            <button type="button" class="btn btn-outline-primary" id="cierre_caja">Cerrar Caja</button> 
+            <h4 class="card-title">Cash Activa</h4>
+            <button type="button" class="btn btn-outline-primary" id="cierre_caja">Cerrar Cash</button> 
 
             <div id="cierre_form" style="display: none">
-                <b>Saldo: </b> <span id="saldocaja">{{ultima_caja.saldo}}</span>
+                <b>Saldo: </b> <span id="saldocaja">{{ultima_caja.balance}}</span>
                 <form method="POST" action="{% url 'cierre_caja' %}" class="post-form text-left">{% csrf_token %} {{ form_retiro.as_p }}
                     <button style="width: 100%" type="submit" class="save btn btn-success">Retirar Dinero</button>
                 </form>
             </div>
             {% else %}
-            <h4 class="card-title text-muted">Caja Cerrada</h4>
+            <h4 class="card-title text-muted">Cash Cerrada</h4>
 
             {% if ultima_caja %}
             <a href="{% url 'apertura_ajax' ultima_caja.id %}" class="apertura_btn btn btn-primary">Abrir</a> {% else %}
             <!-- Boton muestra form -->
             <button class="btn btn-secondary" id="primera_apertura">
-                            Primera Apertura de Caja
+                            Primera Apertura de Cash
                         </button>
             <form id="form_primera_apertura" method="POST" style="display: none" action="{% url 'primera_apertura' %}" class="post-form text-left form-inline">{% csrf_token %} 
                 <label for="id_saldo">Saldo Inicial:</label> 
-                <input type="number" name="saldo" id="id_saldo_inicial" class="form-control" required="" step="0.01">
+                <input type="number" name="balance" id="id_saldo_inicial" class="form-control" required="" step="0.01">
                 
-                <button type="submit" class="save btn btn-success">Abrir Caja</button>
+                <button type="submit" class="save btn btn-success">Abrir Cash</button>
             </form>
             {% endif %}
         {% endif %}
@@ -49,12 +49,12 @@
         </tr>
     </thead>
     <tbody>
-        {% for caja in caja.all %}
+        {% for cash in cash.all %}
         <tr>
-            <th scope="row">{{ caja.id }}</th>
-            <td>{{ caja.saldo }}</td>
-            <td>{{ caja.fecha_apertura }}</td>
-            <td>{{ caja.fecha_cierre }}</td>
+            <th scope="row">{{ cash.id }}</th>
+            <td>{{ cash.balance }}</td>
+            <td>{{ cash.opening_date }}</td>
+            <td>{{ cash.closing_date }}</td>
             <td>
                 <a href="#" class="btn btn-outline-warning">Ver informe</a>
             </td>

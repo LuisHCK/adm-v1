@@ -6,117 +6,116 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils.formats import localize
 
-from apps.caja.models import Caja
+from apps.cash.models import Cash
 from apps.cloud.views import send_to_api
 from apps.inventory.models import Inventory
-from apps.servicios.forms import ServicioForm, TypeService
-from apps.servicios.models import Service
-from apps.ventas.models import Sale
+from apps.services.forms import ServiceForm, TypeService
+from apps.services.models import Service
+from apps.sales.models import Sale
 
-from .forms import VentaForm
+from .forms import SaleForm
 
 
 @login_required(login_url='login') #redirect when user is not logged in
 
-
 # Create your views here.
-def inicio(request):
-    """Retorna la pagina de inicio"""
-    venta = Sale.objects.all().order_by('-created_at')[:5]
-    servicios = Service.objects.all().order_by('-created_at')[:5]
-    caja = Caja.objects.last()
-    count_servicios = Service.objects.count()
-    # Realiza la venta de un artículo
+def Start(request):
+    """Retorna la pagina de Start"""
+    sale = Sale.objects.all().order_by('-created_at')[:5]
+    services = Service.objects.all().order_by('-created_at')[:5]
+    cash = Cash.objects.last()
+    count_services = Service.objects.count()
+    # Realiza la sale de un artículo
     if request.method == "POST":
-        form = VentaForm(request.POST)
+        form = SaleForm(request.POST)
         if form.is_valid():
-            venta = form.save(commit=False)
+            sale = form.save(commit=False)
 
-            # Registra el user que realiza la venta
-            venta.user = request.user
+            # Registra el user que realiza la sale
+            sale.user = request.user
 
-            # Calcula el total de la venta
-            venta.total = venta.product.sale_price * venta.quantity
+            # Calcula el total de la sale
+            sale.total = sale.product.sale_price * sale.quantity
 
-            # Guardar la venta realizada
-            venta.save()
+            # Guardar la sale realizada
+            sale.save()
 
             # Restar producto del inventory
-            inventory = Inventory.objects.get(product=venta.product)
-            inventory.stocks = (inventory.stocks - venta.quantity)
+            inventory = Inventory.objects.get(product=sale.product)
+            inventory.stocks = (inventory.stocks - sale.quantity)
             inventory.save()
 
-            # Guardar en Caja
-            caja = Caja.objects.last()
-            if caja:
-                caja.saldo += venta.total
-                caja.save()
+            # Guardar en Cash
+            cash = Cash.objects.last()
+            if cash:
+                cash.balance += sale.total
+                cash.save()
             else:
-                Caja.objects.create(saldo=venta.total, user=request.user)
+                Cash.objects.create(balance=sale.total, user=request.user)
 
-        return redirect('inicio')
+        return redirect('Start')
     else:
-        form = VentaForm()
-        form2 = ServicioForm()
+        form = SaleForm()
+        form2 = ServiceForm()
     return render(request, 'dashboard/dashboard.html',
-                  {'venta': venta, 'caja': caja, 'count_servicios': count_servicios,
-                   'servicios': servicios, 'form_venta': form, 'form_servicio': form2})
+                  {'sale': sale, 'cash': cash, 'count_services': count_services,
+                   'services': services, 'form_venta': form, 'form_service': form2})
 
-def venta_ajax(request):
-    """Realiza la venta de un artículo"""
+def SaleAjax(request):
+    """Realiza la sale de un artículo"""
     # Obtener las stocks actuales del producto
     response_data = {}
     if request.method == "POST":
-        form = VentaForm(request.POST)
+        form = SaleForm(request.POST)
         if form.is_valid():
-            venta = form.save(commit=False)
-            # Registra el user que realiza la venta
-            venta.user = request.user
-            # Calcula el total de la venta
-            venta.total = (venta.product.sale_price * venta.quantity)
-            venta.save()
+            sale = form.save(commit=False)
+            # Registra el user que realiza la sale
+            sale.user = request.user
+            # Calcula el total de la sale
+            sale.total = (sale.product.sale_price * sale.quantity)
+            sale.save()
 
         # Restar producto del inventory
-        inventory = Inventory.objects.get(product=venta.product)
+        inventory = Inventory.objects.get(product=sale.product)
 
         # Si la quantity es nula o menor a uno se le asigna un 1
-        if venta.quantity < 1:
-            venta.quantity = 1
+        if sale.quantity < 1:
+            sale.quantity = 1
 
-        inventory.stocks = (inventory.stocks - venta.quantity)
+        inventory.stocks = (inventory.stocks - sale.quantity)
         inventory.save()
 
-        # Guardar en Caja
-        caja = Caja.objects.last()
-        if caja:
-            caja.saldo = (caja.saldo + venta.total)
-            caja.save()
+        # Guardar en Cash
+        cash = Cash.objects.last()
+        if cash:
+            cash.balance = (cash.balance + sale.total)
+            cash.save()
         else:
-            Caja.objects.create(saldo=venta.total, user=request.user)
+            Cash.objects.create(balance=sale.total, user=request.user)
 
-        response_data['result'] = "Se realizó la venta!"
-        response_data['venta_id'] = str(venta.id)
-        response_data['product'] = str(venta.product)
-        response_data['quantity'] = str(venta.quantity)
-        response_data['sale_price'] = str(venta.product.sale_price)
-        response_data['purchase_price'] = str(venta.product.purchase_price)
-        response_data['total'] = str(venta.total)
-        response_data['vendedor'] = str(venta.user.username)
-        response_data['created_at'] = str(localize(venta.created_at))
+        response_data['result'] = "Se realizó la sale!"
+        response_data['sale_id'] = str(sale.id)
+        response_data['product'] = str(sale.product)
+        response_data['quantity'] = str(sale.quantity)
+        response_data['sale_price'] = str(sale.product.sale_price)
+        response_data['purchase_price'] = str(sale.product.purchase_price)
+        response_data['total'] = str(sale.total)
+        response_data['seller'] = str(sale.user.username)
+        response_data['created_at'] = str(localize(sale.created_at))
 
         # Enviar los datos a la api
         data_caja = {
-            'total': str(caja.saldo),
-            'date_open': str(caja.fecha_apertura),
-            'date_close': str(caja.fecha_cierre)
+            'total': str(cash.balance),
+            'date_open': str(cash.opening_date),
+            'date_close': str(cash.closing_date)
         }
         send_to_api(data_caja, 'cashes')
 
-        # Guardar datos de venta en la API
-        data = {"product": str(venta.product),
-                "price": str(venta.product.sale_price),
-                "quantity": str(venta.quantity),
-                "seller": str(venta.user)}
+        # Guardar datos de sale en la API
+        data = {"product": str(sale.product),
+                "price": str(sale.product.sale_price),
+                "quantity": str(sale.quantity),
+                "seller": str(sale.user)}
         send_to_api(data, 'sales')
 
         return HttpResponse(
@@ -124,67 +123,67 @@ def venta_ajax(request):
             content_type="application/json"
         )
     else:
-        form = VentaForm()
+        form = SaleForm()
         return HttpResponse(
             json.dumps({"nothing to see": "this isn't happening"}),
             content_type="application/json"
         )
 
-def servicio_ajax(request):
-    """Realiza un registro del servicio realizado"""
+def ServiceAjax(request):
+    """Realiza un registro del service realizado"""
     response_data = {}
 
     if request.method == "POST":
-        form = ServicioForm(request.POST)
+        form = ServiceForm(request.POST)
 
-        if Caja.objects.count() > 0:
+        if Cash.objects.count() > 0:
             if form.is_valid():
-                servicio = form.save(commit=False)
-                servicio.user = request.user
+                service = form.save(commit=False)
+                service.user = request.user
 
-                # Asignar el price del servicio segun el tipo de servicio
-                tiposervicio = TypeService.objects.get(
-                    id=servicio.type_service.id)
-                servicio.type_service = tiposervicio
+                # Asignar el price del service segun el tipo de service
+                service_type = TypeService.objects.get(
+                    id=service.type_service.id)
+                service.type_service = service_type
 
                 # Calcular el price en base a la quantity de producto
 
                 # Si no se escribe una quantity se asiga un 1
-                if servicio.quantity is None:
-                    servicio.quantity = 1
+                if service.quantity is None:
+                    service.quantity = 1
 
-                servicio.price = (tiposervicio.price * servicio.quantity)
-                servicio.description = tiposervicio.name
+                service.price = (service_type.price * service.quantity)
+                service.description = service_type.name
 
-                servicio.save()
+                service.save()
 
-            # Guardar en caja el monto del servicio
-            caja = Caja.objects.last()
-            caja.saldo = (caja.saldo + servicio.price)
-            caja.save()
+            # Guardar en cash el monto del service
+            cash = Cash.objects.last()
+            cash.balance = (cash.balance + service.price)
+            cash.save()
 
-            response_data['result'] = "Se realizó la venta!"
-            response_data['servicio_id'] = str(servicio.id)
-            response_data['servicio'] = str(servicio.type_service)
-            response_data['quantity'] = str(servicio.quantity)
-            response_data['precio_servicio'] = str(servicio.type_service.price)
-            response_data['total'] = str(servicio.price)
-            response_data['vendedor'] = str(servicio.user.username)
-            response_data['created_at'] = str(localize(servicio.created_at))
+            response_data['result'] = "Se realizó la sale!"
+            response_data['servicio_id'] = str(service.id)
+            response_data['service'] = str(service.type_service)
+            response_data['quantity'] = str(service.quantity)
+            response_data['precio_servicio'] = str(service.type_service.price)
+            response_data['total'] = str(service.price)
+            response_data['seller'] = str(service.user.username)
+            response_data['created_at'] = str(localize(service.created_at))
 
             # Enviar los datos a la api
             data_caja = {
-                'total': str(caja.saldo),
-                'date_open': str(caja.fecha_apertura),
-                'date_close': str(caja.fecha_cierre)
+                'total': str(cash.balance),
+                'date_open': str(cash.opening_date),
+                'date_close': str(cash.closing_date)
             }
             send_to_api(data_caja, 'cashes')
 
-            # Guardar datos de venta en la API
-            data = {"name": str(servicio),
-                    "price": str(servicio.type_service.price),
-                    "quantity": str(servicio.quantity),
-                    "seller": str(servicio.user)}
+            # Guardar datos de sale en la API
+            data = {"name": str(service),
+                    "price": str(service.type_service.price),
+                    "quantity": str(service.quantity),
+                    "seller": str(service.user)}
             send_to_api(data, 'services')
 
             return HttpResponse(
@@ -192,14 +191,14 @@ def servicio_ajax(request):
                 content_type="application/json"
             )
         else:
-            response_data['result'] = "Aun no se ha realizado la apertura de caja"
+            response_data['result'] = "Aun no se ha realizado la apertura de cash"
             return HttpResponse(
                 json.dumps(response_data),
                 content_type="application/json",
                 status=500,
             )
     else:
-        form = ServicioForm()
+        form = ServiceForm()
         return HttpResponse(
             json.dumps({"nothing to see": "this isn't happening"}),
             content_type="application/json"

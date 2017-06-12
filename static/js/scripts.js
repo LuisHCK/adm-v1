@@ -6,7 +6,7 @@ $(document).ready(function () {
         $("#form_servicio").toggle(500);
     });
     $("#abrirfact").click(function () {
-        $("#form_factura").toggle(500);
+        $("#invoice_form").toggle(500);
     });
     $("#primera_apertura").click(function () {
         $("#form_primera_apertura").toggle(500);

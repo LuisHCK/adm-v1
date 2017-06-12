@@ -2,18 +2,18 @@
  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% include 'messages.html' %}
 <div class="row">
-    {% include 'caja/navbar.html' with form_factura=form_factura %}
+    {% include 'cash/navbar.html' with invoice_form=invoice_form %}
   <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
-<p><h3>Estado de Caja</h3></p>
+<p><h3>Estado de Cash</h3></p>
 <hr>
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" data-toggle="tab" href="#inicio" role="tab">Inicio</a>
+    <a class="nav-link active" data-toggle="tab" href="#Start" role="tab">Inicio</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#egresos" role="tab">Egresos</a>
+    <a class="nav-link" data-toggle="tab" href="#egresos" role="tab">Expenses</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" data-toggle="tab" href="#configuracion" role="tab">Configuración</a>
@@ -22,17 +22,17 @@
 
 <!-- Tab panes -->
 <div class="tab-content">
-  <div class="tab-pane fade show active" id="inicio" role="tabpanel">
+  <div class="tab-pane fade show active" id="Start" role="tabpanel">
       <br>
-      {% include 'caja/parciales/resumen.html' %}
+      {% include 'cash/parciales/resumen.html' %}
   </div>
   <div class="tab-pane fade" id="egresos" role="tabpanel">
-      {% include 'caja/parciales/egresos.html' %}
+      {% include 'cash/parciales/egresos.html' %}
   </div>
   <div class="tab-pane fade" id="configuracion" role="tabpanel">...</div>
 </div>
 
-<div style="display: none" id="saldo_actual">{{ultima_caja.saldo}}</div>
+<div style="display: none" id="saldo_actual">{{ultima_caja.balance}}</div>
 
 <script>
     $('#id_saldo').on('input',function(e){
@@ -69,8 +69,8 @@
                 console.log(json);
                 toastr["success"]("Se realizó la apertura")
                 $("#botones").html(`
-                    <h4 class="card-title">Caja Activa</h4>
-                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Cerrar Caja</button>`);
+                    <h4 class="card-title">Cash Activa</h4>
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Cerrar Cash</button>`);
                 
                 //$('#list_fact_abiertas').prepend();
             },
@@ -82,7 +82,7 @@
         $.ajax({
             url: $(this).attr('action'),
             data: {
-                saldo: $('#id_saldo_inicial').val(),
+                balance: $('#id_saldo_inicial').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
@@ -96,11 +96,11 @@
 
             success: function (json) {
                 console.log(json);
-                toastr["success"]("Se realizó la venta");
+                toastr["success"]("Se realizó la sale");
                 $("#botones").html(`
-                    <h4 class="card-title">Caja Activa</h4>
-                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Cerrar Caja</button>`);
-                $('#ultima_caja_saldo').html('$'+json.saldo.toString());
+                    <h4 class="card-title">Cash Activa</h4>
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Cerrar Cash</button>`);
+                $('#ultima_caja_saldo').html('$'+json.balance.toString());
             },
         });
     });

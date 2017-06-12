@@ -26,10 +26,10 @@ urlpatterns = [
     #url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', admin.site.urls),
     url(r'^inventory/', include('apps.inventory.urls')),
-    url(r'^ventas/', include('apps.ventas.urls')),
-    url(r'^caja/', include('apps.caja.urls')),
-    url(r'^servicios/', include('apps.servicios.urls')),
-    url(r'^facturas/', include('apps.facturas.urls')),
-    url(r'^perfiles/', include('apps.perfiles.urls')),
-    url(r'^ajustes/', include('apps.ajustes.urls')),
+    url(r'^sales/', include('apps.sales.urls')),
+    url(r'^cash/', include('apps.cash.urls')),
+    url(r'^services/', include('apps.services.urls')),
+    url(r'^invoices/', include('apps.invoices.urls')),
+    url(r'^profiles/', include('apps.profiles.urls')),
+    url(r'^settings/', include('apps.settings.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

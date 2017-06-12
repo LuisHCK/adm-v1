@@ -2,7 +2,7 @@
     $("#form_vender").submit(function (event) {
         event.preventDefault();
         $.ajax({
-            url: "{% url 'venta_ajax' %}",
+            url: "{% url 'SaleAjax' %}",
             data: {
                 product: $('#id_articulo').val(),
                 quantity: $('#cantidad_articulo').val(),
@@ -14,7 +14,7 @@
             error: function (json) {
                 $('#id_articulo').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
-                console.log("Error al realizar la venta");
+                console.log("Error al realizar la sale");
                 toastr["eror"](json.message)                
             },
 
@@ -27,7 +27,7 @@
                 // Quitar las la ultima fila de la tabla
                 $('#tabla_ventas').prepend(
                     `<tr>
-                    <th scope="row">` + json.venta_id +
+                    <th scope="row">` + json.sale_id +
                     `</th>
                     <td>` + json.product +
                     `</td>
@@ -37,7 +37,7 @@
                     `</td>
                     <td>` + json.total +
                     `</td>
-                    <td>` + json.vendedor +
+                    <td>` + json.seller +
                     `</td>
                     <td>` + json.created_at +
                     `</td>
@@ -49,10 +49,10 @@
         });
     });
 
-    $("#form_servicio").submit(function (event) {
+    $("#form_service").submit(function (event) {
         event.preventDefault();
         $.ajax({
-            url: "{% url 'servicio_ajax' %}",
+            url: "{% url 'ServiceAjax' %}",
             data: {
                 type_service: $('#id_tipo_servicio').val(),
                 quantity: $('#cantidad_servicio').val(),
@@ -64,7 +64,7 @@
             error: function (json) {
                 $('#id_articulo').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
-                console.log("Error al realizar la venta");
+                console.log("Error al realizar la sale");
                 toastr["error"](json.responseJSON.result)
             },
 
@@ -78,11 +78,11 @@
                 $('#tabla_servicios').prepend(
                     `<tr>
                         <th scope="row">`+ json.servicio_id +`</th>
-                        <td>`+ json.servicio +`</td>
+                        <td>`+ json.service +`</td>
                         <td>`+ json.quantity +`</td>
                         <td>`+ json.precio_servicio +`</td>
                         <td>`+ json.total +`</td>
-                        <td>`+ json.vendedor +`</td>
+                        <td>`+ json.seller +`</td>
                         <td>`+ json.created_at +`</td>
                         <td><a href="#" class="btn btn-outline-primary">Detalles</a></td>
                         

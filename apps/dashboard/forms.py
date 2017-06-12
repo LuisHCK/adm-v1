@@ -2,12 +2,12 @@
 from django import forms
 from django.forms import NumberInput, Select
 from django.utils.translation import ugettext_lazy as _
-from apps.ventas.models import Sale
-from apps.servicios.models import Service
+from apps.sales.models import Sale
+from apps.services.models import Service
 
 
-class VentaForm(forms.ModelForm):
-    """Formulario para los articulos"""
+class SaleForm(forms.ModelForm):
+    """Formulario para los products"""
     class Meta:
         model = Sale
         fields = ['product', 'quantity']
@@ -17,8 +17,8 @@ class VentaForm(forms.ModelForm):
         }
 
 
-class ServicioForm(forms.ModelForm):
-    """Formulario para los articulos"""
+class ServiceForm(forms.ModelForm):
+    """Formulario para los products"""
     class Meta:
         model = Service
         fields = ['type_service', 'quantity']

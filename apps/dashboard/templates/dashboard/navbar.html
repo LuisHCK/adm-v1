@@ -12,13 +12,13 @@
         </form>
     </ul>
     <ul class="nav nav-pills flex-column div_hover">
-        <a id="servicio" class="nav-item nav-link nav-link-styled">
+        <a id="service" class="nav-item nav-link nav-link-styled">
             <i class="nav-icon fi-torso-business"></i>
             <p class="nav-item-text float-left">Service Rápido</p>
         </a>
-        <form id="form_servicio" style="display: none;" method="POST" action="{% url 'realizar_servicio' %}" class="post-form white-text">{% csrf_token %}
+        <form id="form_service" style="display: none;" method="POST" action="{% url 'PerformService' %}" class="post-form white-text">{% csrf_token %}
             <div class="form-group" style="padding: 5%">
-                {{ form_servicio.as_p }}
+                {{ form_service.as_p }}
                 <button type="submit" class="save btn btn-success">Listo</button>
             </div>
         </form>

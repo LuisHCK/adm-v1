@@ -1,0 +1,73 @@
+ {% include 'navbar.html' %}
+<ul class="nav nav-pills flex-column div_hover">
+    <a class="nav-item nav-link nav-link-styled">
+        <i class="nav-icon fi-folder"></i>
+        <p class="nav-item-text float-left">Ayuda</p>
+    </a>
+</ul>
+<ul class="nav nav-pills flex-column div_hover">
+    {% if user.is_authenticated %}
+    <a class="nav-item nav-link nav-link-styled" href="{% url 'logout' %}" onclick="return confirm('¿Estas seguro de cerrar la sesión?')">
+        <i class="nav-icon fi-lock"></i>
+        <p class="nav-item-text float-left">Cerrar Sesión</p>
+    </a>
+    {% else %}
+    <a class="nav-item nav-link nav-link-styled" href="{% url 'login' %}">Iniciar Sesión</a> {% endif %}
+
+</ul>
+</nav>
+
+<script>
+    $("#invoice_form").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "{% url 'NewInvoice' %}",
+            data: {
+                cliente: $('#id_cliente').val(),
+                pago: $('#id_pago').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            type: "POST",
+            // handle a successful response
+            error: function (json) {
+                console.log(json); // log the returned json to the console
+                toastr["error"](json.responseJSON.result)
+            },
+
+            success: function (json) {
+                $('#id_articulo').val('');
+                console.log(json);
+                toastr["success"](json.result)
+
+                // Quitar las la ultima fila de la tabla
+                var color;
+                var tipo;
+                if (json.contado != 'True') {
+                    color = 'danger'
+                    tipo = 'Crédito'
+                }
+                else{
+                    color = 'success'
+                    tipo = 'Contado'
+                }
+                    $('#list_fact_abiertas').prepend(
+                        `<a href="/invoices/` + json.id + `" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">`+ json.cliente + `
+                            <span class="badge badge-`+color+`">`+tipo+`</span>
+                        </h5>
+                        <small>hace unos segundos</small>
+                    </div>
+                    <p class="mb-1">
+                        <strong>Productos: </strong> 0 |
+                        <strong>Servicios: </strong> 0 |
+                        <strong>Total:</strong> 0.00
+                    </p>
+                </a>`
+                    );
+            },
+        });
+    });
+
+</script>

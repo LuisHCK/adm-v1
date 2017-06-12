@@ -1,0 +1,66 @@
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content container">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar un Artículo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <form action="{% url 'ajax_crear_articulo' %}" id="form_product" method="POST" class="post-form white-text" action="/inventory/product/ajax">
+                <input type="hidden" name="csrfmiddlewaretoken" value="HctOOmbVKAlB3afVvDIcmvY8RHTiVTNPm6wa7pitgoRMVD8v0IdEIiAwDmRvsCjL">
+                <div class="form-group row">
+                    <div class="col-xs-4 form-group">
+                        <label class="sr-only" for="id_name">Nombre:</label>
+                        <input placeholder="Nombre" type="text" name="name" id="id_name" maxlength="200" required="true" class="form-control">
+                    </div>
+
+                    <div class="col-xs-4 input-group form-group">
+                        <label class="sr-only" for="id_code">Codigo:</label>
+                        <input placeholder="Código" type="text" name="codigo" id="id_code" maxlength="20" required="true" class="form-control">
+                    </div>
+
+
+                    <div class="col-xs-4 form-group">
+                        <label class="sr-only" for="id_description">Descripcion:</label>
+                        <input placeholder="Descripción" type="text" name="description" id="id_description" class="form-control">
+                    </div>
+
+                    <div class="col-xs-4 form-group">
+                        <label class="sr-only" for="id_precio_compra">Precio compra:</label>
+                        <input placeholder="Precio de Compra" type="number" name="purchase_price" step="0.01" id="id_precio_compra" required="true"
+                            class="form-control">
+                    </div>
+
+                    <div class="col-xs-4 form-group">
+                        <label class="sr-only" for="id_sale_price">Precio 1:</label>
+                        <input placeholder="Precio 1" type="number" name="sale_price" step="0.01" id="id_sale_price" required="true" class="form-control">
+                    </div>
+
+                    <div class="col-xs-4 form-group">
+                        <label class="sr-only" for="id_precio_venta2">Precio 2:</label>
+                        <input placeholder="Precio 2" type="number" name="sale_price2" step="0.01" id="id_precio_venta2" required="" class="form-control">
+                    </div>
+
+                    <div class="col-xs-4 form-group">
+                        <label class="sr-only" for="id_precio_venta3">Precio 3:</label>
+                        <input placeholder="Precio 3" type="number" name="sale_price3" step="0.01" id="id_precio_venta3" required="" class="form-control">
+                    </div>
+
+                    <div class="col-xs-4 form-group">
+                        <label class="sr-only" for="id_iva">Iva:</label>
+                        <input placeholder="IVA(%)" type="number" name="iva" step="0.01" id="id_iva" required="true" class="form-control">
+                    </div>
+
+                    <div class="col-xs-4 form-group">
+                        <label class="sr-only" for="id_cantidad_inicial">Cantidad inicial:</label>
+                        <input placeholder="Cantidad Inicial" type="number" name="cantidad_inicial" step="0.01" id="id_cantidad_inicial" required="true"
+                            class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-success float-right">Añadir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

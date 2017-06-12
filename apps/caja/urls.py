@@ -3,7 +3,7 @@ from django.conf.urls import include, url
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.inicio, name='caja_inicio'),
+    url(r'^$', views.Start, name='caja_inicio'),
     url(r'^cierre/$', views.cierre_caja, name='cierre_caja'),
     url(r'^primera_apertura/$', views.primera_apertura, name='primera_apertura'),
     url(r'^apertura_ajax/(?P<pk>[0-9]+)/$', views.apertura_ajax, name='apertura_ajax'),

@@ -1,7 +1,7 @@
 ## Administra v.0.1.2a
 <img src="https://github.com/LuisHCK/administracion/raw/master/Administra.gif" width="100">
 
-Administra es un sistema básico de administración el cual facilita la gestión y seguimiento de inventario, ventas y facturación, a su vez cuenta con la posibilidad de registrar ventas de bienes no materiales como servicios.
+Administra es un sistema básico de administración el cual facilita la gestión y seguimiento de inventario, sales y facturación, a su vez cuenta con la posibilidad de registrar sales de bienes no materiales como servicios.
 
 Administra es una aplicación web, por lo cual es multi plataforma.
 

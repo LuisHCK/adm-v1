@@ -1,5 +1,5 @@
 
-def es_administrador(user):
+def is_admin(user):
     '''Verificar que el user es Administrador'''
     if user.groups.filter(name__in=['Administrador']) or user.is_staff:
         return True

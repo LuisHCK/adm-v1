@@ -3,13 +3,13 @@ import threading
 
 import requests
 
-from apps.ajustes.models import Ajuste
-from apps.caja.models import Caja
+from apps.settings.models import Settings
+from apps.cash.models import Cash
 
 
 def send_to_api(dictionary, model):
     # Obtener datos de la API
-    ajuste = Ajuste.objects.only("api_url", "api_key").get(pk=1)
+    ajuste = Settings.objects.only("api_url", "api_key").get(pk=1)
 
     # Obtener url y token
     api_url = ajuste.api_url + '/' + model

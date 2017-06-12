@@ -1,0 +1,61 @@
+<script>
+    $("#form_product").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            data: {
+                name: $('#id_name').val(),
+                code: $('#id_code').val(),
+                description: $('#id_description').val(),
+                purchase_price: $('#id_purchase_price').val(),
+                id_sale_price: $('#id_sale_price').val(),                
+                id_sale_price2: $('#id_sale_price2').val(),                
+                id_sale_price3: $('#id_sale_price3').val(),                
+                iva: $('#id_iva').val(),                
+                initial_ammount: $('#id_initial_ammount').val(),                
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            type: "POST",
+            // Mostar un mensaje de error 
+            error: function (json) {
+                $('#form_product')[0].reset();
+                console.log(json); // log the returned json to the console
+                toastr["error"]("No se pudo crear el artículo")
+            },
+
+            success: function (json) {
+                $('#form_product')[0].reset();
+                toastr["success"]("Se creó el artículo con éxito")
+
+                // Agregar el artículo a la tabla
+                $('#tabla_inventario').prepend(
+                    `<tr id="art_`+ json.product_id +`">
+                    <th scope="row">` + json.code +
+                    `</th>
+                    <td>` + json.name +
+                    `</td>
+                    <td>`+ json.initial_ammount +`</td>
+                    <td>`+ json.min_stocks +`</td>
+                    <td>`+ json.purchase_price +`</td>
+                    <td>`+ json.sale_price +`</td>
+                    <td>`+ json.sale_price2 +`</td>
+                    <td>`+ json.sale_price3 +`</td>
+                    <td>`+ json.iva +`</td>
+                    <td>
+
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <a href="/inventory/product/`+ json.product_id +`" class="btn btn-outline-primary" }>Detalles</a>
+                        <button class="btn btn-outline-danger del-btn" 
+                            dir="/inventory/eliminar/`+ json.product_id +`/">
+                            Eliminar
+                        </button>
+                        </div>
+
+                    </td>
+                </tr>`
+                );
+            },
+        });
+    });
+</script>
