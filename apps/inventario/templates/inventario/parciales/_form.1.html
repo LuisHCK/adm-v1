@@ -7,44 +7,44 @@
           <span aria-hidden="true">&times;</span>
         </button>
             </div>
-            <form action="{% url 'ajax_crear_articulo' %}" id="form_articulo" method="POST" class="post-form white-text" action="/inventario/articulo/ajax">
+            <form action="{% url 'ajax_crear_articulo' %}" id="form_articulo" method="POST" class="post-form white-text" action="/inventory/product/ajax">
                 <input type="hidden" name="csrfmiddlewaretoken" value="HctOOmbVKAlB3afVvDIcmvY8RHTiVTNPm6wa7pitgoRMVD8v0IdEIiAwDmRvsCjL">
                 <div class="form-group row">
                     <div class="col-xs-4 form-group">
-                        <label class="sr-only" for="id_nombre">Nombre:</label>
-                        <input placeholder="Nombre" type="text" name="nombre" id="id_nombre" maxlength="200" required="true" class="form-control">
+                        <label class="sr-only" for="id_name">Nombre:</label>
+                        <input placeholder="Nombre" type="text" name="name" id="id_name" maxlength="200" required="true" class="form-control">
                     </div>
 
                     <div class="col-xs-4 input-group form-group">
-                        <label class="sr-only" for="id_codigo">Codigo:</label>
-                        <input placeholder="Código" type="text" name="codigo" id="id_codigo" maxlength="20" required="true" class="form-control">
+                        <label class="sr-only" for="id_code">Codigo:</label>
+                        <input placeholder="Código" type="text" name="codigo" id="id_code" maxlength="20" required="true" class="form-control">
                     </div>
 
 
                     <div class="col-xs-4 form-group">
-                        <label class="sr-only" for="id_descripcion">Descripcion:</label>
-                        <input placeholder="Descripción" type="text" name="descripcion" id="id_descripcion" class="form-control">
+                        <label class="sr-only" for="id_description">Descripcion:</label>
+                        <input placeholder="Descripción" type="text" name="description" id="id_description" class="form-control">
                     </div>
 
                     <div class="col-xs-4 form-group">
                         <label class="sr-only" for="id_precio_compra">Precio compra:</label>
-                        <input placeholder="Precio de Compra" type="number" name="precio_compra" step="0.01" id="id_precio_compra" required="true"
+                        <input placeholder="Precio de Compra" type="number" name="purchase_price" step="0.01" id="id_precio_compra" required="true"
                             class="form-control">
                     </div>
 
                     <div class="col-xs-4 form-group">
-                        <label class="sr-only" for="id_precio_venta">Precio 1:</label>
-                        <input placeholder="Precio 1" type="number" name="precio_venta" step="0.01" id="id_precio_venta" required="true" class="form-control">
+                        <label class="sr-only" for="id_sale_price">Precio 1:</label>
+                        <input placeholder="Precio 1" type="number" name="sale_price" step="0.01" id="id_sale_price" required="true" class="form-control">
                     </div>
 
                     <div class="col-xs-4 form-group">
                         <label class="sr-only" for="id_precio_venta2">Precio 2:</label>
-                        <input placeholder="Precio 2" type="number" name="precio_venta2" step="0.01" id="id_precio_venta2" required="" class="form-control">
+                        <input placeholder="Precio 2" type="number" name="sale_price2" step="0.01" id="id_precio_venta2" required="" class="form-control">
                     </div>
 
                     <div class="col-xs-4 form-group">
                         <label class="sr-only" for="id_precio_venta3">Precio 3:</label>
-                        <input placeholder="Precio 3" type="number" name="precio_venta3" step="0.01" id="id_precio_venta3" required="" class="form-control">
+                        <input placeholder="Precio 3" type="number" name="sale_price3" step="0.01" id="id_precio_venta3" required="" class="form-control">
                     </div>
 
                     <div class="col-xs-4 form-group">

@@ -4,7 +4,7 @@
         $.ajax({
             url: "{% url 'venta_ajax' %}",
             data: {
-                articulo: $('#id_articulo').val(),
+                product: $('#id_articulo').val(),
                 quantity: $('#cantidad_articulo').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
@@ -29,11 +29,11 @@
                     `<tr>
                     <th scope="row">` + json.venta_id +
                     `</th>
-                    <td>` + json.articulo +
+                    <td>` + json.product +
                     `</td>
                     <td>` + json.quantity +
                     `</td>
-                    <td>` + json.precio_venta +
+                    <td>` + json.sale_price +
                     `</td>
                     <td>` + json.total +
                     `</td>

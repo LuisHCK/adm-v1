@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('servicios', '0005_auto_20170216_1812'),
-        ('inventario', '0002_auto_20170208_0521'),
+        ('inventory', '0002_auto_20170208_0521'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('cantidad', models.IntegerField(default=1)),
-                ('articulo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventario.Articulos')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.Articulos')),
                 ('factura', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='facturas.Factura')),
             ],
         ),

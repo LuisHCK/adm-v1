@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('inventario', '0002_auto_20170208_0521'),
+        ('inventory', '0002_auto_20170208_0521'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('cantidad', models.IntegerField()),
                 ('total', models.DecimalField(decimal_places=2, max_digits=6)),
                 ('fecha_venta', models.DateTimeField(default=django.utils.timezone.now)),
-                ('articulo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventario.Articulos')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.Articulos')),
                 ('usuario', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),

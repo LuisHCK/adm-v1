@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout, {'next_page': 'login'}, name='logout'),
     #url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', admin.site.urls),
-    url(r'^inventario/', include('apps.inventario.urls')),
+    url(r'^inventory/', include('apps.inventory.urls')),
     url(r'^ventas/', include('apps.ventas.urls')),
     url(r'^caja/', include('apps.caja.urls')),
     url(r'^servicios/', include('apps.servicios.urls')),

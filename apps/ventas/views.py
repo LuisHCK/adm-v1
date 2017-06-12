@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
 from apps.caja.models import Caja
-from apps.inventario.models import Inventory
+from apps.inventory.models import Inventory
 from apps.ventas.models import Sale
 from apps.cloud.views import send_to_api
 
@@ -14,7 +14,7 @@ from .forms import VentaForm
 
 
 @login_required(login_url='login')  # redirect when user is not logged in
-def ventas(request):
+def sales(request):
     """Retorna la pagina de inicio"""
     venta = Sale.objects.all().order_by('-created_at')
     return render(request, 'ventas/venta.html', {'venta': venta, 'form_venta': VentaForm})
@@ -34,15 +34,15 @@ def realizar_venta(request):
             venta.total = (venta.product.sale_price * venta.quantity)
             venta.save()
 
-        # Restar producto del inventario
-        inventario = Inventory.objects.get(product=venta.product)
+        # Restar producto del inventory
+        inventory = Inventory.objects.get(product=venta.product)
 
         # Si la quantity es nula o menor a uno se le asigna un 1
         if venta.quantity < 1:
             venta.quantity = 1
 
-        inventario.stocks = (inventario.stocks - venta.quantity)
-        inventario.save()
+        inventory.stocks = (inventory.stocks - venta.quantity)
+        inventory.save()
 
         # Guardar en Caja
         caja = Caja.objects.last()

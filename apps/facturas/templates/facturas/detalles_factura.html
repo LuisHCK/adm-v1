@@ -34,8 +34,8 @@
                         </tr>
                         {% endfor %} {% for item_articulo in item_articulos.all %}
                         <tr>
-                            <td>{{ item_articulo.articulo}}</td>
-                            <td>{{ item_articulo.articulo.precio_venta }}</td>
+                            <td>{{ item_articulo.product}}</td>
+                            <td>{{ item_articulo.product.sale_price }}</td>
                             <td>{{ item_articulo.quantity }}</td>
                             <td>{{ item_articulo|articulo_subtotal }}</td>                            
                         </tr>

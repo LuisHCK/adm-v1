@@ -20,7 +20,7 @@
             <form class="post-form text-left" id="buscar_articulo">
                 <div class="input-group">
                     <div id="borrar_codigo" class="input-group-addon clear-btn btn btn-danger"><i class="fi-x"></i></div>
-                    <input type="text" id="codigo_articulo" class="form-control" placeholder="Buscar por código o nombre">
+                    <input type="text" id="codigo_articulo" class="form-control" placeholder="Buscar por código o name">
                 </div>
             </form>
             <ul id="lista-articulos" class="list-group" style="padding-top: 1.5%;"></ul>
@@ -46,7 +46,7 @@
             <form class="post-form text-left" id="buscar_servicio">
                 <div class="input-group">
                     <div id="borrar_codigo_p" class="input-group-addon clear-btn btn btn-danger"><i class="fi-x"></i></div>
-                    <input type="text" id="codigo_producto" class="form-control" placeholder="Buscar por código o nombre">
+                    <input type="text" id="codigo_producto" class="form-control" placeholder="Buscar por código o name">
                 </div>
             </form>
             <ul id="lista-servicios" class="list-group"></ul>
@@ -106,8 +106,8 @@
                 </tr>
                 {% endfor %} {% for item_articulo in item_articulos.all %}
                 <tr>
-                    <td>{{ item_articulo.articulo}}</td>
-                    <td>{{ item_articulo.articulo.precio_venta }}</td>
+                    <td>{{ item_articulo.product}}</td>
+                    <td>{{ item_articulo.product.sale_price }}</td>
                     <td>{{ item_articulo.quantity }}</td>
                     <td>{{ item_articulo|articulo_subtotal }}</td>
                     <td>

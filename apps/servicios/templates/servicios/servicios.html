@@ -37,7 +37,7 @@
                         {% for servicio in servicios.all %}
                         <tr>
                             <th scope="row">{{ servicio.id }}</th>
-                            <td>{{ servicio.descripcion }}</td>
+                            <td>{{ servicio.description }}</td>
                             <td>{{ servicio.quantity }}</td>
                             <td>{{ servicio.price }}</td>
                             <td>{{ servicio.usuario.username }}</td>
@@ -57,11 +57,11 @@
                         {% csrf_token %} {% if next %}
                         <input type="hidden" name="next" value="{{ next }}" /> {% endif %}
 
-                        <label class="sr-only" for="id_nombre">Nombre del Service</label>
-                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_nombre" placeholder="Nombre del Service">
+                        <label class="sr-only" for="id_name">Nombre del Service</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_name" placeholder="Nombre del Service">
 
-                        <label class="sr-only" for="id_nombre">Código</label>
-                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_codigo" placeholder="Código">
+                        <label class="sr-only" for="id_name">Código</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_code" placeholder="Código">
 
                         <label class="sr-only" for="id_costo">Costo del servicio</label>
                         <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_costo" placeholder="Costo del Service">
@@ -77,20 +77,20 @@
                     <div class="col-md-4" style="margin-top: 1%;">
                         <div class="card mdl-shadow--2dp">
                             <div class="card-block">
-                                <h5 class="card-title">{{type_service.nombre}}</h5>
+                                <h5 class="card-title">{{type_service.name}}</h5>
 
                                 <div class="card-text" style="margin-left: 5%;">
                                     <h6 class="card-subtitle mb-2 text-muted">Precio del Service: </h6>
                                     <strong>{{type_service.price}}</strong>
                                 </div>
-                                {% if type_service.activo and request.user|has_group:"Administrador" %}
+                                {% if type_service.active and request.user|has_group:"Administrador" %}
                                     <a href="{% url 'servicio_activacion' type_service.pk %}" class="card-link servicio_activacion" activar="False">Desactivar Service</a> 
-                                {% elif type_service.activo %}
+                                {% elif type_service.active %}
                                     <div class="alert alert-success" role="alert" style="margin-bottom: 0px">
                                         El Service está disponible.
                                     </div>
 
-                                {% elif type_service.activo == False and request.user|has_group:"Administrador" %}
+                                {% elif type_service.active == False and request.user|has_group:"Administrador" %}
                                     <a href="{% url 'servicio_activacion' type_service.pk %}" class="card-link servicio_activacion" activar="True">Activar Service</a> 
                                 {% else %}
                                     <div class="alert alert-danger" role="alert" style="margin-bottom: 0px">
@@ -127,9 +127,9 @@
         $.ajax({
             url: $(this).attr('action'),
             data: {
-                nombre: $('#id_nombre').val(),
+                name: $('#id_name').val(),
                 price: $('#id_costo').val(),
-                codigo: $('#id_codigo').val(),
+                codigo: $('#id_code').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
@@ -152,7 +152,7 @@
                 $('#lista_tipos').prepend(
                     `<div class="card col-md-4" style="display: none;">
                         <div class="card-block">
-                            <h4 class="card-title">`+ json.nombre + `</h4>
+                            <h4 class="card-title">`+ json.name + `</h4>
 
                             <div class="card-text" style="margin-left: 5%;">
                                 <h6 class="card-subtitle mb-2 text-muted">Precio del Service: </h6>

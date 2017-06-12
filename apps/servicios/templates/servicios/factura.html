@@ -19,7 +19,7 @@
         {% for invoice in facturas.all %}
         <tr>
             <th scope="row">{{ invoice.id }}</th>
-            <td>{{ invoice.servicio.descripcion }}</td>
+            <td>{{ invoice.servicio.description }}</td>
             <td>{{ invoice.servicio.price }}</td>
             <td>{{ invoice.usuario.username }}</td>            
             <td>{{ invoice.fecha_factura }}</td>

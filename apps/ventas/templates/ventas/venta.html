@@ -26,9 +26,9 @@
         {% for venta in venta.all %}
         <tr>
             <th scope="row">{{ venta.id}}</th>
-            <td>{{ venta.articulo.nombre }}</td>
+            <td>{{ venta.product.name }}</td>
             <td>{{ venta.quantity }}</td>
-            <td>{{ venta.articulo.precio_venta }}</td>
+            <td>{{ venta.product.sale_price }}</td>
             <td>{{ venta.total }}</td>
             <td>{{ venta.created_at }}</td>
             <td>{{ venta.usuario.username }}</td>

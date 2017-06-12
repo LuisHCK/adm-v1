@@ -20,9 +20,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=200)),
-                ('descripcion', models.TextField()),
-                ('precio_compra', models.DecimalField(decimal_places=2, max_digits=6)),
-                ('precio_venta', models.DecimalField(decimal_places=2, max_digits=6)),
+                ('description', models.TextField()),
+                ('purchase_price', models.DecimalField(decimal_places=2, max_digits=6)),
+                ('sale_price', models.DecimalField(decimal_places=2, max_digits=6)),
                 ('fecha_creacion', models.DateTimeField(default=django.utils.timezone.now)),
             ],
         ),
@@ -30,9 +30,9 @@ class Migration(migrations.Migration):
             name='Inventario',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('existencias', models.IntegerField()),
+                ('stocks', models.IntegerField()),
                 ('fecha_creacion', models.DateTimeField(default=django.utils.timezone.now)),
-                ('articulo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventario.Articulos')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.Articulos')),
             ],
         ),
     ]

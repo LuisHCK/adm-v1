@@ -274,7 +274,7 @@
 		<header>
 			<h1>Factura</h1>
 			<address>
-				<p>{{empresa.nombre}}</p>
+				<p>{{empresa.name}}</p>
 				<p>{{empresa.direccion}}</p>
 				<p>{{empresa.telefono}}</p>
 			</address>
@@ -306,9 +306,9 @@
 				<tbody>
 					{% for item_articulo in item_articulos.all %}
 					<tr>
-						<td><span>{{item_articulo.articulo}}</span></td>
+						<td><span>{{item_articulo.product}}</span></td>
 						<td><span>{{item_articulo.quantity}}</span></td>
-						<td class="center-xs"><span data-prefix>$</span><span>{{item_articulo.articulo.precio_venta}}</span></td>
+						<td class="center-xs"><span data-prefix>$</span><span>{{item_articulo.product.sale_price}}</span></td>
 					</tr>
 					{% endfor %} {% for item_servicio in item_servicios.all %}
 					<tr>

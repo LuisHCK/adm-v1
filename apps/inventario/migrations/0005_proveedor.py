@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('inventario', '0004_auto_20170428_2251'),
+        ('inventory', '0004_auto_20170428_2251'),
     ]
 
     operations = [
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=100)),
                 ('codigo', models.CharField(max_length=20)),
-                ('descripcion', models.TextField()),
+                ('description', models.TextField()),
                 ('direccion', models.TextField()),
                 ('email', models.EmailField(max_length=254)),
                 ('telefono', models.CharField(max_length=30)),

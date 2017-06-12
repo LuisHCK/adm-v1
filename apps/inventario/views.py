@@ -2,81 +2,85 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 import json
-from apps.inventario.models import Inventory, Product
-from .forms import ArticuloForm, InventarioForm
+from apps.inventory.models import Inventory, Product
+from .forms import ProductForm, InventoryForm
 
 # Create your views here.
 
 
 @login_required(login_url='login')  # redirect when user is not logged in
-def lista_inventario(request):
-    """"Retorna la lista de los articulos en el inventario"""
-    inventario = Inventory.objects.select_related().all().order_by('-id').filter(active=True)
+def InventoryList(request):
+    """"Retorna la lista de los articulos en el inventory"""
+    inventory = Inventory.objects.select_related(
+    ).all().order_by('-id').filter(active=True)
     # calcular el total de dinero invertido en el Inventory
     total_inversion = 0
-    for inv in inventario:
+    for inv in inventory:
         total_inversion += (inv.product.sale_price * inv.stocks)
-    return render(request, 'inventario/lista_inventario.html', {
-        'inventario': inventario,
+    return render(request, 'inventory/InventoryList.html', {
+        'inventory': inventory,
         'total_inversion': total_inversion,
-        'form_articulo': ArticuloForm,
+        'form_articulo': ProductForm,
     })
 
 
-def detalles_articulo(request, pk):
+def ProductDetails(request, pk):
     """Ver detalles de un product"""
     product = get_object_or_404(Product, pk=pk)
     stocks = Inventory.objects.only('stocks').get(product=product)
-    form_art = ArticuloForm()
-    return render(request, 'inventario/detalles_articulo.html',
+    form_art = ProductForm()
+    return render(request, 'inventory/ProductDetails.html',
                   {
                       'product': product,
                       'stocks': stocks,
-                      'form': InventarioForm
+                      'form': InventoryForm
                   })
 
 
-def nuevo_articulo(request):
+def NewProduct(request):
     """Crear un nuevo product"""
     if request.method == "POST":
-        form = ArticuloForm(request.POST)
+        form = ProductForm(request.POST)
         if form.is_valid():
             product = form.save(commit=False)
             product.save()
-        # Agregar el producto al inventario
+        # Agregar el producto al inventory
         Inventory.objects.create(product=product, stocks=0)
         return redirect('ver_articulo', product.id)
     else:
-        form = ArticuloForm()
-    return render(request, 'inventario/editar_articulo.html', {'form': form})
+        form = ProductForm()
+    return render(request, 'inventory/editar_articulo.html', {'form': form})
 
 
-def nuevo_articulo_ajax(request):
+def NewProductAjax(request):
     """Crear un nuevo product"""
     response_data = {}
     if request.method == "POST":
-        form = ArticuloForm(request.POST)
+        form = ProductForm(request.POST)
         if form.is_valid():
             product = form.save(commit=False)
             product.save()
-        # Agregar el producto al inventario
-        Inventory.objects.create(product=product, stocks=product.initial_ammount)
-        # Obtener el artículo del inventario y asignarle un mínimo por defecto
-        inventario = Inventory.objects.get(product=product)
-        inventario.min_stocks = 1
-        inventario.save()
+        # Agregar el producto al inventory
+        Inventory.objects.create(
+            product=product, stocks=product.initial_ammount)
+        # Obtener el artículo del inventory y asignarle un mínimo por defecto
+        inventory = Inventory.objects.get(product=product)
+        inventory.min_stocks = 1
+        inventory.save()
 
-        response_data['result'] = "Se creó correctamente el artículo"
-        response_data['articulo_id'] = str(product.id)
-        response_data['name'] = str(product)
-        response_data['code'] = str(product.code)
-        response_data['sale_price'] = str(product.sale_price)
-        response_data['purchase_price'] = str(product.purchase_price)
-        response_data['sale_price2'] = str(product.sale_price2)
-        response_data['sale_price3'] = str(product.sale_price3)
-        response_data['iva'] = str(product.iva)
-        response_data['initial_ammount'] = str(product.initial_ammount)
-        response_data['min_stocks'] = str(inventario.min_stocks)
+        response_data = {
+            'result': "Se creó correctamente el artículo",
+            'articulo_id': str(product.id),
+            'name': str(product),
+            'code': str(product.code),
+            'sale_price': str(product.sale_price),
+            'purchase_price': str(product.purchase_price),
+            'sale_price2': str(product.sale_price2),
+            'sale_price3': str(product.sale_price3),
+            'iva': str(product.iva),
+            'initial_ammount': str(product.initial_ammount),
+            'min_stocks': str(inventory.min_stocks),
+        }
 
         return HttpResponse(
             json.dumps(response_data),
@@ -89,18 +93,18 @@ def nuevo_articulo_ajax(request):
         )
 
 
-def actualizar_existencias(request, pk):
-    """Edita las stocks de un product en el inventario"""
-    inventario = get_object_or_404(Inventory, pk=pk)
+def UpdateStock(request, pk):
+    """Edita las stocks de un product en el inventory"""
+    inventory = get_object_or_404(Inventory, pk=pk)
     response_data = {}
     if request.method == "POST":
-        inventario.stocks = request.POST['stocks']
-        inventario.min_stocks = request.POST['min_stocks']
-        inventario.active = request.POST['active']
-        inventario.save()
+        inventory.stocks = request.POST['stocks']
+        inventory.min_stocks = request.POST['min_stocks']
+        inventory.active = request.POST['active']
+        inventory.save()
 
-        response_data['result'] = str('El inventario se actualizó con éxito')
-        response_data['stocks'] = str(inventario.stocks)
+        response_data['result'] = str('El inventory se actualizó con éxito')
+        response_data['stocks'] = str(inventory.stocks)
         return HttpResponse(
             json.dumps(response_data),
             content_type="application/json"
@@ -112,7 +116,8 @@ def actualizar_existencias(request, pk):
             content_type="application/json"
         )
 
-def eliminar_articulo_ajax(request, pk):
+
+def DeleteProductAjax(request, pk):
     """Elimina un product"""
     response_data = {}
 

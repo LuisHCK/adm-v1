@@ -1,10 +1,10 @@
 
 from django import forms
 from django.forms import TextInput, NumberInput, Select, CheckboxInput
-from apps.inventario.models import Product, Inventory
+from apps.inventory.models import Product, Inventory
 
 
-class ArticuloForm(forms.ModelForm):
+class ProductForm(forms.ModelForm):
     """Formulario para los articulos"""
     class Meta:
         model = Product
@@ -36,8 +36,8 @@ class ArticuloForm(forms.ModelForm):
         }
 
 
-class InventarioForm(forms.ModelForm):
-    """Formulario de stocks en inventario"""
+class InventoryForm(forms.ModelForm):
+    """Formulario de stocks en inventory"""
     class Meta:
         model = Inventory
         fields = ('product', 'stocks', 'min_stocks', 'active')

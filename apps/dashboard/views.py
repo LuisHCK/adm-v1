@@ -8,7 +8,7 @@ from django.utils.formats import localize
 
 from apps.caja.models import Caja
 from apps.cloud.views import send_to_api
-from apps.inventario.models import Inventory
+from apps.inventory.models import Inventory
 from apps.servicios.forms import ServicioForm, TypeService
 from apps.servicios.models import Service
 from apps.ventas.models import Sale
@@ -41,10 +41,10 @@ def inicio(request):
             # Guardar la venta realizada
             venta.save()
 
-            # Restar producto del inventario
-            inventario = Inventory.objects.get(product=venta.product)
-            inventario.stocks = (inventario.stocks - venta.quantity)
-            inventario.save()
+            # Restar producto del inventory
+            inventory = Inventory.objects.get(product=venta.product)
+            inventory.stocks = (inventory.stocks - venta.quantity)
+            inventory.save()
 
             # Guardar en Caja
             caja = Caja.objects.last()
@@ -76,15 +76,15 @@ def venta_ajax(request):
             venta.total = (venta.product.sale_price * venta.quantity)
             venta.save()
 
-        # Restar producto del inventario
-        inventario = Inventory.objects.get(product=venta.product)
+        # Restar producto del inventory
+        inventory = Inventory.objects.get(product=venta.product)
 
         # Si la quantity es nula o menor a uno se le asigna un 1
         if venta.quantity < 1:
             venta.quantity = 1
 
-        inventario.stocks = (inventario.stocks - venta.quantity)
-        inventario.save()
+        inventory.stocks = (inventory.stocks - venta.quantity)
+        inventory.save()
 
         # Guardar en Caja
         caja = Caja.objects.last()

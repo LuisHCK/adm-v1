@@ -1,7 +1,7 @@
 
 from django.db import models
 from django.utils import timezone
-from apps.inventario.models import Product
+from apps.inventory.models import Product
 from apps.facturas.models import Invoice
 
 # Create your models here.

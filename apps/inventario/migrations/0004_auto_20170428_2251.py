@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('inventario', '0003_inventario_minimo_existencias'),
+        ('inventory', '0003_inventario_minimo_existencias'),
     ]
 
     operations = [
@@ -32,29 +32,29 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='articulos',
-            name='precio_venta2',
+            name='sale_price2',
             field=models.DecimalField(decimal_places=2, default=None, max_digits=7),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='articulos',
-            name='precio_venta3',
+            name='sale_price3',
             field=models.DecimalField(decimal_places=2, default=None, max_digits=7),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='inventario',
-            name='activo',
+            model_name='inventory',
+            name='active',
             field=models.BooleanField(default=True),
         ),
         migrations.AlterField(
             model_name='articulos',
-            name='precio_compra',
+            name='purchase_price',
             field=models.DecimalField(decimal_places=2, max_digits=7),
         ),
         migrations.AlterField(
             model_name='articulos',
-            name='precio_venta',
+            name='sale_price',
             field=models.DecimalField(decimal_places=2, max_digits=7),
         ),
     ]

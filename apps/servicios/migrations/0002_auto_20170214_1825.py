@@ -9,15 +9,15 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('inventario', '0002_auto_20170208_0521'),
+        ('inventory', '0002_auto_20170208_0521'),
         ('servicios', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='servicio',
-            name='articulo',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='inventario.Articulos'),
+            name='product',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='inventory.Articulos'),
         ),
         migrations.AddField(
             model_name='servicio',

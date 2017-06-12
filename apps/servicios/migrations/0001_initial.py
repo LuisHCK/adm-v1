@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             name='Servicio',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('descripcion', models.TextField(max_length=150)),
+                ('description', models.TextField(max_length=150)),
                 ('precio', models.DecimalField(decimal_places=2, max_digits=6)),
                 ('fecha_servicio', models.DateTimeField(default=django.utils.timezone.now)),
                 ('usuario', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),

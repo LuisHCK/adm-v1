@@ -69,9 +69,9 @@
         {% for venta in venta.all %}
         <tr>
           <th scope="row">{{ venta.id }}</th>
-          <td>{{ venta.articulo.nombre }}</td>
+          <td>{{ venta.product.name }}</td>
           <td>{{ venta.quantity }}</td>
-          <td>{{ venta.articulo.precio_venta }}</td>
+          <td>{{ venta.product.sale_price }}</td>
           <td>{{ venta.total }}</td>
           <td>{{ venta.usuario.username }}</td>
           <td>{{ venta.created_at }}</td>
@@ -98,7 +98,7 @@
         {% for servicio in servicios.all %}
         <tr>
           <th scope="row">{{ servicio.id }}</th>
-          <td>{{ servicio.descripcion }}</td>
+          <td>{{ servicio.description }}</td>
           <td>{{ servicio.quantity }}</td>
           <td>{{ servicio.type_service.price }}</td>
           <td>{{ servicio.price }}</td>

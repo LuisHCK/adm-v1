@@ -22,7 +22,7 @@
                 <form id="form" class="white box box-form" method="POST" action="{% url 'guardar_ajustes' %}">{% csrf_token %}
                     <div class="row">
                         <div class="col-xs-4">
-                            <div class="form-group">{{ form.nombre.label_tag}} {{ form.nombre }}</div>
+                            <div class="form-group">{{ form.name.label_tag}} {{ form.name }}</div>
                             <div class="form-group">{{ form.telefono.label_tag}} {{ form.telefono }}</div>
                             <div class="form-group">{{ form.tipo_factura.label_tag}} {{ form.tipo_factura }}</div>
                         </div>

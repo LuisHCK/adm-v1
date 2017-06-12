@@ -22,7 +22,7 @@
 <div class="ticket">
 
     <div class="center">
-        <b>{{empresa.nombre}}<br>{{empresa.direccion}}</b> <br>
+        <b>{{empresa.name}}<br>{{empresa.direccion}}</b> <br>
         <small>Tel: {{empresa.telefono}}</small>
         {% if empresa.ruc != None %}
             RUC: {{empresa.ruc}}
@@ -38,8 +38,8 @@ CLIENT: {{invoice}}
         ======== ARTICULOS ========
     </div>
     {% for item_articulo in item_articulos %}
-        CONCEP: {{item_articulo.articulo}} <br>
-        PREC: {{item_articulo.articulo.precio_venta}} <br>
+        CONCEP: {{item_articulo.product}} <br>
+        PREC: {{item_articulo.product.sale_price}} <br>
         CANT: {{item_articulo.quantity}} <br>
         <div class="center">-----</dic>
     {% endfor%}

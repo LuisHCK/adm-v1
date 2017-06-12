@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('inventario', '0002_auto_20170208_0521'),
+        ('inventory', '0002_auto_20170208_0521'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='inventario',
-            name='minimo_existencias',
+            model_name='inventory',
+            name='min_stocks',
             field=models.IntegerField(default=1),
         ),
     ]

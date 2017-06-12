@@ -19,6 +19,6 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name='servicio',
-            name='articulo',
+            name='product',
         ),
     ]

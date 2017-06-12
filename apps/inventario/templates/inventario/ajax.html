@@ -4,15 +4,15 @@
         $.ajax({
             url: $(this).attr('action'),
             data: {
-                nombre: $('#id_nombre').val(),
-                codigo: $('#id_codigo').val(),
-                descripcion: $('#id_descripcion').val(),
-                precio_compra: $('#id_precio_compra').val(),
-                precio_venta: $('#id_precio_venta').val(),                
-                precio_venta2: $('#id_precio_venta2').val(),                
-                precio_venta3: $('#id_precio_venta3').val(),                
+                name: $('#id_name').val(),
+                code: $('#id_code').val(),
+                description: $('#id_description').val(),
+                purchase_price: $('#id_purchase_price').val(),
+                id_sale_price: $('#id_sale_price').val(),                
+                id_sale_price2: $('#id_sale_price2').val(),                
+                id_sale_price3: $('#id_sale_price3').val(),                
                 iva: $('#id_iva').val(),                
-                cantidad_inicial: $('#id_cantidad_inicial').val(),                
+                initial_ammount: $('#id_initial_ammount').val(),                
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
@@ -30,24 +30,24 @@
 
                 // Agregar el artículo a la tabla
                 $('#tabla_inventario').prepend(
-                    `<tr id="art_`+ json.articulo_id +`">
-                    <th scope="row">` + json.codigo +
+                    `<tr id="art_`+ json.product_id +`">
+                    <th scope="row">` + json.code +
                     `</th>
-                    <td>` + json.nombre +
+                    <td>` + json.name +
                     `</td>
-                    <td>`+ json.cantidad_inicial +`</td>
-                    <td>`+ json.minimo_existencias +`</td>
-                    <td>`+ json.precio_compra +`</td>
-                    <td>`+ json.precio_venta +`</td>
-                    <td>`+ json.precio_venta2 +`</td>
-                    <td>`+ json.precio_venta3 +`</td>
+                    <td>`+ json.initial_ammount +`</td>
+                    <td>`+ json.min_stocks +`</td>
+                    <td>`+ json.purchase_price +`</td>
+                    <td>`+ json.sale_price +`</td>
+                    <td>`+ json.sale_price2 +`</td>
+                    <td>`+ json.sale_price3 +`</td>
                     <td>`+ json.iva +`</td>
                     <td>
 
                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                        <a href="/inventario/articulo/`+ json.articulo_id +`" class="btn btn-outline-primary" }>Detalles</a>
+                        <a href="/inventory/product/`+ json.product_id +`" class="btn btn-outline-primary" }>Detalles</a>
                         <button class="btn btn-outline-danger del-btn" 
-                            dir="/inventario/eliminar/`+ json.articulo_id +`/">
+                            dir="/inventory/eliminar/`+ json.product_id +`/">
                             Eliminar
                         </button>
                         </div>

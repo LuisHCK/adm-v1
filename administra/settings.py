@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'apps.dashboard',
-    'apps.inventario',
+    'apps.inventory',
     'apps.ventas',
     'apps.caja',
     'apps.servicios',

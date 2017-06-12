@@ -6,7 +6,7 @@ from .models import *
 
 
 class FacturaForm(forms.ModelForm):
-    """Formulario de stocks en inventario"""
+    """Formulario de stocks en inventory"""
     class Meta:
         model = Invoice
         fields = ('client', 'payment_type')

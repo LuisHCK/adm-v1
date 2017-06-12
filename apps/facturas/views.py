@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.caja.models import Caja
 from apps.common import validaciones
-from apps.inventario.models import Product, Inventory
+from apps.inventory.models import Product, Inventory
 from apps.servicios.models import Service, TypeService
 from apps.ventas.models import Sale
 from apps.cloud.views import send_to_api
@@ -131,10 +131,10 @@ def cobrar_factura(request, pk):
                         quantity=product.quantity,
                         invoice=invoice,
                         total=(product.quantity * product.product.sale_price))
-                    inventario = Inventory.objects.get(
+                    inventory = Inventory.objects.get(
                         product=product.product)
-                    inventario.stocks -= product.quantity
-                    inventario.save()
+                    inventory.stocks -= product.quantity
+                    inventory.save()
 
                 # Realizar la venta de cada servicio
                 for servicio in servicios:
@@ -233,9 +233,9 @@ def agregar_articulo(request, pk):
             item_articulos = form.save(commit=False)
             item_articulos.invoice = invoice
 
-            inventario = get_object_or_404(
+            inventory = get_object_or_404(
                 Inventory, product=item_articulos.product)
-            if item_articulos.quantity < inventario.stocks:
+            if item_articulos.quantity < inventory.stocks:
                 item_articulos.save()
 
                 # Suma al total de la invoice
@@ -257,7 +257,7 @@ def agregar_articulo(request, pk):
                 # Devolver una excepcion por que o hay suficientes articulos
                 response_data['result'] = 'No hay suficientes articulos para vender'
                 response_data['reason'] = 'Existencias disponibles: ' + \
-                    str(inventario.stocks)
+                    str(inventory.stocks)
                 return HttpResponse(
                     json.dumps(response_data),
                     content_type="application/json",
