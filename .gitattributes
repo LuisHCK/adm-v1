@@ -1,3 +1,6 @@
 static/* linguist-vendored
 administra/static/* linguist-vendored
 
+staticfiles/* linguist-vendored
+administra/staticfiles/* linguist-vendored
+
