@@ -4,7 +4,8 @@
             <i class="nav-icon fi-shopping-cart"></i>
             <p class="nav-item-text float-left">Sale Rápida</p>
         </a>
-        <form id="form_vender" style="display: none;" method="POST" class="post-form white-text">{% csrf_token %}
+        <form id="form_vender" style="display: none;" method="POST" 
+            class="post-form white-text" token="{{ csrf_token }}">
             <div class="form-group" style="padding: 5%">
                 {{ form_venta.as_p }}
                 <button type="submit" class="save btn btn-success btn-block">Listo</button>
@@ -41,9 +42,10 @@
         $.ajax({
             url: "{% url 'SaleAjax' %}",
             data: {
-                product: $('#id_articulo').val(),
-                quantity: $('#id_cantidad').val(),
-                csrfmiddlewaretoken: '{{ csrf_token }}'
+                product: $('#id_product').val(),
+                quantity: $('#id_quantity').val(),
+                discount: $('#id_discount').val(),
+                csrfmiddlewaretoken: $(this).attr('token')
             },
             dataType: "json",
             type: "POST",
@@ -57,7 +59,7 @@
             success: function (json) {
                 $('#id_articulo').val('');
                 console.log(json);
-                toastr["success"]("Se realizó la sale")
+                toastr["success"](json.result)
 
                 // Quitar las la ultima fila de la tabla
                 $('#tabla_ventas').prepend(
