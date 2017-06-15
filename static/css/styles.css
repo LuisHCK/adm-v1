@@ -153,3 +153,7 @@ th, td, tr{
   padding-left: 10px;
   font-size: 24px;
 }
+
+.black-text{
+  color: black;
+}

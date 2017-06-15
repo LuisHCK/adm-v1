@@ -19,20 +19,20 @@ $(document).ready(function () {
     });
 
     //GENERADOR AUTOMÁTICO DE CODIGOS DE PRODUCTO
-    $("#id_nombre").on("input", function (e) {
+    $("#id_name").on("input", function (e) {
 
         function randomString() {
             var length=3
             var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             var result = '';
-            var nombre_original = latinize($("#id_nombre").val());
+            var nombre_original = latinize($("#id_name").val());
             var nombre = nombre_original.substring(0,4).toUpperCase();
             
             for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
             return nombre +"-"+ result;
         }
         var rString = randomString();
-        $("#id_codigo").val(rString);
+        $("#id_code").val(rString);
     });
 });
 

@@ -17,7 +17,7 @@ def InventoryList(request):
     total_inversion = 0
     for inv in inventory:
         total_inversion += (inv.product.sale_price * inv.stocks)
-    return render(request, 'inventory/InventoryList.html', {
+    return render(request, 'inventory/lista_inventario.html', {
         'inventory': inventory,
         'total_inversion': total_inversion,
         'form_product': ProductForm,
@@ -26,13 +26,14 @@ def InventoryList(request):
 
 def ProductDetails(request, pk):
     """Ver detalles de un product"""
-    product = get_object_or_404(Product, pk=pk)
-    stocks = Inventory.objects.only('stocks').get(product=product)
-    return render(request, 'inventory/ProductDetails.html',
+    inventory = Inventory.objects.get(pk=pk)
+    product = Product.objects.get(pk=inventory.product_id)
+    form = InventoryForm(request.POST or None, instance=product)
+    return render(request, 'inventory/detalles_producto.html',
                   {
                       'product': product,
-                      'stocks': stocks,
-                      'form': InventoryForm
+                      'inventory': inventory,
+                      'form': form
                   })
 
 
@@ -45,7 +46,7 @@ def NewProduct(request):
             product.save()
         # Agregar el producto al inventory
         Inventory.objects.create(product=product, stocks=0)
-        return redirect('ver_articulo', product.id)
+        return redirect('ShowProduct', product.id)
     else:
         form = ProductForm()
     return render(request, 'inventory/editar_articulo.html', {'form': form})
@@ -59,6 +60,12 @@ def NewProductAjax(request):
         if form.is_valid():
             product = form.save(commit=False)
             product.save()
+        else:
+            return HttpResponse(
+                json.dumps({"result": "Form not valid"}),
+                content_type="application/json",
+                status=500
+            )
         # Agregar el producto al inventory
         Inventory.objects.create(
             product=product, stocks=product.initial_ammount)
@@ -91,6 +98,11 @@ def NewProductAjax(request):
             content_type="application/json"
         )
 
+def getBool(value):
+    if value == 'false':
+        return False
+    else:
+        return True
 
 def UpdateStock(request, pk):
     """Edita las stocks de un product en el inventory"""
@@ -99,11 +111,14 @@ def UpdateStock(request, pk):
     if request.method == "POST":
         inventory.stocks = request.POST['stocks']
         inventory.min_stocks = request.POST['min_stocks']
-        inventory.active = request.POST['active']
+        inventory.active = getBool(request.POST['active'])
         inventory.save()
 
-        response_data['result'] = str('El inventory se actualizó con éxito')
-        response_data['stocks'] = str(inventory.stocks)
+        response_data = {
+            'result': str('El inventory se actualizó con éxito'),
+            'stocks': str(inventory.stocks),
+            'active': str(inventory.active)
+        }
         return HttpResponse(
             json.dumps(response_data),
             content_type="application/json"
@@ -112,7 +127,8 @@ def UpdateStock(request, pk):
     else:
         return HttpResponse(
             json.dumps({"nothing to see": "this isn't happening"}),
-            content_type="application/json"
+            content_type="application/json",
+            status=500
         )
 
 
