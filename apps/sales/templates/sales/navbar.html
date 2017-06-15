@@ -5,7 +5,7 @@
             <p class="nav-item-text float-left">Sale Rápida</p>
         </a>
         <form id="form_vender" style="display: none;" method="POST" 
-            class="post-form white-text" token="{{ csrf_token }}">
+            class="post-form white-text" token="{{ csrf_token }}" action="{% url 'SaleAjax' %}">
             <div class="form-group" style="padding: 5%">
                 {{ form_venta.as_p }}
                 <button type="submit" class="save btn btn-success btn-block">Listo</button>
@@ -36,51 +36,5 @@
     </ul>
 </nav>
 
-<script>
-    $("#form_vender").submit(function (event) {
-        event.preventDefault();
-        $.ajax({
-            url: "{% url 'SaleAjax' %}",
-            data: {
-                product: $('#id_product').val(),
-                quantity: $('#id_quantity').val(),
-                discount: $('#id_discount').val(),
-                csrfmiddlewaretoken: $(this).attr('token')
-            },
-            dataType: "json",
-            type: "POST",
-            // handle a successful response
-            error: function (json) {
-                $('#id_articulo').val(''); // remove the value from the input
-                console.log(json); // log the returned json to the console
-                toastr["error"]("No se pudo realizar la sale")
-            },
-
-            success: function (json) {
-                $('#id_articulo').val('');
-                console.log(json);
-                toastr["success"](json.result)
-
-                // Quitar las la ultima fila de la tabla
-                $('#tabla_ventas').prepend(
-                    `<tr>
-                    <th scope="row">` + json.sale_id +
-                    `</th>
-                    <td>` + json.product +
-                    `</td>
-                    <td>` + json.quantity +
-                    `</td>
-                    <td>` + json.sale_price +
-                    `</td>
-                    <td>` + json.total +
-                    `</td>
-                    <td>` + json.seller +
-                    `</td>
-                    <td>` + json.created_at +
-                    `</td>
-                </tr>`
-                );
-            },
-        });
-    });
-</script>
+{% load staticfiles %}
+<script src="{% static 'js/sales_ajax.js' %}"></script>
