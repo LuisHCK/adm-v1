@@ -27,7 +27,7 @@
             <hr>
             <div class="box gray box-form">
                 <form id="form_agregar_articulo" method="POST" class="hidden" action="{% url 'agregar_articulo_factura' invoice.id %}" token="{{ csrf_token }}">
-                    <input type="number" class="hidden" id="id_articulo">
+                    <input type="number" class="hidden" id="id_product">
                     <strong>Art: </strong> <span id="nombre_articulo"></span> |
                     <strong>Precio: $</strong> <span id="precio_articulo"></span>
                     <hr>

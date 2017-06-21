@@ -309,7 +309,7 @@ def AddService(request, pk):
         response_data['result'] = 'Se agregó el '
         response_data['item_id'] = service_item.pk
         response_data['service'] = str(service_item.type_service)
-        response_data['servicio_id'] = str(service_item.type_service.id)
+        response_data['service_id'] = str(service_item.type_service.id)
         response_data['price'] = str(service_item.type_service.price)
         response_data['quantity'] = str(service_item.quantity)
         response_data['total_invoice'] = str(invoice.total)

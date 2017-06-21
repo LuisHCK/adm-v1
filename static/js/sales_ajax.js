@@ -12,13 +12,13 @@
             type: "POST",
             // handle a successful response
             error: function (json) {
-                $('#id_articulo').val(''); // remove the value from the input
+                $('#id_product').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
-                toastr["error"]("No se pudo realizar la sale")
+                toastr["error"](json.responseJSON.result)
             },
 
             success: function (json) {
-                $('#id_articulo').val('');
+                $('#id_product').val('');
                 console.log(json);
                 toastr["success"](json.result)
 

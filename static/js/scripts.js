@@ -2,8 +2,8 @@ $(document).ready(function () {
     $("#vender").click(function () {
         $("#form_vender").toggle(500);
     });
-    $("#servicio").click(function () {
-        $("#form_servicio").toggle(500);
+    $("#service").click(function () {
+        $("#form_service").toggle(500);
     });
     $("#abrirfact").click(function () {
         $("#invoice_form").toggle(500);

@@ -17,15 +17,15 @@ from .models import Cash, Money, Expenses
 def Start(request):
     """Muestra el status actual de la cash"""
     ult = Cash.objects.last()
-    ultima_caja_id = 0
+    last_cash_id = 0
 
     # Si la cash devuelve nulo evitar error en el template
     if ult:
-        ultima_caja_id = ult.id
+        last_cash_id = ult.id
     else:
-        ultima_caja_id = 0
+        last_cash_id = 0
 
-    cash = Cash.objects.all().order_by('-opening_date').exclude(id=ultima_caja_id)
+    cash = Cash.objects.all().order_by('-opening_date').exclude(id=last_cash_id)
     capital = Money.objects.first()
 
     egresos = object
@@ -39,7 +39,7 @@ def Start(request):
     return render(request, 'cash/cash.html',
                   {'cash': cash,
                    'form_retiro': CajaForm,
-                   'ultima_caja': ult,
+                   'last_cash': ult,
                    'capital': capital,
                    'form_egreso': EgresoForm,
                    'egresos': egresos
@@ -56,10 +56,12 @@ def primera_apertura(request):
             cash.user = request.user
             cash.save()
 
-            response_data['status'] = str(cash.status)
-            response_data['opening_date'] = str(cash.opening_date)
-            response_data['user'] = str(cash.user)
-            response_data['balance'] = str(cash.balance)
+            response_data= {
+                'status': str(cash.status)
+                'opening_date': str(cash.opening_date)
+                'user': str(cash.user)
+                'balance': str(cash.balance)
+            }
 
             return HttpResponse(
                 json.dumps(response_data),
@@ -136,7 +138,7 @@ def apertura_ajax(request, pk):
 
 def cierre_caja(request):
     """Cierra cash y se retira el dinero"""
-    ultima_caja = Cash.objects.last()
+    last_cash = Cash.objects.last()
     if request.method == "POST":
         form = CajaForm(request.POST)
         if form.is_valid():
@@ -150,11 +152,11 @@ def cierre_caja(request):
             saldo_retiro = cash.balance
 
             # Especifical el balance que quedará en cash luego del retiro
-            cash.balance = (ultima_caja.balance - cash.balance)
+            cash.balance = (last_cash.balance - cash.balance)
             cash.save()
 
             # Restar de la cash el monto de retiro
-            ultima_caja.balance = saldo_retiro
+            last_cash.balance = saldo_retiro
 
             # Guardar el monto extrído en el Money
             capital = Money.objects.last()
@@ -166,21 +168,21 @@ def cierre_caja(request):
 
 
             # Actualizar el balance en cash
-            ultima_caja.closing_date = str(timezone.now())
-            ultima_caja.save()
+            last_cash.closing_date = str(timezone.now())
+            last_cash.save()
             messages.success(request, "Se realizó el cierre con éxito.")
         return redirect('caja_inicio')
     else:
         messages.error(request, "Ocurrió un error al realizar el cierre de cash.")
         form = CajaForm()
-    return render(request, 'cash/saldo_form.html', {'form': form, 'ultima_caja': ultima_caja})
+    return render(request, 'cash/saldo_form.html', {'form': form, 'last_cash': last_cash})
 
 
 def estado_capital(request):
     """Mostar el capital con el que se cuenta"""
     capital = Money.objects.first()
-    ultima_caja = Cash.objects.last()
-    cash = Cash.objects.exclude(id=ultima_caja.id).order_by('opening_date')[:10]
+    last_cash = Cash.objects.last()
+    cash = Cash.objects.exclude(id=last_cash.id).order_by('opening_date')[:10]
     return render(request, 'capital/capital.html', {'capital': capital, 'cash': cash})
 
 
@@ -188,20 +190,37 @@ def estado_capital(request):
 def egreso_caja(request):
     '''Solicita un egreso de cash'''
     cash = Cash.objects.last()
+    response_data = {}
     if request.method == "POST" and cash.status:
         form = EgresoForm(request.POST)
         if form.is_valid():
-            egreso = form.save(commit=False)
-            egreso.user = request.user
-            egreso.cash = cash
-            egreso.save()
+            expense = form.save(commit=False)
+            expense.user = request.user
+            expense.cash = cash
+            expense.save()
 
-        messages.success(request, "Se realizó la solicitud de egreso")
-        return redirect('caja_inicio')
+            response_data = {
+                'result': str('Solicitud enviada'),
+                'quantity': str(expense.quantity),
+                'details': str(expense.details),
+                'user': str(expense.user),
+                'status': str(expense.status),
+                'approved_by': str(expense.approved_by),
+                'charged': str(expense.charged),
+                'expense_date': str(expense.expense_date),
+            }
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+            )
     else:
         messages.error(request, "El formulario no es válido")
         form = EgresoForm()
-    return redirect('caja_inicio')
+    return HttpResponse(
+                json.dumps({"result": "nothing to see"}),
+                content_type="application/json",
+                status=500
+            )
 
 
 def ver_egresos(request):

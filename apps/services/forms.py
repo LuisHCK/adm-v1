@@ -18,6 +18,7 @@ class ServiceForm(forms.ModelForm):
         labels = {
             'product': _('Articulo (Opcional)'),
             'type_service': _('Tipo de Service realizado'),
+            'quantity': _('Cantidad')
         }
 
 class TipoServicioForm(forms.ModelForm):

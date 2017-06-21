@@ -4,7 +4,7 @@
         $.ajax({
             url: "{% url 'SaleAjax' %}",
             data: {
-                product: $('#id_articulo').val(),
+                product: $('#id_product').val(),
                 quantity: $('#cantidad_articulo').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
@@ -12,14 +12,14 @@
             type: "POST",
             // handle a successful response
             error: function (json) {
-                $('#id_articulo').val(''); // remove the value from the input
+                $('#id_product').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
                 console.log("Error al realizar la sale");
                 toastr["eror"](json.message)                
             },
 
             success: function (json) {
-                $('#id_articulo').val('');
+                $('#id_product').val('');
                 console.log(json);
                 console.log("success");
                 toastr["success"](json.message)
@@ -49,48 +49,4 @@
         });
     });
 
-    $("#form_service").submit(function (event) {
-        event.preventDefault();
-        $.ajax({
-            url: "{% url 'ServiceAjax' %}",
-            data: {
-                type_service: $('#id_tipo_servicio').val(),
-                quantity: $('#cantidad_servicio').val(),
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            dataType: "json",
-            type: "POST",
-            // handle a successful response
-            error: function (json) {
-                $('#id_articulo').val(''); // remove the value from the input
-                console.log(json); // log the returned json to the console
-                console.log("Error al realizar la sale");
-                toastr["error"](json.responseJSON.result)
-            },
-
-            success: function (json) {
-                $('#id_articulo').val('');
-                console.log(json);
-                console.log("success");
-                toastr["success"](json.responseJSON.result)
-
-                // Quitar las la ultima fila de la tabla
-                $('#tabla_servicios').prepend(
-                    `<tr>
-                        <th scope="row">`+ json.servicio_id +`</th>
-                        <td>`+ json.service +`</td>
-                        <td>`+ json.quantity +`</td>
-                        <td>`+ json.precio_servicio +`</td>
-                        <td>`+ json.total +`</td>
-                        <td>`+ json.seller +`</td>
-                        <td>`+ json.created_at +`</td>
-                        <td><a href="#" class="btn btn-outline-primary">Detalles</a></td>
-                        
-                    </tr>`
-                );
-
-                $('#tabla_servicios tr:last').remove();
-            },
-        });
-    });
 </script>

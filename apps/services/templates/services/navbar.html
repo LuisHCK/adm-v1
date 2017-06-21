@@ -2,7 +2,7 @@
 <ul class="nav nav-pills flex-column div_hover">
     <a id="service" class="nav-item nav-link nav-link-styled">
         <i class="nav-icon fi-torso-business"></i>
-        <p class="nav-item-text float-left">Service Rápido</p>
+        <p class="nav-item-text float-left">Servicio Rápido</p>
     </a>
     <form id="form_service" style="display: none;" method="POST" action="{% url 'PerformService' %}" class="post-form white-text">{% csrf_token %}
         <div class="form-group" style="padding: 5%">
@@ -21,3 +21,5 @@
     <a class="nav-item nav-link nav-link-styled" href="{% url 'login' %}">Iniciar Sesión</a> {% endif %}
 </ul>
 </nav>
+{% load staticfiles %}
+<script src="{% static 'js/services_ajax.js' %}"></script>

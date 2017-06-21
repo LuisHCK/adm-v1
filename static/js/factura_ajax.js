@@ -4,7 +4,7 @@ $("form").submit(function(event) {
     $.ajax({
         url: "{% url 'agregar_articulo_factura' factura.id %}",
         data: {
-                articulo: $('#id_articulo').val(),
+                articulo: $('#id_product').val(),
                 cantidad: $('#id_cantidad').val(),
                 csrfmiddlewaretoken:'{{ csrf_token }}'
                },
@@ -12,13 +12,13 @@ $("form").submit(function(event) {
         type: "POST",
         // handle a successful response
         success : function(json) {
-            $('#id_articulo-text').val(''); // remove the value from the input
+            $('#id_product-text').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
             console.log("success"); // another sanity check
         },
 
          success : function(json) {
-            $('#id_articulo-text').val(''); // remove the value from the input
+            $('#id_product-text').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
             console.log("success"); // another sanity check
             $('#tabla_factura').prepend("<tr><td>"+json.articulo+"</td><td>"+json.precio+"</td><td>"+json.cantidad+"</td><td><a class='btn btn-danger' href='/facturas/articulos/"+json.item_id+"/eliminar/'>Eliminar</a></td></tr>");
@@ -75,7 +75,7 @@ $("#lista-articulos").on("click", ".list-group-item", function () {
     var precio = $(this).attr('precio')
 
     //Mandar los datos al formulario
-    $("#id_articulo").val(parseInt(id))
+    $("#id_product").val(parseInt(id))
     $("#nombre_articulo").html(nombre)
     $("#precio_articulo").html(precio)
     $("#form_agregar_articulo").fadeIn()
@@ -99,7 +99,7 @@ $("#form_agregar_articulo").on('submit', function (event) {
     $.ajax({
         url: $(this).attr('action'),
         data: {
-            articulo: $("#id_articulo").val(),
+            articulo: $("#id_product").val(),
             cantidad: $('#id_cantidad_articulo').val(),
             csrfmiddlewaretoken: $(this).attr('token')
         },
@@ -107,12 +107,12 @@ $("#form_agregar_articulo").on('submit', function (event) {
         type: "POST",
         // handle a successful response
         error: function (json) {
-            $('#id_articulo').val().replace('');
+            $('#id_product').val().replace('');
             console.log(json);
         },
 
         success: function (json) {
-            $('#id_articulo').val(''); // remove the value from the input
+            $('#id_product').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
             console.log("success"); // another sanity check
             $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>" + json.articulo +

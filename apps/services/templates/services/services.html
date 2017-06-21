@@ -1,8 +1,8 @@
-{% extends 'base.html' %} {% load staticfiles %} {% load permisos %} {% load ayudantes %} {% block content %}
+{% extends 'base.html' %} {% load permisos %} {% load ayudantes %} {% load staticfiles %} {% block content %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 <br> {% include 'messages.html' %}
 <div class="row">
-{% include 'services/navbar.html' %}
+    {% include 'services/navbar.html' %}
     <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
         <h4>Servicios</h4>
         <!-- Nav tabs -->
@@ -53,18 +53,18 @@
             <div class="tab-pane fade" id="profile" role="tabpanel">
                 <div class="box box-form">
                     <p><strong>Agregar un nuevo tipo de Service</strong></p>
-                    <form class="form-inline" id="form_tiposervicio" method="POST" action="{% url 'nuevo_tipo_servicio' %}" class="post-form white-text">
-                        {% csrf_token %} {% if next %}
+                    <form class="form-inline" id="form_type_service" action="{% url 'nuevo_tipo_servicio' %}" class="post-form white-text" token="{{ csrf_token }}">
+                        {% if next %}
                         <input type="hidden" name="next" value="{{ next }}" /> {% endif %}
 
                         <label class="sr-only" for="id_name">Nombre del Service</label>
                         <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_name" placeholder="Nombre del Service">
 
-                        <label class="sr-only" for="id_name">Código</label>
+                        <label class="sr-only" for="id_code">Código</label>
                         <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_code" placeholder="Código">
 
                         <label class="sr-only" for="id_costo">Costo del service</label>
-                        <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_costo" placeholder="Costo del Service">
+                        <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-0" id="id_price" placeholder="Costo del Service">
 
                         <button type="submit" class="save btn btn-success">Listo</button>
                     </form>
@@ -84,18 +84,16 @@
                                     <strong>{{type_service.price}}</strong>
                                 </div>
                                 {% if type_service.active and request.user|has_group:"Administrador" %}
-                                    <a href="{% url 'ActivateService' type_service.pk %}" class="card-link ActivateService" activar="False">Desactivar Service</a> 
-                                {% elif type_service.active %}
-                                    <div class="alert alert-success" role="alert" style="margin-bottom: 0px">
-                                        El Service está disponible.
-                                    </div>
+                                <a href="{% url 'ActivateService' type_service.pk %}" class="card-link ActivateService" activar="False" token="{{ csrf_token }}">Desactivar Service</a>                                {% elif type_service.active %}
+                                <div class="alert alert-success" role="alert" style="margin-bottom: 0px">
+                                    El Service está disponible.
+                                </div>
 
                                 {% elif type_service.active == False and request.user|has_group:"Administrador" %}
-                                    <a href="{% url 'ActivateService' type_service.pk %}" class="card-link ActivateService" activar="True">Activar Service</a> 
-                                {% else %}
-                                    <div class="alert alert-danger" role="alert" style="margin-bottom: 0px">
-                                        No está disponible el service.
-                                    </div>
+                                <a href="{% url 'ActivateService' type_service.pk %}" class="card-link ActivateService" activar="True" token="{{ csrf_token }}">Activar Service</a>                                {% else %}
+                                <div class="alert alert-danger" role="alert" style="margin-bottom: 0px">
+                                    No está disponible el service.
+                                </div>
                                 {% endif %}
 
                             </div>
@@ -122,28 +120,28 @@
 </div>
 
 <script>
-    $("#form_tiposervicio").submit(function (event) {
+    $("#form_type_service").submit(function (event) {
         event.preventDefault();
         $.ajax({
             url: $(this).attr('action'),
             data: {
                 name: $('#id_name').val(),
-                price: $('#id_costo').val(),
-                codigo: $('#id_code').val(),
-                csrfmiddlewaretoken: '{{ csrf_token }}'
+                price: $('#id_price').val(),
+                code: $('#id_code').val(),
+                csrfmiddlewaretoken: $(this).attr('token')
             },
             dataType: "json",
             type: "POST",
             // handle a successful response
             error: function (json) {
-                $('#form_tiposervicio').trigger("reset"); // remove the value from the input
+                $('#form_type_service').trigger("reset"); // remove the value from the input
                 console.log(json); // log the returned json to the console
                 console.log(json.responseText);
                 toastr["error"](json.responseJSON.result)
             },
 
             success: function (json) {
-                $('#form_tiposervicio').trigger("reset");
+                $('#form_type_service').trigger("reset");
                 console.log(json);
                 console.log("success");
                 toastr["success"](json.result)
@@ -152,11 +150,15 @@
                 $('#lista_tipos').prepend(
                     `<div class="card col-md-4" style="display: none;">
                         <div class="card-block">
-                            <h4 class="card-title">`+ json.name + `</h4>
+                            <h4 class="card-title">` +
+                    json.name +
+                    `</h4>
 
                             <div class="card-text" style="margin-left: 5%;">
                                 <h6 class="card-subtitle mb-2 text-muted">Precio del Service: </h6>
-                                <strong>`+ json.price + `</strong>
+                                <strong>` +
+                    json.price +
+                    `</strong>
                             </div>                            
                             <div class="alert alert-success" role="alert" style="margin-bottom: 0px">
                                 El Service está disponible.
@@ -168,40 +170,5 @@
             },
         });
     });
-$(document).ready(function () {
-    $(".ActivateService").click(function () {
-        event.preventDefault();
-        var link = $(this).attr('href');
-        var act = $(this).attr('activar');
-        var typ
-
-        if (act == "True"){
-            typ = "POST"
-        }
-        else{
-            typ = "UPDATE"
-        }
-
-        $.ajax({
-            type: typ,
-            dataType: "json",
-            url: link,
-            data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-                },
-            error: function (json) {
-                console.log(json); // log the returned json to the console
-                console.log("Error al realizar la sale");
-                toastr["error"](json.result)
-            },
-            success: function (json) {
-                console.log(json); // log the returned json to the console
-                console.log("Error al realizar la sale");
-                toastr["success"](json.result)
-            },
-        });
-    });
-});
 </script>
-
-{% include "dashboard/ajax.html" %} {% endblock %}
+{% endblock %}

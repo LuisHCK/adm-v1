@@ -2,7 +2,7 @@
     <ul class="nav nav-pills flex-column div_hover">
         <a id="vender" class="nav-item nav-link nav-link-styled">
             <i class="nav-icon fi-shopping-cart"></i>
-            <p class="nav-item-text float-left">Sale Rápida</p>
+            <p class="nav-item-text float-left">Venta Rápida</p>
         </a>
         <form id="form_vender" style="display: none;" method="POST" 
             class="post-form white-text" token="{{ csrf_token }}" action="{% url 'SaleAjax' %}">
@@ -12,18 +12,18 @@
             </div>
         </form>
     </ul>
-    <ul class="nav nav-pills flex-column div_hover">
+    <!--ul class="nav nav-pills flex-column div_hover">
         <a class="nav-item nav-link nav-link-styled">
             <i class="nav-icon fi-page-doc"></i>
             <p class="nav-item-text float-left">Reportes</p>
         </a>
     </ul>
-    <ul class="nav nav-pills flex-column div_hover">
+    <ul-- class="nav nav-pills flex-column div_hover">
         <a class="nav-item nav-link nav-link-styled">
             <i class="nav-icon fi-graph-trend"></i>
             <span class="nav-item-text float-left">Estadísticas</span>
         </a>
-    </ul>
+    </ul-->
     <ul class="nav nav-pills flex-column div_hover">
         {% if user.is_authenticated %}
         <a class="nav-item nav-link nav-link-styled" href="{% url 'logout' %}" onclick="return confirm('¿Estas seguro de cerrar la sesión?')">
