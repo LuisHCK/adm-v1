@@ -126,7 +126,7 @@ def OpenCashAjax(request, pk):
                 'status': str(cash_open.status),
                 'opening_date': str(cash_open.opening_date),
                 'user': str(cash_open.user),
-                'balance': str(cash_open.balance
+                'balance': str(cash_open.balance)
             }
 
             return HttpResponse(
