@@ -101,11 +101,11 @@ video.responsive-video {
   padding-top: 1%;
 }
 
-.card-egreso {
+.card-expense {
   max-width: 560px;
 }
 
-.card-egreso>form {
+.card-expense>form {
   margin: 3%;
 }
 

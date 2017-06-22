@@ -12,7 +12,7 @@
 
             <div id="cierre_form" style="display: none">
                 <b>Saldo: </b> <span id="saldocaja">{{ultima_caja.balance}}</span>
-                <form method="POST" action="{% url 'cierre_caja' %}" class="post-form text-left">{% csrf_token %} {{ form_retiro.as_p }}
+                <form method="POST" action="{% url 'CloseCash' %}" class="post-form text-left">{% csrf_token %} {{ form_retiro.as_p }}
                     <button style="width: 100%" type="submit" class="save btn btn-success">Retirar Dinero</button>
                 </form>
             </div>
@@ -20,12 +20,12 @@
             <h4 class="card-title text-muted">Cash Cerrada</h4>
 
             {% if ultima_caja %}
-            <a href="{% url 'apertura_ajax' ultima_caja.id %}" class="apertura_btn btn btn-primary">Abrir</a> {% else %}
+            <a href="{% url 'OpenCashAjax' ultima_caja.id %}" class="apertura_btn btn btn-primary">Abrir</a> {% else %}
             <!-- Boton muestra form -->
-            <button class="btn btn-secondary" id="primera_apertura">
+            <button class="btn btn-secondary" id="FirstCash">
                             Primera Apertura de Cash
                         </button>
-            <form id="form_primera_apertura" method="POST" style="display: none" action="{% url 'primera_apertura' %}" class="post-form text-left form-inline">{% csrf_token %} 
+            <form id="form_primera_apertura" method="POST" style="display: none" action="{% url 'FirstCash' %}" class="post-form text-left form-inline">{% csrf_token %} 
                 <label for="id_saldo">Saldo Inicial:</label> 
                 <input type="number" name="balance" id="id_saldo_inicial" class="form-control" required="" step="0.01">
                 

@@ -8,7 +8,7 @@ $(document).ready(function () {
     $("#abrirfact").click(function () {
         $("#invoice_form").toggle(500);
     });
-    $("#primera_apertura").click(function () {
+    $("#FirstCash").click(function () {
         $("#form_primera_apertura").toggle(500);
     });
     $("#cierre_caja").click(function () {

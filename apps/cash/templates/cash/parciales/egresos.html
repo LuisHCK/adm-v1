@@ -35,10 +35,10 @@
         <div id="egreso_{{egreso.id}}" style="display: none;" class="btn-group" role="group">
             
             {% if egreso.estado == 'estado_pendiente' %}
-                <button href="{% url 'aprovar_egreso' egreso.id 'estado_aprovado' %}" type="button" class="btn btn-success btn-accion">Aprovar</button>
-                <button href="{% url 'aprovar_egreso' egreso.id 'estado_denegado' %}" type="button" class="btn btn-danger btn-accion">Denegar</button>
+                <button href="{% url 'ApproveExpense' egreso.id 'estado_aprovado' %}" type="button" class="btn btn-success btn-accion">Aprovar</button>
+                <button href="{% url 'ApproveExpense' egreso.id 'estado_denegado' %}" type="button" class="btn btn-danger btn-accion">Denegar</button>
             {% elif egreso.estado == 'estado_aprovado' and egreso.charged == False %}
-                <button href="{% url 'cobrar_egreso' egreso.id %}" class="btn btn-primary btn-cobrar-egreso">Entregar Dinero</button>
+                <button href="{% url 'ChargeExpenses' egreso.id %}" class="btn btn-primary btn-cobrar-egreso">Entregar Dinero</button>
             {% else %}
                 <a href="{% url 'detalles_egreso' egreso.id %}" class="btn btn-info" target="_blank">Imprimir Comprovante</a>
             {% endif %}

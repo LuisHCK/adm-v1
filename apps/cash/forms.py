@@ -5,7 +5,7 @@ from .models import Cash, Expenses
 from django.utils.translation import ugettext_lazy as _
 
 
-class CajaForm(forms.ModelForm):
+class CashForm(forms.ModelForm):
     """Formulario para cirre y apartura de cash"""
     class Meta:
         model = Cash
