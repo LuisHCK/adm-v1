@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from apps.common import validaciones
 
-from .forms import CashForm, EgresoForm
+from .forms import CashForm, ExpenseForm
 from .models import Cash, Money, Expenses
 
 
@@ -40,7 +40,7 @@ def Start(request):
                    'form_retiro': CashForm,
                    'last_cash': ult,
                    'capital': capital,
-                   'form_egreso': EgresoForm,
+                   'form_egreso': ExpenseForm,
                    'egresos': egresos
                   })
 
@@ -197,7 +197,7 @@ def RequestExpense(request):
     cash=Cash.objects.last()
     response_data={}
     if request.method == "POST" and cash.status:
-        form=EgresoForm(request.POST)
+        form=ExpenseForm(request.POST)
         if form.is_valid():
             expense=form.save(commit=False)
             expense.user=request.user
@@ -220,7 +220,7 @@ def RequestExpense(request):
             )
     else:
         messages.error(request, "El formulario no es válido")
-        form=EgresoForm()
+        form=ExpenseForm()
     return HttpResponse(
                 json.dumps({"result": "nothing to see"}),
                 content_type="application/json",

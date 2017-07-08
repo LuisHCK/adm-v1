@@ -17,7 +17,7 @@ class CashForm(forms.ModelForm):
             'balance': _('Cantidad a a Retirar de cash'),
         }
 
-class EgresoForm(forms.ModelForm):
+class ExpenseForm(forms.ModelForm):
     """Formulario para el retiro de dinero de la cash abierta"""
     class Meta:
         model = Expenses

@@ -27,7 +27,7 @@
                         </button>
             <form id="form_primera_apertura" method="POST" style="display: none" action="{% url 'FirstCash' %}" class="post-form text-left form-inline">{% csrf_token %} 
                 <label for="id_saldo">Saldo Inicial:</label> 
-                <input type="number" name="balance" id="id_saldo_inicial" class="form-control" required="" step="0.01">
+                <input type="number" name="balance" id="id_saldo_inicial" class="form-control" required="" step="0.1">
                 
                 <button type="submit" class="save btn btn-success">Abrir Cash</button>
             </form>
