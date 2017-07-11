@@ -348,7 +348,7 @@ def InvoiceDetails(request, pk):
 
     from apps.settings.models import Settings
 
-    return render(request, 'invoices/InvoiceDetails.html', {
+    return render(request, 'invoices/invoice_details.html', {
         'invoice': invoice,
         'product_items': product_items,
         'service_items': service_items,

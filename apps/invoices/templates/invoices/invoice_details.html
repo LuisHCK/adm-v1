@@ -1,6 +1,6 @@
  {% extends 'base.html' %} {% load staticfiles %} {% block content %}
  {% load ayudantes %}
-<br> {% include 'messages.html' %} {% if invoice.abierto is True %} {% include 'invoices/parciales/agregando.html' %}
+<br> {% include 'messages.html' %} {% if invoice.open is True %} {% include 'invoices/parciales/agregando.html' %}
 <script src="{% static 'js/factura_ajax.js' %}"></script>
 {% else %}
 <!--Pantalla para invoice closed-->
