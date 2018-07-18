@@ -25,7 +25,7 @@ Administra es una aplicación web, por lo cual es multi plataforma.
 
  ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/2.png)
 
- ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/2.png)
+ ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/3.png)
 
- ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/2.png)
+ ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/4.png)
  
