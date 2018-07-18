@@ -21,11 +21,11 @@ Administra es una aplicación web, por lo cual es multi plataforma.
  - Firefox 40
 
 **Capturas de pantalla**
- ![enter image description here](https://dl.dropboxusercontent.com/u/98068157/administra/1.png)
+ ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/1.png)
 
- ![enter image description here](https://dl.dropboxusercontent.com/u/98068157/administra/2.png)
+ ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/2.png)
 
- ![enter image description here](https://dl.dropboxusercontent.com/u/98068157/administra/3.png)
+ ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/2.png)
 
- ![enter image description here](https://dl.dropboxusercontent.com/u/98068157/administra/4.png)
+ ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/2.png)
  
