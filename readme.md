@@ -14,11 +14,11 @@ Administra es una aplicación web, por lo cual es multi plataforma.
  - Ngnix 1.10.3
  
 **Para el lado del cliente se recomienda cualquiera de los navegadores:**
- - Google Chrome 40 o superior
+ - Google Chrome
  - Internet Explorer 11 
- - Opera 40
+ - Opera
  - Microsoft Edge
- - Firefox 40
+ - Firefox
 
 **Capturas de pantalla**
  ![ADM Screenshots](https://raw.githubusercontent.com/LuisHCK/administracion/master/screenshots/1.png)
