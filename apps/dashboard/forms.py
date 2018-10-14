@@ -2,31 +2,31 @@
 from django import forms
 from django.forms import NumberInput, Select
 from django.utils.translation import ugettext_lazy as _
-from apps.ventas.models import Venta
-from apps.servicios.models import Servicio
+from apps.sales.models import Sale
+from apps.services.models import Service
 
 
-class VentaForm(forms.ModelForm):
-    """Formulario para los articulos"""
+class SaleForm(forms.ModelForm):
+    """Formulario para los products"""
     class Meta:
-        model = Venta
-        fields = ['articulo', 'cantidad']
+        model = Sale
+        fields = ['product', 'quantity']
         widgets = {
-            'articulo': Select(attrs={'class': 'form-control'}),
-            'cantidad': NumberInput(attrs={'class': 'form-control', 'id': 'cantidad_articulo'}),
+            'product': Select(attrs={'class': 'form-control'}),
+            'quantity': NumberInput(attrs={'class': 'form-control', 'id': 'cantidad_articulo'}),
         }
 
 
-class ServicioForm(forms.ModelForm):
-    """Formulario para los articulos"""
+class ServiceForm(forms.ModelForm):
+    """Formulario para los products"""
     class Meta:
-        model = Servicio
-        fields = ['tipo_servicio', 'cantidad']
+        model = Service
+        fields = ['type_service', 'quantity']
         widgets = {
-            'tipo_servicio': Select(attrs={'class': 'form-control'}),
-            'cantidad': NumberInput(attrs={'class': 'form-control'}),
+            'type_service': Select(attrs={'class': 'form-control'}),
+            'quantity': NumberInput(attrs={'class': 'form-control'}),
         }
         labels = {
-            'articulo': _('Articulo (Opcional)'),
-            'tipo_servicio': _('Tipo de Servicio realizado'),
+            'product': _('Articulo (Opcional)'),
+            'type_service': _('Tipo de Service realizado'),
         }

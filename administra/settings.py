@@ -28,7 +28,7 @@ SECRET_KEY = 'o_wzta9ye#oj!96x!vefc(nvd^s1#9id0=ohofm++u%2o^#+54'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.12', 'localhost', '127.0.0.1', 'administra.admin', "admbeta.herokuapp.com"]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -42,15 +42,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'apps.dashboard',
-    'apps.inventario',
-    'apps.ventas',
-    'apps.caja',
-    'apps.servicios',
-    'apps.facturas',
-    'apps.perfiles',
+    'apps.inventory',
+    'apps.sales',
+    'apps.cash',
+    'apps.services',
+    'apps.invoices',
+    'apps.profiles',
     'apps.common',
     'apps.notificaciones',
-    'apps.ajustes',
+    'apps.settings',
 ]
 
 MIDDLEWARE = [
@@ -167,6 +167,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-LOGIN_REDIRECT_URL = 'inicio'
+LOGIN_REDIRECT_URL = 'Start'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR

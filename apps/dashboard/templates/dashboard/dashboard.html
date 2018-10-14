@@ -12,12 +12,12 @@
           <div class="card" style="width: 100%; height: 100%">
             <div style="background-image: url({% static 'img/10.jpg' %})">
               <div class="center-xs" style="padding: 10%;">
-                <h1 class="white-ammount">{{ caja.saldo }}</h1>
+                <h1 class="white-ammount">{{ cash.balance }}</h1>
               </div>
             </div>
             <div class="card-block">
-              <h4 class="card-title">Dinero en caja</h4>
-              <a href="{% url 'caja_inicio' %}" class="btn btn-primary">Ir a Caja</a>
+              <h4 class="card-title">Dinero en Caja</h4>
+              <a href="{% url 'caja_inicio' %}" class="btn btn-primary">Ir a Cash</a>
             </div>
           </div>
         </div>
@@ -26,12 +26,12 @@
           <div class="card" style="width: 100%; height: 100%">
             <div style="background-image: url({% static 'img/11.jpg' %})">
               <div class="center-xs" style="padding: 10%;">
-                <h1 class="white-ammount">{{ venta.count }}</h1>
+                <h1 class="white-ammount">{{ sale.count }}</h1>
               </div>
             </div>
             <div class="card-block">
               <h4 class="card-title">Ventas realizadas</h4>
-              <a href="{% url 'ventas' %}" class="btn btn-primary">Ir a Ventas</a>
+              <a href="{% url 'sales' %}" class="btn btn-primary">Ir a Ventas</a>
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@
           <div class="card" style="width: 100%; height: 100%">
             <div style="background-image: url({% static 'img/12.jpg' %})">
               <div class="center-xs" style="padding: 10%;">
-                <h1 class="white-ammount">{{ count_servicios }}</h1>
+                <h1 class="white-ammount">4</h1>
               </div>
             </div>
             <div class="card-block">
@@ -58,23 +58,23 @@
         <tr>
           <th>#</th>
           <th>Nombre</th>
-          <th>cantidad</th>
-          <th>Precio de Venta</th>
+          <th>quantity</th>
+          <th>Precio de Sale</th>
           <th>Total</th>
           <th>Vendedor</th>
-          <th>Fecha de Venta</th>
+          <th>Fecha de Sale</th>
         </tr>
       </thead>
       <tbody>
-        {% for venta in venta.all %}
+        {% for sale in sale.all %}
         <tr>
-          <th scope="row">{{ venta.id }}</th>
-          <td>{{ venta.articulo.nombre }}</td>
-          <td>{{ venta.cantidad }}</td>
-          <td>{{ venta.articulo.precio_venta }}</td>
-          <td>{{ venta.total }}</td>
-          <td>{{ venta.usuario.username }}</td>
-          <td>{{ venta.fecha_venta }}</td>
+          <th scope="row">{{ sale.id }}</th>
+          <td>{{ sale.product.name }}</td>
+          <td>{{ sale.quantity }}</td>
+          <td>{{ sale.product.sale_price }}</td>
+          <td>{{ sale.total }}</td>
+          <td>{{ sale.usuario.username }}</td>
+          <td>{{ sale.created_at }}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -95,16 +95,16 @@
         </tr>
       </thead>
       <tbody>
-        {% for servicio in servicios.all %}
+        {% for service in services.all %}
         <tr>
-          <th scope="row">{{ servicio.id }}</th>
-          <td>{{ servicio.descripcion }}</td>
-          <td>{{ servicio.cantidad }}</td>
-          <td>{{ servicio.tipo_servicio.costo }}</td>
-          <td>{{ servicio.precio }}</td>
-          <td>{{ servicio.usuario.username }}</td>
-          <td>{{ servicio.fecha_servicio }}</td>
-          <td><a href="">acciones servicio</a></td>
+          <th scope="row">{{ service.id }}</th>
+          <td>{{ service.description }}</td>
+          <td>{{ service.quantity }}</td>
+          <td>{{ service.type_service.price }}</td>
+          <td>{{ service.price }}</td>
+          <td>{{ service.usuario.username }}</td>
+          <td>{{ service.created_at }}</td>
+          <td><a href="">acciones service</a></td>
         </tr>
         {% endfor %}
       </tbody>

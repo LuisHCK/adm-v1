@@ -1,0 +1,25 @@
+ {% include 'navbar.html' %}
+<ul class="nav nav-pills flex-column div_hover">
+    <a href="{% url 'MoneyState' %}" class="nav-item nav-link nav-link-styled">
+        <i class="nav-icon fi-torso-business"></i>
+        <p class="nav-item-text float-left">Estado Finanzas</p>
+    </a>
+</ul>
+
+<ul class="nav nav-pills flex-column div_hover">
+    <a href="{% url 'nuevo_egreso' %}" class="nav-item nav-link nav-link-styled">
+        <i class="nav-icon fi-torso-business"></i>
+        <p class="nav-item-text float-left">Expenses</p>
+    </a>
+</ul>
+
+<ul class="nav nav-pills flex-column div_hover">
+    {% if user.is_authenticated %}
+    <a class="nav-item nav-link nav-link-styled" href="{% url 'logout' %}" onclick="return confirm('¿Estas seguro de cerrar la sesión?')">
+        <i class="nav-icon fi-lock"></i>
+        <p class="nav-item-text float-left">Cerrar Sesión</p>
+    </a>
+    {% else %}
+    <a class="nav-item nav-link nav-link-styled" href="{% url 'login' %}">Iniciar Sesión</a> {% endif %}
+</ul>
+</nav>

@@ -1,8 +1,0 @@
-{
-    "python.pythonPath": "/usr/bin/python3.5",
-    "python.autoComplete.extraPaths": [
-        "${env.SPARK_HOME}/python",
-        "${env.SPARK_HOME}/python/pyspark"
-    ],
-    "python.formatting.provider": "autopep8"
-}

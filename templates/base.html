@@ -21,6 +21,7 @@
   <script src="{% static 'js/scripts.js' %}"></script>
   <script src="{% static 'js/toastr.min.js' %}"></script>
   <script src="{% static 'js/tether.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.js' %}"></script>
   
 </head>
 <body style="background-color: #F5F5F5;">
@@ -29,27 +30,27 @@
       aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
       </button>
-    <a class="navbar-brand" href="{% url 'inicio' %}">Administración</a>
+    <a class="navbar-brand" href="{% url 'Start' %}">Administración</a>
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'ver_inventario' %}">Inventario</a>
+          <a class="nav-link" href="{% url 'ShowInventory' %}">Inventario</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'ventas' %}">Ventas</a>
+          <a class="nav-link" href="{% url 'sales' %}">Ventas</a>
         </li>
-        <li class="nav-item">
+        <!li class="nav-item">
           <a class="nav-link" href="{% url 'servicios_realizados' %}">Servicios</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'caja_inicio' %}">Estado de caja</a>
+          <a class="nav-link" href="{% url 'caja_inicio' %}">Estado de Caja</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'facturas' %}">Facturas</a>
+          <a class="nav-link" href="{% url 'AllInvoices' %}">Facturas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'perfiles' %}">Empleados</a>
+          <a class="nav-link" href="{% url 'profiles' %}">Empleados</a>
         </li>
       </ul>
       <form class="form-inline mt-2 mt-md-0">
@@ -75,14 +76,13 @@
         </div>
         <input class="form-control mr-sm-2" type="text" placeholder="Ayuda">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
-        <a href="{% url 'inicio_ajustes' %}"><i class="fi-widget ajustes-icon"></i></a>
+        <a href="{% url 'inicio_ajustes' %}"><i class="fi-widget settings-icon"></i></a>
       </form>
     </div>
   </nav>
   <div class="container-fluid">
     {% block content %} {% endblock %}
   </div>
-  <script src="{% static 'js/bootstrap.js' %}"></script>
 </body>
 
 </html>

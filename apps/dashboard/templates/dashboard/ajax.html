@@ -2,24 +2,24 @@
     $("#form_vender").submit(function (event) {
         event.preventDefault();
         $.ajax({
-            url: "{% url 'venta_ajax' %}",
+            url: "{% url 'SaleAjax' %}",
             data: {
-                articulo: $('#id_articulo').val(),
-                cantidad: $('#cantidad_articulo').val(),
+                product: $('#id_product').val(),
+                quantity: $('#cantidad_articulo').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             dataType: "json",
             type: "POST",
             // handle a successful response
             error: function (json) {
-                $('#id_articulo').val(''); // remove the value from the input
+                $('#id_product').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
-                console.log("Error al realizar la venta");
+                console.log("Error al realizar la sale");
                 toastr["eror"](json.message)                
             },
 
             success: function (json) {
-                $('#id_articulo').val('');
+                $('#id_product').val('');
                 console.log(json);
                 console.log("success");
                 toastr["success"](json.message)
@@ -27,19 +27,19 @@
                 // Quitar las la ultima fila de la tabla
                 $('#tabla_ventas').prepend(
                     `<tr>
-                    <th scope="row">` + json.venta_id +
+                    <th scope="row">` + json.sale_id +
                     `</th>
-                    <td>` + json.articulo +
+                    <td>` + json.product +
                     `</td>
-                    <td>` + json.cantidad +
+                    <td>` + json.quantity +
                     `</td>
-                    <td>` + json.precio_venta +
+                    <td>` + json.sale_price +
                     `</td>
                     <td>` + json.total +
                     `</td>
-                    <td>` + json.vendedor +
+                    <td>` + json.seller +
                     `</td>
-                    <td>` + json.fecha_venta +
+                    <td>` + json.created_at +
                     `</td>
                 </tr>`
                 );
@@ -49,48 +49,4 @@
         });
     });
 
-    $("#form_servicio").submit(function (event) {
-        event.preventDefault();
-        $.ajax({
-            url: "{% url 'servicio_ajax' %}",
-            data: {
-                tipo_servicio: $('#id_tipo_servicio').val(),
-                cantidad: $('#cantidad_servicio').val(),
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            dataType: "json",
-            type: "POST",
-            // handle a successful response
-            error: function (json) {
-                $('#id_articulo').val(''); // remove the value from the input
-                console.log(json); // log the returned json to the console
-                console.log("Error al realizar la venta");
-                toastr["error"](json.responseJSON.result)
-            },
-
-            success: function (json) {
-                $('#id_articulo').val('');
-                console.log(json);
-                console.log("success");
-                toastr["success"](json.responseJSON.result)
-
-                // Quitar las la ultima fila de la tabla
-                $('#tabla_servicios').prepend(
-                    `<tr>
-                        <th scope="row">`+ json.servicio_id +`</th>
-                        <td>`+ json.servicio +`</td>
-                        <td>`+ json.cantidad +`</td>
-                        <td>`+ json.precio_servicio +`</td>
-                        <td>`+ json.total +`</td>
-                        <td>`+ json.vendedor +`</td>
-                        <td>`+ json.fecha_servicio +`</td>
-                        <td><a href="#" class="btn btn-outline-primary">Detalles</a></td>
-                        
-                    </tr>`
-                );
-
-                $('#tabla_servicios tr:last').remove();
-            },
-        });
-    });
 </script>

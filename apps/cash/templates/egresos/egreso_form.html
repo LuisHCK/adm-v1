@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% block content %}  {% include 'messages.html' %}
+<div class="row center-xs">
+    <div class="col-xs-6" style="margin-top: 50px; background-color: #ECEFF1; border-radius: 5px">
+        <div class="box" style="padding: 5%">
+            <h3>Registar un Egreso de Cash</h3>
+            <h3>Saldo actual: <b>{{ ultima_caja.balance }}</b> </h3>
+            <hr>
+            <form method="POST" class="post-form text-left">{% csrf_token %} {{ form.as_p }}                
+                <button style="width: 100%" type="submit" class="save btn btn-success">Retirar Dinero</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

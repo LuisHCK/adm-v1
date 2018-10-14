@@ -1,0 +1,70 @@
+<style>
+    .ticket{
+        font-family: 'Free Mono'
+    }
+    hr{
+        border-top:2px dotted black;
+    }
+    .ticket {
+        max-width: 250px;
+        background-color: #FAFAFA;
+    }
+
+    .center {
+        text-align: center;
+    }
+    .firma{
+        padding-top: 30px;
+    }
+</style>
+
+
+<div class="ticket">
+
+    <div class="center">
+        <b>{{business.name}}<br>{{business.direccion}}</b> <br>
+        <small>Tel: {{business.telefono}}</small>
+        {% if business.ruc != None %}
+            RUC: {{business.ruc}}
+        {% endif %}
+    </div>
+<hr>
+<div class="center">
+    <strong>FACT # {{invoice.id}}</strong>
+</div>
+CLIENT: {{invoice}}
+{% if product_items.count > 0 %}
+    <div class="center">
+        ======== ARTICULOS ========
+    </div>
+    {% for product_item in product_items %}
+        CONCEP: {{product_item.product}} <br>
+        PREC: {{product_item.product.sale_price}} <br>
+        CANT: {{product_item.quantity}} <br>
+        <div class="center">-----</dic>
+    {% endfor%}
+{% endif %}
+
+{% if service_items.count > 0 %}
+    <div class="center">
+        ======== SERVICIOS ========
+    </div>
+    {% for service_item in service_items %}
+        CONCEP: {{service_item.type_service}} <br>
+        PREC: {{service_item.type_service.price}} <br>
+        CANT: {{service_item.quantity}} <br>
+        <div class="center">-----</div>
+    {% endfor%}
+{% endif %}
+TOTAL: {{invoice.total}}<br>
+PAGO: {{invoice.pago}}
+<div class="center">===========================</div>
+{% if invoice.pago == 'credit' %} <br>
+FECH. LIMITE:  {{invoice.fecha_limite}}
+{% endif %}
+<div class="center">
+    CAJERO: {{request.user}}
+</div>
+<hr>
+<small>Administra v0.1.3A</small>
+</div>

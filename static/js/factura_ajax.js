@@ -4,7 +4,7 @@ $("form").submit(function(event) {
     $.ajax({
         url: "{% url 'agregar_articulo_factura' factura.id %}",
         data: {
-                articulo: $('#id_articulo').val(),
+                articulo: $('#id_product').val(),
                 cantidad: $('#id_cantidad').val(),
                 csrfmiddlewaretoken:'{{ csrf_token }}'
                },
@@ -12,13 +12,13 @@ $("form").submit(function(event) {
         type: "POST",
         // handle a successful response
         success : function(json) {
-            $('#id_articulo-text').val(''); // remove the value from the input
+            $('#id_product-text').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
             console.log("success"); // another sanity check
         },
 
          success : function(json) {
-            $('#id_articulo-text').val(''); // remove the value from the input
+            $('#id_product-text').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
             console.log("success"); // another sanity check
             $('#tabla_factura').prepend("<tr><td>"+json.articulo+"</td><td>"+json.precio+"</td><td>"+json.cantidad+"</td><td><a class='btn btn-danger' href='/facturas/articulos/"+json.item_id+"/eliminar/'>Eliminar</a></td></tr>");
@@ -32,7 +32,7 @@ $('#codigo_articulo').on('input', function () {
     var url = $(this).attr('action')
     //Si el texto introducido supera los 3 caracteres realizar la búsqueda
     if (cod.length >= 4) {
-        busqueda_articulos('../buscar_articulo/', cod)
+        busqueda_articulos('../SearchProduct/', cod)
     } else {
         // Si no hay texto introducido limpiar los resultados y cerrar el form
         limpiarBusquedas();
@@ -47,16 +47,16 @@ function busqueda_articulos(url, codigo) {
         type: "GET",
 
         success: function (json) {
-            $("#lista-articulos").html('');
+            $("#lista-products").html('');
             $.each(json, function (i, obj) {
-                $("#lista-articulos").append(`
+                $("#lista-products").append(`
                         <button id="` + obj.id +
                     `
                         " class="list-group-item list-art" precio="` +
-                    obj.precio_venta +
+                    obj.sale_price +
                     `">
-                            <span class="float-right">` + obj.nombre +
-                    ` </span> <strong>&emsp;|&emsp;</strong> ` + obj.codigo +
+                            <span class="float-right">` + obj.name +
+                    ` </span> <strong>&emsp;|&emsp;</strong> ` + obj.code +
                     `
                         </button>`)
             });
@@ -68,23 +68,23 @@ function busqueda_articulos(url, codigo) {
     })
 };
 
-$("#lista-articulos").on("click", ".list-group-item", function () {
+$("#lista-products").on("click", ".list-group-item", function () {
     // Obtener del item de resultado los valores el articulo
     var id = $(this).attr('id')
-    var nombre = $(this).children("span").text()
-    var precio = $(this).attr('precio')
+    var name = $(this).children("span").text()
+    var sale_price = $(this).attr('precio')
 
     //Mandar los datos al formulario
-    $("#id_articulo").val(parseInt(id))
-    $("#nombre_articulo").html(nombre)
-    $("#precio_articulo").html(precio)
+    $("#id_product").val(parseInt(id))
+    $("#nombre_articulo").html(name)
+    $("#precio_articulo").html(sale_price)
     $("#form_agregar_articulo").fadeIn()
 });
 
 //Limpia el input de busqueda
 $("#borrar_codigo").click(function () {
     $("#codigo_articulo").val('');
-    limpiarBusquedas("#lista-articulos", "#form_agregar_articulo");
+    limpiarBusquedas("#lista-products", "#form_agregar_articulo");
 });
 
 // Limpia los resultados y el formulario de artículos
@@ -99,28 +99,28 @@ $("#form_agregar_articulo").on('submit', function (event) {
     $.ajax({
         url: $(this).attr('action'),
         data: {
-            articulo: $("#id_articulo").val(),
-            cantidad: $('#id_cantidad_articulo').val(),
+            product: $("#id_product").val(),
+            quantity: $('#id_cantidad_articulo').val(),
             csrfmiddlewaretoken: $(this).attr('token')
         },
         dataType: "json",
         type: "POST",
         // handle a successful response
         error: function (json) {
-            $('#id_articulo').val().replace('');
+            $('#id_product').val().replace('');
             console.log(json);
         },
 
         success: function (json) {
-            $('#id_articulo').val(''); // remove the value from the input
+            $('#id_product').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
             console.log("success"); // another sanity check
-            $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>" + json.articulo +
-                "</td><td>" + json.precio + "</td><td>" + json.cantidad +
-                "</td> <td>" + parseFloat(json.precio) * parseFloat(json.cantidad) + "</td> <td><a class='btn btn-danger' href='/facturas/articulos/" + json.item_id +
+            $('#tabla_factura').prepend("<tr id='hide_item' style='display:none;'><td>" + json.product +
+                "</td><td>" + json.price + "</td><td>" + json.quantity +
+                "</td> <td>" + parseFloat(json.price) * parseFloat(json.quantity) + "</td> <td><a class='btn btn-danger' href='/facturas/articulos/" + json.item_id +
                 "/eliminar/'>Eliminar</a></td></tr>");
             $('#hide_item').fadeIn('slow');
-            document.getElementById("total_factura").innerHTML = json.total_factura;
+            document.getElementById("total_invoice").innerHTML = json.total_invoice;
         },
     });
 });

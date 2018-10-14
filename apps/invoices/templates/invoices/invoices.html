@@ -1,0 +1,81 @@
+ {% extends 'base.html' %} {% load staticfiles %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}"> {% include 'messages.html' %}
+<div class="row">
+  {% include 'invoices/navbar.html' with invoice_form=invoice_form %}
+  <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+    <h3>Facturas</h3>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#todas" role="tab">Todas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#pending" role="tab">Pendientes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#opened" role="tab">
+        Facturas Abiertas
+        {% if pending %}
+        <span class="badge badge-pill badge-default">{{ opened }}</span>
+        {% endif %}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#informes" role="tab">Informes</a>
+      </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div class="tab-pane active" id="todas" role="tabpanel">
+        {% include 'invoices/parciales/tabla.html' with id="tabla_lista" %}
+      </div>
+
+      <div class="tab-pane" id="pending" role="tabpanel">
+        <div class="alert alert-info" role="alert">
+          <strong>Dinero por Cobrar:</strong> {{list_pending}}
+        </div>
+        {% for invoice in list_pending %}
+
+        <ul class="list-group">
+          <a href="{% url 'InvoiceDetails' invoice.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1"> <b>Cliente: </b> {{invoice}}</h5>
+              <h5 class="mb-1"><b>Total: </b> {{invoice.total}}</h5>
+              <small>{{invoice.fecha_factura|timesince}}</small>
+            </div>
+            <p class="mb-1">
+              <strong>Artículos: </strong> {{invoice.product_count}} | <strong>Servicios: </strong> {{invoice.service_count}}
+            </p>
+            <small>Fecha Vencimiento: {{invoice.fecha_limite}}</small> 
+          </a>
+        </ul>
+
+        <script>
+          var total = +$("#por-cobrar")
+          total = +'{{facura.total}}'
+          $("#por-cobrar").text(total)
+        </script>
+        {% endfor %}
+
+
+      </div>
+      <div class="tab-pane" id="opened" role="tabpanel">
+        {% include 'invoices/parciales/pending.html' %}
+      </div>
+
+      <div class="tab-pane" id="informes" role="tabpanel">...</div>
+    </div>
+
+    {% endblock content %}
+
+    <script>
+      $(document).ready(function () {
+        $('.delete').click(function (e) {
+          e.preventDefault();
+          var a = confirm('Sure?');
+          if (a) {} else if (!a) {}
+        });
+      });
+    </script>

@@ -1,0 +1,92 @@
+ {% extends 'base.html' %} {% load staticfiles %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<div class="row">
+  {% include 'inventory/navbar.html' %}
+  <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+    <div class="row">
+      <div class="col-xs-6">
+        <h3>Articulos en el Inventario</h3>
+      </div>
+      <div class="col-xs-6">
+        <div class="float-right" style="margin-top: 1%;">
+          <span class="badge badge-info">Total invertido en Inventario: {{total_inversion}}</span>
+        </div>
+      </div>
+    </div>
+
+    <table id="tabla_inventario" class="table table-striped">
+      <thead class="thead-inverse">
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Exist.</th>
+          <th>Min. Exist.</th>
+          <th>Precio Compra</th>
+          <th>Precio Sale 1</th>
+          <th>Precio Sale 2</th>
+          <th>Precio Sale 3</th>
+          <th>IVA(%)</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inventory in inventory.all %}
+        <tr id="art_{{ inventory.product.id }}">
+          <th style="width: 100px;">{{ inventory.product.codigo}}</th>
+          <td>{{ inventory.product.name }}</td>
+          <td>{{ inventory.stocks }}</td>
+          <td>{{ inventory.min_stocks }}</td>
+          <td>{{ inventory.product.purchase_price }}</td>
+          <td>{{ inventory.product.sale_price }}</td>
+          <td>{{ inventory.product.sale_price2 }}</td>
+          <td>{{ inventory.product.sale_price3 }}</td>
+          <td>{{ inventory.product.iva }}</td>
+          <td>
+
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+              <a href="{% url 'ShowProduct' inventory.id %}" class="btn btn-outline-primary" }>Detalles</a>
+              <button class="btn btn-outline-danger del-btn" dir="{% url 'DeleteProductAjax' inventory.product.id %}">
+                Eliminar
+              </button>
+            </div>
+
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+</div>
+
+{% include 'inventory/parciales/_form.html' %}
+<script id="ajax-script">
+  $(document).on('click', '.del-btn', function (event) {
+    event.preventDefault();
+    var eliminar_art = $(this).parent();
+    if (confirm("¿Seguro que quieres borrar el artículo?")) {
+      $.ajax({
+        url: $(this).attr('dir'),
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        dataType: "json",
+        type: "POST",
+        // Mostar un mensaje de error 
+        error: function (json) {
+          $('#form_product')[0].reset();
+          console.log(json);
+          toastr["error"]("Ocurrió un error al eliminar el artículo");
+        },
+
+        success: function (json) {
+          $('#form_product')[0].reset();
+          console.log(json);
+          toastr["success"]("Se eliminó el artículo con éxito");
+          document.getElementById("art_" + json.product_id).remove();
+        },
+      });
+    }
+  });
+</script>
+{% include "inventory/ajax.html" %}
+{% endblock content %}

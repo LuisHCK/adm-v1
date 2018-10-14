@@ -1,0 +1,25 @@
+ {% include 'navbar.html' %}
+<ul class="nav nav-pills flex-column div_hover">
+    <a id="service" class="nav-item nav-link nav-link-styled">
+        <i class="nav-icon fi-torso-business"></i>
+        <p class="nav-item-text float-left">Servicio Rápido</p>
+    </a>
+    <form id="form_service" style="display: none;" method="POST" action="{% url 'PerformService' %}" class="post-form white-text">{% csrf_token %}
+        <div class="form-group" style="padding: 5%">
+            {{ form_service.as_p }}
+            <button type="submit" class="save btn btn-success btn-block">Listo</button>
+        </div>
+    </form>
+</ul>
+<ul class="nav nav-pills flex-column div_hover">
+    {% if user.is_authenticated %}
+    <a class="nav-item nav-link nav-link-styled" href="{% url 'logout' %}" onclick="return confirm('¿Estas seguro de cerrar la sesión?')">
+        <i class="nav-icon fi-lock"></i>
+        <p class="nav-item-text float-left">Cerrar Sesión</p>
+    </a>
+    {% else %}
+    <a class="nav-item nav-link nav-link-styled" href="{% url 'login' %}">Iniciar Sesión</a> {% endif %}
+</ul>
+</nav>
+{% load staticfiles %}
+<script src="{% static 'js/services_ajax.js' %}"></script>

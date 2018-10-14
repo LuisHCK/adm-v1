@@ -1,0 +1,42 @@
+ {% extends 'base.html' %} {% load staticfiles %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}"> {% include 'messages.html' %}
+<div class="row">
+  {% include 'profiles/navbar.html' with invoice_form=invoice_form %}
+  <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+    <h4>Empleados</h4>
+    <hr>  
+    {% for profile in profiles %}
+
+    <a href="{% url 'ShowProfile' profile.id %}" class="card">
+      <div class="card-block">
+        <div class="row">
+          <div class="col-md-1 col-sm-2">
+            <img src="{{profile.picture.url}}" alt="{{profile}}" class="circle-img responsive-img">
+          </div>
+          <div class="col-md-3 col-sm-3">
+            <strong>{{profile}}</strong><br>
+            <span class="username">{{profile.usuario}}</span><br>
+            <em>
+         {% if profile.usuario.is_staff %}
+            <b>ADMINISTRADOR</b>
+         {% else %}
+            {{profile.usuario.groups.all.0}}
+         {% endif %}
+       </em>
+          </div>
+          <div class="col-md-3 col-sm-3">
+            <strong>Teléfono: </strong> {{profile.telefono}} <br>
+            <strong>Dirección: </strong> {{profile.direccion}} <br>
+            <strong>Fecha Ingreso: </strong> {{profile.start_date}} <br>
+            <strong>Cédula: </strong> {{profile.identification_card}}
+          </div>
+          <div class="col-md-3 col-sm-3">
+            <strong>Fecha Nacimiento: </strong> {{profile.birthdate}}
+          </div>
+        </div>
+      </div>
+    </a>
+    {% endfor %} 
+  </main>
+</div>
+{% endblock content %}

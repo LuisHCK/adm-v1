@@ -2,13 +2,13 @@ $(document).ready(function () {
     $("#vender").click(function () {
         $("#form_vender").toggle(500);
     });
-    $("#servicio").click(function () {
-        $("#form_servicio").toggle(500);
+    $("#service").click(function () {
+        $("#form_service").toggle(500);
     });
     $("#abrirfact").click(function () {
-        $("#form_factura").toggle(500);
+        $("#invoice_form").toggle(500);
     });
-    $("#primera_apertura").click(function () {
+    $("#FirstCash").click(function () {
         $("#form_primera_apertura").toggle(500);
     });
     $("#cierre_caja").click(function () {
@@ -19,20 +19,20 @@ $(document).ready(function () {
     });
 
     //GENERADOR AUTOMÁTICO DE CODIGOS DE PRODUCTO
-    $("#id_nombre").on("input", function (e) {
+    $("#id_name").on("input", function (e) {
 
         function randomString() {
             var length=3
             var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             var result = '';
-            var nombre_original = latinize($("#id_nombre").val());
+            var nombre_original = latinize($("#id_name").val());
             var nombre = nombre_original.substring(0,4).toUpperCase();
             
             for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
             return nombre +"-"+ result;
         }
         var rString = randomString();
-        $("#id_codigo").val(rString);
+        $("#id_code").val(rString);
     });
 });
 

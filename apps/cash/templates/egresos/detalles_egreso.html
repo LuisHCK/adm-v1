@@ -1,0 +1,46 @@
+<style>
+    hr{
+        border-top:2px dotted black;
+    }
+    .ticket {
+        max-width: 250px;
+        background-color: #FAFAFA;
+    }
+
+    .center {
+        text-align: center;
+    }
+    .firma{
+        padding-top: 30px;
+    }
+</style>
+
+
+<div class="ticket">
+
+    <div class="center">
+        <b>Nombre del Negocio <br> Lugar del Negocio</b> <br>
+        <small>Tel: 5555-5555</small>
+    </div>
+<hr>
+    <div class="center">
+        ======== EGRESO ========
+    </div>
+<hr>
+CONCEP.......{{egreso.details}} <br>
+CANTIDAD......{{egreso.quantity}} <br>
+FECHA.......{{egreso.expense_date}}  <br>
+SOLICIT.......{{egreso.usuario}} <br>
+APROV POR........{{egreso.approved_by}} <br>
+<hr>
+    <div class="center">
+        ======== ULT LINEA ========
+    </div>
+
+<div class="center firma">
+    __________________ <br>
+    cajero
+</div>
+<hr>
+<small>Administra v0.1.3A</small>
+</div>

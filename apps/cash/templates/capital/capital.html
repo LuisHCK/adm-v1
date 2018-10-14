@@ -1,0 +1,97 @@
+{% extends 'base.html' %} {% block content %}  {% include 'messages.html' %} {% load staticfiles %}
+<script src="{% static 'js/charts.js' %}"></script>
+
+<br>
+<h3>Money del negocio</h3><br>
+
+<div class="main-section center-xs">
+    <br>
+    <p>
+        <h3 class="responsive-text">CAPITAL ESTIMADO</h3>
+    </p>
+    <h1 class="responsive-text">${{ capital.monto }}</h1>
+
+    <div class="main-button-section">
+        <button class="btn btn-success">Generar Informe</button>
+    </div>
+</div>
+
+<style>
+.main-section{
+    background-color: #16a085;
+}
+
+.main-section>h1{
+    color: #ecf0f1;
+    font-size: 4rem;
+}
+.main-section>h3{
+    color: #004D40;
+}
+.main-button-section{
+    padding-bottom: 3%;
+}
+.canvas-container{
+    height: 320px;
+}
+</style>
+
+<div class="canvas-container">
+    <canvas id="myChart"></canvas>
+</div>
+
+<script>
+var ctx = document.getElementById("myChart");
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [
+            {% for cash in cash %}
+                "{{cash.closing_date | date:'l' }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Entratas por Día $',
+            fill: true,
+            lineTension: 0.1,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 5,
+            pointHitRadius: 10,
+            data: [
+            {% for cash in cash %}
+                "{{ cash.balance }}",
+            {% endfor %}
+            ],
+            backgroundColor: [
+                'rgba(66,165,245 ,0.5)'
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
+{% endblock content %}
