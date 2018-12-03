@@ -11,6 +11,6 @@ psycopg2==2.7.1
 pydot==1.2.3
 pyparsing==2.2.0
 pytz==2017.2
-requests==2.14.2
+requests>=2.20.0
 six==1.10.0
 whitenoise==3.3.0
