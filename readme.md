@@ -1,7 +1,9 @@
 ## Administra v.0.1.2a
 <img src="https://github.com/LuisHCK/administracion/raw/master/Administra.gif" width="100">
 
-> **Nota:** Hola, mi nombre es Luis Centeno creador de este pequeño proyecto. Quiero anunciar que tengo planes para continuar el desarrollo de este sistema, si estás interesado puedes comunicarte conmigo. 
+> **Nota:** Hola, mi nombre es Luis Centeno creador de este pequeño proyecto.
+> Esta versión ya no será mantenida, estoy trabajando en una nueva versión totalmente basada en Vue y Electron
+> por favor hecha un vistazo https://github.com/LuisHCK/adm2
 
 Administra es un sistema básico de administración el cual facilita la gestión y seguimiento de inventario, ventas y facturación, a su vez cuenta con la posibilidad de registrar ventas de bienes no materiales como servicios.
 
